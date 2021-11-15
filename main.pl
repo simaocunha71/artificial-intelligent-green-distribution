@@ -7,7 +7,14 @@ run_opt(1) :-
     print_query_true(Query),
     print_query_false(Query).
 
-run_opt(2) :- write('Goodbye'), nl, halt.
+run_opt(2) :-
+    write('>   Write estafeta nome'),
+    nl,
+    read(Query),
+    estafeta(Query,X,Y,Z,XX,YY,ZZ),
+    write(X).
+
+run_opt(3) :- write('Goodbye'), nl, halt.
 
 run_opt(_) :- write('Invalid option'), nl, halt.
 

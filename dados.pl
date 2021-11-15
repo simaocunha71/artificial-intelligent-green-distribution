@@ -53,3 +53,6 @@ estafeta(
     500,
     []
 ).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+estafeta_info(Nome) :- estafeta(Nome,X,Y,Z,XX,YY,ZZ).
