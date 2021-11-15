@@ -2,7 +2,7 @@
 estafetas(
       identificacao,
       zona,
-      meio de transporte,
+      meio_transporte,
       classificacao_media,
       classificacoes_totais,
       lista das entregas
@@ -12,7 +12,43 @@ estafetas(
 
 
 /*
+meio_transporte(
+    tipo,
+    velocidade
+)
+*/
 
 
+
+/*
+pedido(
+    cliente,
+    prazo,
+    zona,
+    peso,
+    preco,
+    data,
+    estado
+)
 
 */
+
+
+estafeta(
+    jaquim,
+    42,
+    famalicao,
+    meio_transporte(moto,10,30),
+    5,
+    500,
+    []
+).
+estafeta(
+    gomes,
+    42,
+    braga,
+    meio_transporte(bicla,10,30),
+    5,
+    500,
+    []
+).
