@@ -4,7 +4,7 @@
 run_opt(1) :-
     menu.
 
-run_opt(2) :- write('Adeus\n').
+run_opt(2) :- write('Adeus\n'), halt.
 
 run_opt(_) :- write('Opção Inválida\n').
 
@@ -16,8 +16,10 @@ main :-
     write('>   1. Executar uma query'), nl,
     write('>   2. Sair'), 
     write('\n'),
+    import,
     read(Choice),
     run_opt(Choice).
+
 
 % ------------------------------ Menu auxiliar ------------------------------------------
 
@@ -49,93 +51,84 @@ menu :-
     read(Option),
     executar(Option).
 
-executar(Option) :-(Option=:=1, estafeta_nome,main;   
-                    Option=:=2, estafeta_id, main;   
-                    Option=:=3, estafeta_zona, main;   
-                    Option=:=4, estafeta_meioT, main;   
-                    Option=:=5, estafeta_clMedia, main;   
-                    Option=:=6, estafeta_clTotais, main;  
+executar(Option) :-(Option=:=1, estafeta_nome;
+                    Option=:=2, estafeta_id;
+                    Option=:=3, estafeta_zona;
+                    Option=:=4, estafeta_meioT;
+                    Option=:=5, estafeta_clMedia;
+                    Option=:=6, estafeta_clTotais;
+                    Option=:=7, meioTransporte_tipo;
+                    Option=:=8, meioTransporte_vel;
+                    Option=:=9, meioTransporte_peso;
+                    Option=:=10, pedido_cliente;
+                    Option=:=11, pedido_prazo;
+                    Option=:=12, pedido_zona;  
+                    Option=:=13, pedido_peso;
+                    Option=:=14, pedido_data; 
+                    Option=:=15, pedido_estado;   
                     
-                    Option=:=7, meioTransporte_tipo, main;   
-                    Option=:=8, meioTransporte_vel, main;   
-                    Option=:=9, meioTransporte_peso, main;   
-                    
-                    Option=:=10, pedido_cliente, main;   
-                    Option=:=11, pedido_prazo, main;   
-                    Option=:=12, pedido_zona, main;   
-                    Option=:=13, pedido_peso, main;
-                    Option=:=14, pedido_data, main;   
-                    Option=:=15, pedido_estado, main;   
-                    
-                    Option=:=0, true,write('BYE')
-                   ).
+                    Option=:=0, true,write('BYE'),nl,halt
+                   ),main.
 
 /*------------------------------ Estafeta ---------------------------------- */
 estafeta_nome :-
     write('Nome:'),
     read(Nome),
     estafeta_nome(Nome, R),
-    append('\n> ',R,RES),
-    write(RES),
-    write('\n').
+    writeln(R).
+  %  append('\n> ',R,RES),
+  %  write(RES),
 
 estafeta_id :-
     write('Id:'),
     read(ID),
     estafeta_id(ID, R),
-    append('\n> ',R,RES),
     write('ola'),
-    write(RES),
+    write(R),
     write('\n').
 
 estafeta_zona :-
     write('Zona:'),
     read(Zona),
     estafeta_zona(Zona, R),
-    append('\n> ',R,RES),
-    write(RES),
+    write(R),
     write('\n').
 
 estafeta_meioT :-
     write('Meio de transporte:'),
     read(MTranp),
     estafeta_meioT(MTranp, R),
-    append('\n> ',R,RES),
-    write(RES),
+    write(R),
     write('\n').
 
 estafeta_clMedia :-
     write('Classificação média:'),
     read(ClMedia),
     estafeta_clMedia(ClMedia, R),
-    append('\n> ',R,RES),
-    write(RES),
+    write(R),
     write('\n').
 
 estafeta_clTotais :-
-    write('Opçao a implementar').
-    %write('Classificação total: '),
-    %read(ClTotal),
-    %estafeta_clTotais(ClTotal, R),
-    %append('\n> ',R,RES),
-    %write(RES),
-    %write('\n').
+    write('Opçao a implementar'),
+    write('Classificação total: '),
+    read(ClTotal),
+    estafeta_clTotais(ClTotal, R),
+    write(R),
+    write('\n').
 
 /*------------------------------ Meios de transporte ---------------------------------- */
 meioTransporte_tipo :-
     write('Tipo de transporte:'),
     read(Tipo),
     meioTransporte_tipo(Tipo, R),
-    append('\n> ', R, RES),
-    write(RES),
+    write(R),
     write('\n').
 
 meioTransporte_vel :-
     write('Velocidade do transporte:'),
     read(Vel),
     meioTransporte_vel(Vel, R),
-    append('\n> ', R, RES),
-    write(RES),
+    write(R),
     write('\n').
 
 
@@ -143,8 +136,7 @@ meioTransporte_peso :-
     write('Peso do transporte:'),
     read(Peso),
     meioTransporte_peso(Peso, R),
-    append('\n> ', R, RES),
-    write(RES),
+    write(R),
     write('\n').
 
 
@@ -153,8 +145,7 @@ pedido_cliente :-
     write('Cliente: '),
     read(Cliente),
     pedido_cliente(Cliente, R),
-    append('\n> ', R, RES),
-    write(RES),
+    write(R),
     write('\n').
 
 
@@ -162,38 +153,33 @@ pedido_prazo :-
     write('Prazo: '),
     read(Prazo),
     pedido_prazo(Prazo, R),
-    append('\n> ', R, RES),
-    write(RES),
+    write(R),
     write('\n').
 
 pedido_zona :-
     write('Zona: '),
     read(Zona),
     pedido_zona(Zona, R),
-    append('\n> ', R, RES),
-    write(RES),
+    write(R),
     write('\n').
 
 pedido_peso :-
     write('Peso: '),
     read(Peso),
     pedido_peso(Peso, R),
-    append('\n> ', R, RES),
-    write(RES),
+    write(R),
     write('\n').
 
 pedido_data :-
     write('Data: '),
     read(Data),
     pedido_data(Data, R),
-    append('\n> ', R, RES),
-    write(RES),
+    write(R),
     write('\n').
 
 pedido_estado :-
     write('Estado: '),
     read(Estado),
     pedido_estado(Estado, R),
-    append('\n> ', R, RES),
-    write(RES),
+    write(R),
     write('\n').

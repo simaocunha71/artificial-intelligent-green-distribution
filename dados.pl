@@ -6,7 +6,7 @@ estafeta(
     zona,
     meio_transporte,
     classificacao_media, 
-    classificacoes_totais, //lista de classificações ou somatório de classificações?
+    classificacoes_totais, //lista de classificações ou somatório de classificações? 
     lista das entregas
 )
 */
@@ -30,8 +30,9 @@ pedido(
 */
 
 % estafeta: nome, id, zona, meio_transporte, classificacao_media, classificacoes_totais, lista das entregas  -> { V, F }
-estafeta(joaquim,42,famalicao,meio_transporte(moto,10,30),5,500,[]).
-estafeta(gomes,40,braga,meio_transporte(bicicleta,10,30),5,500,[]).
+estafeta(joaquim,2,famalicao,meio_transporte(moto,10,30),5,500/100,[]).
+estafeta(joaquim,42,famalicao,meio_transporte(moto,10,30),5,500/100,[]).
+estafeta(gomes,40,braga,meio_transporte(bicicleta,10,30),5,500/100,[]).
 
 % meio_transporte: tipo, velocidade, peso -> { V, F }
 meio_transporte(moto,10,30).
@@ -100,6 +101,13 @@ estafeta_clMedia(ClMedia,R) :- findall((Nome,ID,Zona,MeioT,ClMedia,ClTotais,LE),
 estafeta_clTotais(ClTotais,R) :- findall((Nome,ID,Zona,MeioT,ClMedia,ClTotais,LE), estafeta(Nome,ID,Zona,MeioT,ClMedia,ClTotais,LE), R).
 /*... uma certa lista de entregas */
 %cestafeta_LEntrega(LE,R) :- 
+
+adiciona_cl(estafeta(A,B,C,D,E,Somatorio/Total,F),Classificacao):- 
+    NovoSomatorio is Somatorio + Classificacao,
+    NovoTotal is Total + 1,
+    estafeta(A,B,C,D,E,NovoSomatorio/NovoTotal,F).  
+
+
 
 % (2) Meio de transporte -------------------------------------------------------
 
