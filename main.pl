@@ -16,7 +16,6 @@ main :-
     write('>   1. Executar uma query'), nl,
     write('>   2. Sair'), 
     write('\n'),
-    import,
     read(Choice),
     run_opt(Choice).
 
