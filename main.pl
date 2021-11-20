@@ -29,7 +29,7 @@ estafeta_clTotais(ClTotais,R) :- findall((Nome,ID,Zona,MeioT,SumClassf/ClTotais,
 /*... uma certa lista de entregas */
 %cestafeta_LEntrega(LE,R) :- 
 
-adiciona_cl(estafeta(A, B, C, D, E, Somatorio/Total, F), Classificacao, estafeta(A, B, C, D, E, NovoSomatorio/NovoTotal, F)) :-
+adiciona_classificacao(estafeta(A, B, C, D, E, Somatorio/Total, F), Classificacao, estafeta(A, B, C, D, E, NovoSomatorio/NovoTotal, F)) :-
     NovoSomatorio is Somatorio+Classificacao,
     NovoTotal is Total+1.
     
@@ -70,6 +70,66 @@ pedido_peso(Peso,R) :- findall((Cliente,Prazo,Zona,Peso,Preco,Data,Estado), pedi
 pedido_data(Data,R) :- findall((Cliente,Prazo,Zona,Peso,Preco,Data,Estado), pedido(Cliente,Prazo,Zona,Peso,Preco,Data,Estado), R).
 /*... estado */
 pedido_estado(Estado,R) :- findall((Cliente,Prazo,Zona,Peso,Preco,Data,Estado), pedido(Cliente,Prazo,Zona,Peso,Preco,Data,Estado), R).
+%------------------------------------------------------------------------------%
+%estafeta(Nome, ID, Freg, MeioT, SomatClassf/NumClassf, LPed, Penaliz)
+estafeta_mais_ecologico(EstafetaSol) :-
+    findall((Nome, ID, Freg, meio_transporte(ID_Tr,bicicleta,Vel,Peso), SomatClassf/NumClassf, LPed, Penaliz), 
+            estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,bicicleta,Vel,Peso), SomatClassf/NumClassf, LPed, Penaliz),
+            L),
+    maiorLista(L,EstafetaSol).
+
+%comprimento da lista de entregas do estafeta
+getListPed(estafeta(_, _, _, _, _, LPed, _),LPed).
+
+
+%devolve o estafeta com mais entregas
+maiorLista([],_) :- fail.
+maiorLista([L],L) :- !.
+maiorLista([H|T],L) :-
+    getListPed(H,L1),
+    R1 is length(L1),
+    writeln(R1),
+    R2 is 2,
+    (R1 >= R2 ->
+        maiorLista(T,H);
+        maiorLista(T,L)
+    ).
+
+
+/*
+estafeta("joaquim", 938283, "lamas", meio_transporte(417169, carro, 25, 100), 33/15, 
+    [pedido(146065, 2021/3/4, "Rua 11", "lamas", 73, 2021/3/1, 1), 
+     pedido(3858, 2021/4/17, "Rua 10", "lamas", 42, 2021/4/1, 0), 
+     pedido(457710, 2021/10/10, "Rua 0", "lamas", 24, 2021/10/1, 1), 
+     pedido(321960, 2021/4/12, "Rua 8", "lamas", 97, 2021/4/1, 1), 
+     pedido(339500, 2021/7/14, "Rua 5", "lamas", 3, 2021/7/1, 1), 
+     pedido(408132, 2021/7/18, "Rua 2", "lamas", 46, 2021/7/1, 1), 
+     pedido(7725, 2021/9/14, "Rua 0", "lamas", 92, 2021/9/1, 1), 
+     pedido(427064, 2021/6/28, "Rua 17", "lamas", 66, 2021/6/1, 1), 
+     pedido(745235, 2021/2/23, "Rua 2", "lamas", 23, 2021/2/1, 0), 
+     pedido(281199, 2021/4/16, "Rua 0", "lamas", 11, 2021/4/1, 0), 
+     pedido(814554, 2021/3/18, "Rua 7", "lamas", 4, 2021/3/1, 0), 
+     pedido(315704, 2021/5/6, "Rua 7", "lamas", 10, 2021/5/1, 0), 
+     pedido(496065, 2021/10/1, "Rua 16", "lamas", 30, 2021/10/1, 1), 
+     pedido(711540, 2021/6/30, "Rua 2", "lamas", 87, 2021/6/1, 0), 
+     pedido(688685, 2021/11/22, "Rua 13", "lamas", 77, 2021/11/1, 0)], 0).
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 %------------------------------------------------------------------------------%
