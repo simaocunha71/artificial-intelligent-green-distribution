@@ -152,7 +152,7 @@ vezes_entregue(Cliente,[pedido(IdCliente, _, _, _, _, _, _)|T],X,R):-
         vezes_entregue(Cliente,T,X2,R);
         vezes_entregue(Cliente,T,X,R)
         ).
-
+% estafeta_mais_entregou(924093).
 
 %------------------------------------------------------------------------------%
 %Clientes servidos por um determinado estafeta
@@ -170,11 +170,57 @@ clientes_servidos_aux([H|T],S):-
     clientes_servidos_aux(T,[IdCliente|S]).
 
 
+% clientes_servidos(938283).
+
+
+
+%------------------------------------------------------------------------------%
+%Calcular valor faturado pela empresa em um dado dia
+
+calcular_valor_faturado_dia(Ano/Mes/Dia):-
+    findall(estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,T,Vel,Peso), SomatClassf/NumClassf, LPed, Penaliz), 
+            estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,T,Vel,Peso), SomatClassf/NumClassf, LPed, Penaliz),
+            Lista),
+    calcular_valor_faturado_dia_aux(Ano/Mes/Dia,Lista,0,Total).
+
+
+calcular_valor_faturado_dia_aux(_,[],Total,Total):- writeln(Total).
+
+calcular_valor_faturado_dia_aux(Ano/Mes/Dia,[H|T],Calculado,Total):-
+    estafeta_valor_faturado_dia(Ano/Mes/Dia,H,R),
+    NovoCalculado is R + Calculado,
+    calcular_valor_faturado_dia_aux(Ano/Mes/Dia,T,NovoCalculado,Total) . 
+
+
+estafeta_valor_faturado_dia(Ano/Mes/Dia,H,R):-
+    getListPed(H,Pedidos),
+    estafeta_valor_faturado_dia_aux(Ano/Mes/Dia,Pedidos,0,R).
+
+estafeta_valor_faturado_dia_aux(_,[],R,R).
+
+estafeta_valor_faturado_dia_aux(Ano/Mes/Dia,[H|T],C,R):-
+    H = pedido(_, Limite, _, _, Peso, Y/M/D, _),
+    (Y == Ano , M == Mes , D == Dia ->
+        calcular_valor(Y/M/D,Limite,Peso,Valor),
+        NovoC is C + Valor,
+        estafeta_valor_faturado_dia_aux(Ano/Mes/Dia,T,NovoC,R);
+        estafeta_valor_faturado_dia_aux(Ano/Mes/Dia,T,C,R)
+        ).
+
+
+calcular_valor(Y/M/D,YLim/MLim/DLim,Peso,Valor):-
+    
+    Valor is div(Peso*2 , (DLim - D)).
+
+
+
+%calcular_valor_faturado_dia(2021/4/1).
+
 
 
     
 
-% estafeta_mais_entregou(924093).
+
 
 /*
 estafeta("joaquim", 938283, "lamas", meio_transporte(417169, carro, 25, 100), 33/15, 

@@ -26,7 +26,6 @@ pedido(
     rua,
     freguesia,
     peso,
-    tempo de entrega,
     data, -> data do pedido
     estado -> concluido ou nao concluido
 )
