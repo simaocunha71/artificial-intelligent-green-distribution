@@ -78,22 +78,26 @@ estafeta_mais_ecologico(EstafetaSol) :-
             L),
     
     length(L, LS),
-    (
-        LS == 0 ->
-        findall(estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,moto,Vel,Peso), SomatClassf/NumClassf, LPed, Penaliz), 
-                estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,moto,Vel,Peso), SomatClassf/NumClassf, LPed, Penaliz),
-                LLL)
-        ;
-        length(LLL, NewL),
-        (
-        NewL == 0 ->
-        findall(estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,carro,Vel,Peso), SomatClassf/NumClassf, LPed, Penaliz), 
-                estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,carro,Vel,Peso), SomatClassf/NumClassf, LPed, Penaliz),
-                L)
-        )
-    ),
-    write(L),
-    maiorLista(L,EstafetaSol).
+    (  
+        LS == 0 ->    % Caso nao existam estafetas de bicicleta, procura os que andam de moto
+            (
+                findall(estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,moto,Vel,Peso), SomatClassf/NumClassf, LPed, Penaliz), 
+                    estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,moto,Vel,Peso), SomatClassf/NumClassf, LPed, Penaliz),
+                    LL),
+                length(LL, NewL),
+                (
+                    NewL == 0 -> % Caso nao existam estafetas de moto, procura os de carro
+                        (
+                            findall(estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,carro,Vel,Peso), SomatClassf/NumClassf, LPed, Penaliz), 
+                                estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,carro,Vel,Peso), SomatClassf/NumClassf, LPed, Penaliz),
+                                LLL)
+                            ,maiorLista(LLL,EstafetaSol)
+                        )
+                   ;maiorLista(LL,EstafetaSol) 
+                )  
+            )
+            ;maiorLista(L,EstafetaSol)
+    ).
 
 %comprimento da lista de entregas do estafeta
 getListPed(estafeta(_, _, _, _, _, LPed, _),LPed).
@@ -101,15 +105,14 @@ getListPed(estafeta(_, _, _, _, _, LPed, _),LPed).
 
 %devolve o estafeta com mais entregas
 maiorLista([],L):-
-    length(L, LS),
-    (LS > 0 ->
+    (\+var(L) ->
         writeln(L);
         writeln("Não existem estafetas")
     ),!.
 maiorLista([H|T],L) :-
     getListPed(H,L1),
     length(L1,R1),
-    getListPed(H,L2),
+    getListPed(L,L2),
     length(L2,R2),
     (R1 >= R2 ->
         maiorLista(T,H);
