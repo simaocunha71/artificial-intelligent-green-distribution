@@ -1,6 +1,6 @@
 CC=swipl
 FLAGS=--goal=main --stand_alone=true --quiet
-EXE=prog
+EXE=main
 FILE=main.pl
 
 $(EXE): $(FILE)
