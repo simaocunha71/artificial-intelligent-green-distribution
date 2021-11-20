@@ -232,6 +232,59 @@ classificacao_media(EstafetaId):-
 
 
 %classificacao_media(938283).
+
+
+%------------------------------------------------------------------------------%
+%Calcular numero de entregas para cada transporte num intervalo de tempo
+
+numero_entregas_intervalo_transporte(AnoLo/MesLo/DiaLo,AnoHi/MesHi/DiaHi,TotalBic,TotalMo,TotalCar):-
+    findall(estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,T,Vel,Peso), SomatClassf/NumClassf, LPed, Penaliz), 
+            estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,T,Vel,Peso), SomatClassf/NumClassf, LPed, Penaliz),
+            Lista),
+    numero_entregas_intervalo_transporte_aux(AnoLo/MesLo/DiaLo,AnoHi/MesHi/DiaHi,Lista,0,0,0,TotalBic,TotalMo,TotalCar).
+
+
+numero_entregas_intervalo_transporte_aux(_,_,[],TotalBic,TotalMo,TotalCar,TotalBic,TotalMo,TotalCar):-
+    writeln("Total entregas:"),
+    writeln("Bicicleta -> "+ TotalBic),
+    writeln("Moto -> "+ TotalMo),
+    writeln("Carro -> "+ TotalCar).
+
+numero_entregas_intervalo_transporte_aux(AnoLo/MesLo/DiaLo,AnoHi/MesHi/DiaHi,[H|T],CalcBi,CalcMo,CalcCar,TotalBic,TotalMo,TotalCar):-
+    H = estafeta(_,_,_,meio_transporte(_,Meio,_,_),_,Pedidos,_),
+    numero_entregas_intervalo_transporte_aux2(AnoLo/MesLo/DiaLo,AnoHi/MesHi/DiaHi,Meio,Pedidos,0,0,0,B,M,C),
+    CalcBiNovo is CalcBi + B,
+    CalcMoNovo is CalcMo + M,
+    CalcCarNovo is CalcCar + C,
+    numero_entregas_intervalo_transporte_aux(AnoLo/MesLo/DiaLo,AnoHi/MesHi/DiaHi,T,NovoCalcBi,NovoCalcMo,NovoCalcCar,TotalBic,TotalMo,TotalCar).
+
+numero_entregas_intervalo_transporte_aux2(_,_,_,[],B,M,C,B,M,C).
+
+numero_entregas_intervalo_transporte_aux2(AnoLo/MesLo/DiaLo,AnoHi/MesHi/DiaHi,Meio,[H|T],CB,CM,CC,B,M,C):-
+    H = pedido(_, _, _, _, _,Ano/Mes/Dia , _),
+    data_no_intervalo(AnoLo/MesLo/DiaLo,AnoHi/MesHi/DiaHi,Ano/Mes/Dia,S),
+    (S == 1 -> 
+        (Meio == bicicleta ->
+            (
+                NovoCB is CB + 1,
+                numero_entregas_intervalo_transporte_aux2(AnoLo/MesLo/DiaLo,AnoHi/MesHi/DiaHi,Meio,T,NovoCB,CM,CC,B,M,C)
+                );
+            Meio == moto ->
+            (
+                NovoCM is CM + 1,
+                numero_entregas_intervalo_transporte_aux2(AnoLo/MesLo/DiaLo,AnoHi/MesHi/DiaHi,Meio,T,CB,NovoCM,CC,B,M,C)
+                );
+            NovoCC is CC + 1,
+            numero_entregas_intervalo_transporte_aux2(AnoLo/MesLo/DiaLo,AnoHi/MesHi/DiaHi,Meio,T,CB,CM,NovoCC,B,M,C)
+            );
+        numero_entregas_intervalo_transporte_aux2(AnoLo/MesLo/DiaLo,AnoHi/MesHi/DiaHi,Meio,T,CB,CM,CC,B,M,C)
+        ).
+
+
+%numero_entregas_intervalo_transporte(2021/1/1,2021/5/20).
+
+
+
 /*
 estafeta("joaquim", 938283, "lamas", meio_transporte(417169, carro, 25, 100), 33/15, 
     [pedido(146065, 2021/3/4, "Rua 11", "lamas", 73, 2021/3/1, 1), 
@@ -254,23 +307,9 @@ estafeta("joaquim", 938283, "lamas", meio_transporte(417169, carro, 25, 100), 33
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 %------------------------------------------------------------------------------%
 
-% Auxiliares
+%Auxiliares
 valida_data((Ano, Mes, Dia)) :-
     Ano>0,
     Mes>0,
@@ -291,3 +330,15 @@ valida_transporte(bicicleta,V,P) :-
 valida_transporte(carro,V,P) :-
     V >= 0, V =< 100,
     P >= 0, P =< 25.
+
+data_no_intervalo(AnoLo/MesLo/DiaLo,AnoHi/MesHi/DiaHi,Ano/Mes/Dia,S):-
+    data_valor(AnoLo/MesLo/DiaLo, Lo),
+    data_valor(AnoHi/MesHi/DiaHi,Li),
+    data_valor(Ano/Mes/Dia,L),
+    (L>=Lo , L=<Li -> S is 1; S is 0).
+
+
+
+data_valor(AnoLo/MesLo/DiaLo,S):-
+    S is AnoLo + MesLo-1*31 + DiaLo.
+
