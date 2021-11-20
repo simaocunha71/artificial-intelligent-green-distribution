@@ -221,7 +221,17 @@ calcular_valor(Y/M/D,YLim/MLim/DLim,Peso,Valor):-
     
 
 
+%------------------------------------------------------------------------------%
+%Calcular classificacao media de um estafeta
 
+classificacao_media(EstafetaId):-
+    estafeta(_,EstafetaId,_,_,SomatClassf/ClTotais,_,_),
+    Media is SomatClassf / ClTotais,
+    writeln(Media).
+
+
+
+%classificacao_media(938283).
 /*
 estafeta("joaquim", 938283, "lamas", meio_transporte(417169, carro, 25, 100), 33/15, 
     [pedido(146065, 2021/3/4, "Rua 11", "lamas", 73, 2021/3/1, 1), 
