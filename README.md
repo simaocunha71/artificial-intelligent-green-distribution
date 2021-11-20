@@ -10,7 +10,6 @@ to do:
 - decidir se se deve modificar o random dos clientes para ter mais chance de sair
 o mesmo cliente (neste momento nem tem chance)
 
-- identificar clientes servidos por um dado estafeta
 - calcular valor faturado pela empresa em um dado dia
 - identificar as zonas com maior volume de entregas
 - calcular classificacao media de um estafeta
@@ -26,3 +25,4 @@ Done :
 
 - identificar o estafeta mais ecologico 
 - identificar estafeta que mais entregou a um dado cliente
+- identificar clientes servidos por um dado estafeta

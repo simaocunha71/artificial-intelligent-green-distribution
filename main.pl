@@ -152,6 +152,26 @@ vezes_entregue(Cliente,[pedido(IdCliente, _, _, _, _, _, _)|T],X,R):-
         vezes_entregue(Cliente,T,X2,R);
         vezes_entregue(Cliente,T,X,R)
         ).
+
+
+%------------------------------------------------------------------------------%
+%Clientes servidos por um determinado estafeta
+
+clientes_servidos(EstafetaId):-
+    estafeta(_, EstafetaId, _, _, _, LPed, _),
+    clientes_servidos_aux(LPed,[]).
+
+
+clientes_servidos_aux([],S):- writeln(S).
+
+
+clientes_servidos_aux([H|T],S):-
+    H = pedido(IdCliente, _, _, _, _, _, _),
+    clientes_servidos_aux(T,[IdCliente|S]).
+
+
+
+
     
 
 % estafeta_mais_entregou(924093).
