@@ -73,9 +73,26 @@ pedido_estado(Estado,R) :- findall((Cliente,Prazo,Zona,Peso,Preco,Data,Estado), 
 %------------------------------------------------------------------------------%
 %estafeta(Nome, ID, Freg, MeioT, SomatClassf/NumClassf, LPed, Penaliz)
 estafeta_mais_ecologico(EstafetaSol) :-
-    findall((Nome, ID, Freg, meio_transporte(ID_Tr,bicicleta,Vel,Peso), SomatClassf/NumClassf, LPed, Penaliz), 
+    findall(estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,bicicleta,Vel,Peso), SomatClassf/NumClassf, LPed, Penaliz), 
             estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,bicicleta,Vel,Peso), SomatClassf/NumClassf, LPed, Penaliz),
             L),
+    
+    length(L, LS),
+    (
+        LS == 0 ->
+        findall(estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,moto,Vel,Peso), SomatClassf/NumClassf, LPed, Penaliz), 
+                estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,moto,Vel,Peso), SomatClassf/NumClassf, LPed, Penaliz),
+                LLL)
+        ;
+        length(LLL, NewL),
+        (
+        NewL == 0 ->
+        findall(estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,carro,Vel,Peso), SomatClassf/NumClassf, LPed, Penaliz), 
+                estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,carro,Vel,Peso), SomatClassf/NumClassf, LPed, Penaliz),
+                L)
+        )
+    ),
+    write(L),
     maiorLista(L,EstafetaSol).
 
 %comprimento da lista de entregas do estafeta
@@ -83,17 +100,22 @@ getListPed(estafeta(_, _, _, _, _, LPed, _),LPed).
 
 
 %devolve o estafeta com mais entregas
-maiorLista([],_) :- fail.
-maiorLista([L],L) :- !.
+maiorLista([],L):-
+    length(L, LS),
+    (LS > 0 ->
+        writeln(L);
+        writeln("Não existem estafetas")
+    ),!.
 maiorLista([H|T],L) :-
     getListPed(H,L1),
-    R1 is length(L1),
-    writeln(R1),
-    R2 is 2,
+    length(L1,R1),
+    getListPed(H,L2),
+    length(L2,R2),
     (R1 >= R2 ->
         maiorLista(T,H);
         maiorLista(T,L)
     ).
+
 
 
 /*
