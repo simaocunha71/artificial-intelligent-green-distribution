@@ -71,6 +71,8 @@ pedido_data(Data,R) :- findall((Cliente,Prazo,Zona,Peso,Preco,Data,Estado), pedi
 /*... estado */
 pedido_estado(Estado,R) :- findall((Cliente,Prazo,Zona,Peso,Preco,Data,Estado), pedido(Cliente,Prazo,Zona,Peso,Preco,Data,Estado), R).
 %------------------------------------------------------------------------------%
+%Estafeta mais ecologico 
+
 %estafeta(Nome, ID, Freg, MeioT, SomatClassf/NumClassf, LPed, Penaliz)
 estafeta_mais_ecologico(EstafetaSol) :-
     findall(estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,bicicleta,Vel,Peso), SomatClassf/NumClassf, LPed, Penaliz), 
@@ -120,6 +122,39 @@ maiorLista([H|T],L) :-
     ).
 
 
+%------------------------------------------------------------------------------%
+%Estafeta que mais entregou a um dado pedido_cliente
+
+estafeta_mais_entregou(Cliente):-
+findall(estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,T,Vel,Peso), SomatClassf/NumClassf, LPed, Penaliz), 
+            estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,T,Vel,Peso), SomatClassf/NumClassf, LPed, Penaliz),
+            Lista),
+    estafeta_mais_entregou_aux(Cliente,Lista,Max,0,S).
+
+
+estafeta_mais_entregou_aux(_,[],S,_,S):- writeln(S).
+
+
+estafeta_mais_entregou_aux(Cliente,[H|T],Max,R2,S):-
+    getListPed(H,Pedidos),
+    vezes_entregue(Cliente,Pedidos,0,R1),
+    (R1>=R2 ->
+        estafeta_mais_entregou_aux(Cliente,T,H,R1,S);
+        estafeta_mais_entregou_aux(Cliente,T,Max,R2,S)
+        ).
+
+vezes_entregue(_,[],R,R).
+
+
+vezes_entregue(Cliente,[pedido(IdCliente, _, _, _, _, _, _)|T],X,R):-
+    (Cliente == IdCliente->
+        X2 is X +1,
+        vezes_entregue(Cliente,T,X2,R);
+        vezes_entregue(Cliente,T,X,R)
+        ).
+    
+
+% estafeta_mais_entregou(924093).
 
 /*
 estafeta("joaquim", 938283, "lamas", meio_transporte(417169, carro, 25, 100), 33/15, 
