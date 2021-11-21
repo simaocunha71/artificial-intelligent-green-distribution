@@ -340,5 +340,5 @@ data_no_intervalo(AnoLo/MesLo/DiaLo,AnoHi/MesHi/DiaHi,Ano/Mes/Dia,S):-
 
 
 data_valor(AnoLo/MesLo/DiaLo,S):-
-    S is AnoLo + MesLo-1*31 + DiaLo.
+    S is AnoLo*400 + MesLo-1*31 + DiaLo.
 
