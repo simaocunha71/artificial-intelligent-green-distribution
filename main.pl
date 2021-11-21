@@ -305,6 +305,39 @@ numero_entregas_intervalo_transporte_aux2(AnoLo/MesLo/DiaLo,AnoHi/MesHi/DiaHi,Me
 %numero_entregas_intervalo_transporte(2021/1/1,2021/5/20).
 
 
+%------------------------------------------------------------------------------%
+%calcular o peso total transportado por um estafeta em um dia
+
+calcula_peso_total(ID, Ano/Mes/Dia, PesoTotal) :-
+    estafeta(_, ID, _, _, _, LPed, _),
+    filtra_pedidos_dia(LPed,Ano/Mes/Dia,0,PesoTotal).
+
+filtra_pedidos_dia([],_,R,R).
+filtra_pedidos_dia([pedido(_, A/M/D, _,_,Peso, _, _)|T],Ano/Mes/Dia,Acc,R) :-
+    ((A == Ano , M == Mes , D == Dia) ->
+        NewAcc is Acc+Peso,
+        filtra_pedidos_dia(T,Ano/Mes/Dia,NewAcc,R);
+        filtra_pedidos_dia(T,Ano/Mes/Dia,Acc,R)
+    ).
+
+%------------------------------------------------------------------------------%
+%identificar o numero total de entregas pelos estafetos num determinado tempo
+
+total_entregas_intervalo(AnoLo/MesLo/DiaLo,AnoHi/MesHi/DiaHi) :-
+    findall(estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,T,Vel,Peso), SomatClassf/NumClassf, LPed, Penaliz), 
+            estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,T,Vel,Peso), SomatClassf/NumClassf, LPed, Penaliz),
+            Lista),
+    total_entregas_intervalo_aux(AnoLo/MesLo/DiaLo,AnoHi/MesHi/DiaHi,Lista,0).
+
+total_entregas_intervalo_aux(AnoLo/MesLo/DiaLo,AnoHi/MesHi/DiaHi,[],R):-writeln(R).
+total_entregas_intervalo_aux(AnoLo/MesLo/DiaLo,AnoHi/MesHi/DiaHi,[H|T],R):-
+    getListPed(H,Pedidos),
+    numero_entregas_intervalo_transporte_aux2(AnoLo/MesLo/DiaLo,AnoHi/MesHi/DiaHi,Meio,Pedidos,0,0,0,B,M,C),
+    CalcEstafeta is R +B + M + C,
+    total_entregas_intervalo_aux(AnoLo/MesLo/DiaLo,AnoHi/MesHi/DiaHi,T,CalcEstafeta).
+
+%total_entregas_intervalo(2021/1/1,2021/12/31).
+
 
 /*
 estafeta("joaquim", 938283, "lamas", meio_transporte(417169, carro, 25, 100), 33/15, 
@@ -324,21 +357,6 @@ estafeta("joaquim", 938283, "lamas", meio_transporte(417169, carro, 25, 100), 33
      pedido(711540, 2021/6/30, "Rua 2", "lamas", 87, 2021/6/1, 0), 
      pedido(688685, 2021/11/22, "Rua 13", "lamas", 77, 2021/11/1, 0)], 0).
 */
-
-%------------------------------------------------------------------------------%
-calcula_peso_total(ID, Ano/Mes/Dia, PesoTotal) :-
-    estafeta(_, ID, _, _, _, LPed, _),
-    filtra_pedidos_dia(LPed,Ano/Mes/Dia,0,PesoTotal).
-
-filtra_pedidos_dia([],_,R,R).
-filtra_pedidos_dia([pedido(_, A/M/D, _,_,Peso, _, _)|T],Ano/Mes/Dia,Acc,R) :-
-    ((A == Ano , M == Mes , D == Dia) ->
-        NewAcc is Acc+Peso,
-        filtra_pedidos_dia(T,Ano/Mes/Dia,NewAcc,R);
-        filtra_pedidos_dia(T,Ano/Mes/Dia,Acc,R)
-    ).
-    
-
 
 
 %------------------------------------------------------------------------------%
