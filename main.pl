@@ -304,6 +304,32 @@ numero_entregas_intervalo_transporte_aux2(AnoLo/MesLo/DiaLo,AnoHi/MesHi/DiaHi,Me
 
 %numero_entregas_intervalo_transporte(2021/1/1,2021/5/20).
 
+%------------------------------------------------------------------------------%
+%nº de encomendas entregues e nao entregues num intervalo de tempo-------------%
+
+calcula_n_encomendas(AnoI/MesI/DiaI,AnoF/MesF/DiaF,R_NEnt/R_Ent) :-
+    findall(LPed, 
+            estafeta(_, _, _, _, _, LPed, _),
+            L),
+    filtra_pedidos(L,AnoI/MesI/DiaI,AnoF/MesF/DiaF,0/0,R_NEnt/R_Ent). 
+
+filtra_pedidos([],_,_,R1/R2,R1/R2).
+filtra_pedidos([[]|TS],D1,D2,Accs,Rs) :- filtra_pedidos(TS,D1,D2,Accs,Rs).
+filtra_pedidos([[pedido(_, Af/Mf/Df, _,_,Peso, _, Estado)|T]|TS],AnoI/MesI/DiaI,AnoF/MesF/DiaF,Acc1/Acc2,R1/R2) :-
+    data_no_intervalo(AnoI/MesI/DiaI,AnoF/MesF/DiaF,Af/Mf/Df,S),
+    (S == 1 ->
+        get_estado(pedido(_, Af/Mf/Df, _,_,Peso, _, Estado),Est),
+        (Est == 0 ->
+         New_Acc1 is Acc1+1,
+         filtra_pedidos([T|TS],AnoI/MesI/DiaI,AnoF/MesF/DiaF,New_Acc1/Acc2,R1/R2);
+
+         New_Acc2 is Acc2+1,
+         filtra_pedidos([T|TS],AnoI/MesI/DiaI,AnoF/MesF/DiaF,Acc1/New_Acc2,R1/R2)
+        );
+        filtra_pedidos([T|TS],AnoI/MesI/DiaI,AnoF/MesF/DiaF,Acc1/Acc2,R1/R2)
+    ).      
+
+get_estado(pedido(_, _, _, _, _, _, E),E). 
 
 %------------------------------------------------------------------------------%
 %calcular o peso total transportado por um estafeta em um dia
