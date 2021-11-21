@@ -218,29 +218,50 @@ calcular_valor(Y/M/D,YLim/MLim/DLim,Peso,Valor):-
 
 %------------------------------------------------------------------------------%
 %Calcular zonas com maior volume de entregas
-maior_volume_entregas_zona(R):-
+
+maior_volume_entregas_zona():-
     findall(estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,T,Vel,Peso), SomatClassf/NumClassf, LPed, Penaliz), 
             estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,T,Vel,Peso), SomatClassf/NumClassf, LPed, Penaliz),
             Lista),
-    maior_volume_entregas_zonaAux(Lista,R),print(R).
-    
-maior_volume_entregas_zonaAux([],_):- !.
-maior_volume_entregas_zonaAux([H|T],L):-
+    maior_volume_entregas_zonaAux(Lista,[]).
+   
+maior_volume_entregas_zonaAux([],[]):-
+    writeln("Nao existem estafetas").
+
+maior_volume_entregas_zonaAux([],[H|T]):-
+    H = Zona/Acc,
+    writeGreatestDouble(T,Acc,Zona),
+    writeln(Zona),writeln(Acc).
+
+maior_volume_entregas_zonaAux([H|T],Zona_Acc):-
     H = estafeta(_,_,_,_,_,ListaPedidos,_),
-    adicionaContagem(ListaPedidos,L),
-    maior_volume_entregas_zonaAux(T,L).
-%A estou a apagar coisas da lista vai ser preciso auxiliar da adiciona contagem
-adicionaContagem([],_):- !.
-adicionaContagem([H|T],[]):-
-    H = pedido(_,_,_,Freg,_,_,_),adicionaContagem(T,[(Freg,1)]).
-adicionaContagem([P|TP],[(E1,C)|T]):-
-    P = pedido(_,_,_,Freg,_,_,_),
-   ( Freg == E1 -> NovoC is C + 1,
-    adicionaContagem(TP,[(E1,NovoC)|T]);
-    adicionaContagem([P|TP],T)).
+    adicionaContagem(ListaPedidos,Zona_Acc,NovaZona_Acc),
+    maior_volume_entregas_zonaAux(T,NovaZona_Acc).
 
-    
+%atualiza lista de zona/contagem
+adicionaContagem([],_,_).
+adicionaContagem([H|T],Zona_Acc,NovaZona_Acc):-
+    H = pedido(_, _, _, Zona, _, _, _),
+    atualiza_lista_pares(Zona,1,Zona_Acc,[],S,0),
+    adicionaContagem(T,S,S).
 
+
+atualiza_lista_pares(_,_,_,S,S,1).
+
+atualiza_lista_pares(Z,Acc,[],R,S,0):-
+    atualiza_lista_pares(Z,Acc,[],[Z/Acc|R],S,1).
+
+atualiza_lista_pares(Z,Acc,[H|T],R,S,0):-
+    H = Zona/A,writeln(R),
+    (Z == Zona->
+        Acc2 is A +Acc,
+        atualiza_lista_pares(Z,Acc,T,[Z/Acc2|R],S,1);
+        atualiza_lista_pares(Z,Acc,T,[H|R],S,0)
+        ).
+
+
+%maior_volume_entregas_zona().
+%atualiza_lista_pares(ferreiros,1,[figueiredo/1,ferreiros/5],[],S,0).
 
 %------------------------------------------------------------------------------%
 %Calcular classificacao media de um estafeta
@@ -394,3 +415,10 @@ data_no_intervalo(AnoLo/MesLo/DiaLo,AnoHi/MesHi/DiaHi,Ano/Mes/Dia,S):-
 data_valor(AnoLo/MesLo/DiaLo,S):-
     S is AnoLo*400 + MesLo-1*31 + DiaLo.
 
+writeGreatestDouble([],_,_).
+
+writeGreatestDouble([Z/A|T],Acc,Zona):-
+    (A>Acc ->
+        writeGreatestDouble(T,A,Z);
+        writeGreatestDouble(T,Acc,Zona)
+        ).
