@@ -11,7 +11,6 @@ to do:
 o mesmo cliente (neste momento nem tem chance)
 
 
-- identificar as zonas com maior volume de entregas
 
 - calcular o numero de entregas concluidas e nao concluidas num determinado tempo
 
@@ -29,3 +28,4 @@ Done :
 - calcular numero de entregas para cada transporte num intervalo de tempo
 - calcular o peso total transportado por um estafeta em um dia
 - identificar o numero total de entregas pelos estafetos num determinado tempo
+- identificar as zonas com maior volume de entregas

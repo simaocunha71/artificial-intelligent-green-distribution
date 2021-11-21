@@ -230,8 +230,8 @@ maior_volume_entregas_zonaAux([],[]):-
 
 maior_volume_entregas_zonaAux([],[H|T]):-
     H = Zona/Acc,
-    writeGreatestDouble(T,Acc,Zona),
-    writeln(Zona),writeln(Acc).
+    writeGreatestDouble(T,Acc,Zona,RAcc,RZona),
+    writeln(RZona),writeln(RAcc).
 
 maior_volume_entregas_zonaAux([H|T],Zona_Acc):-
     H = estafeta(_,_,_,_,_,ListaPedidos,_),
@@ -239,11 +239,11 @@ maior_volume_entregas_zonaAux([H|T],Zona_Acc):-
     maior_volume_entregas_zonaAux(T,NovaZona_Acc).
 
 %atualiza lista de zona/contagem
-adicionaContagem([],_,_).
+adicionaContagem([],S,S).
 adicionaContagem([H|T],Zona_Acc,NovaZona_Acc):-
     H = pedido(_, _, _, Zona, _, _, _),
     atualiza_lista_pares(Zona,1,Zona_Acc,[],S,0),
-    adicionaContagem(T,S,S).
+    adicionaContagem(T,S,NovaZona_Acc).
 
 
 atualiza_lista_pares(_,_,_,S,S,1).
@@ -252,10 +252,11 @@ atualiza_lista_pares(Z,Acc,[],R,S,0):-
     atualiza_lista_pares(Z,Acc,[],[Z/Acc|R],S,1).
 
 atualiza_lista_pares(Z,Acc,[H|T],R,S,0):-
-    H = Zona/A,writeln(R),
+    H = Zona/A,
     (Z == Zona->
         Acc2 is A +Acc,
-        atualiza_lista_pares(Z,Acc,T,[Z/Acc2|R],S,1);
+        append(T,[Z/Acc2|R],NovaLista),
+        atualiza_lista_pares(Z,Acc,T,NovaLista,S,1);
         atualiza_lista_pares(Z,Acc,T,[H|R],S,0)
         ).
 
@@ -441,10 +442,10 @@ data_no_intervalo(AnoLo/MesLo/DiaLo,AnoHi/MesHi/DiaHi,Ano/Mes/Dia,S):-
 data_valor(AnoLo/MesLo/DiaLo,S):-
     S is AnoLo*400 + MesLo-1*31 + DiaLo.
 
-writeGreatestDouble([],_,_).
+writeGreatestDouble([],TAcc,AZona,TAcc,AZona).
 
-writeGreatestDouble([Z/A|T],Acc,Zona):-
+writeGreatestDouble([Z/A|T],Acc,Zona,TAcc,AZona):-
     (A>Acc ->
-        writeGreatestDouble(T,A,Z);
-        writeGreatestDouble(T,Acc,Zona)
+        writeGreatestDouble(T,A,Z,TAcc,AZona);
+        writeGreatestDouble(T,Acc,Zona,TAcc,AZona)
         ).
