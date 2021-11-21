@@ -337,22 +337,24 @@ calcula_n_encomendas(AnoI/MesI/DiaI,AnoF/MesF/DiaF,R_NEnt/R_Ent) :-
 
 filtra_pedidos([],_,_,R1/R2,R1/R2).
 filtra_pedidos([[]|TS],D1,D2,Accs,Rs) :- filtra_pedidos(TS,D1,D2,Accs,Rs).
-filtra_pedidos([[pedido(_, Af/Mf/Df, _,_,Peso, _, Estado)|T]|TS],AnoI/MesI/DiaI,AnoF/MesF/DiaF,Acc1/Acc2,R1/R2) :-
-    data_no_intervalo(AnoI/MesI/DiaI,AnoF/MesF/DiaF,Af/Mf/Df,S),
+filtra_pedidos([[P|T]|TS],DataI,DataF,Acc1/Acc2,R) :-
+    getData(P,DataP),
+    data_no_intervalo(DataI,DataF,DataP,S),
     (S == 1 ->
-        get_estado(pedido(_, Af/Mf/Df, _,_,Peso, _, Estado),Est),
-        (Est == 0 ->
+        getEstado(P,Estado),
+        (Estado == 0 ->
          New_Acc1 is Acc1+1,
-         filtra_pedidos([T|TS],AnoI/MesI/DiaI,AnoF/MesF/DiaF,New_Acc1/Acc2,R1/R2);
+         filtra_pedidos([T|TS],DataI,DataF,New_Acc1/Acc2,R);
 
          New_Acc2 is Acc2+1,
-         filtra_pedidos([T|TS],AnoI/MesI/DiaI,AnoF/MesF/DiaF,Acc1/New_Acc2,R1/R2)
+         filtra_pedidos([T|TS],DataI,DataF,Acc1/New_Acc2,R)
         );
-        filtra_pedidos([T|TS],AnoI/MesI/DiaI,AnoF/MesF/DiaF,Acc1/Acc2,R1/R2)
-    ).      
+        
+        filtra_pedidos([T|TS],DataI,DataF,Acc1/Acc2,R)
+    ).   
 
-get_estado(pedido(_, _, _, _, _, _, E),E). 
-
+getData(pedido(_, _,DataP, _, _,_, _),DataP).
+getEstado(pedido(_, _, _, _, _,_, Estado),Estado).
 %------------------------------------------------------------------------------%
 %calcular o peso total transportado por um estafeta em um dia
 
@@ -440,7 +442,7 @@ data_no_intervalo(AnoLo/MesLo/DiaLo,AnoHi/MesHi/DiaHi,Ano/Mes/Dia,S):-
 
 
 data_valor(AnoLo/MesLo/DiaLo,S):-
-    S is AnoLo*400 + MesLo-1*31 + DiaLo.
+    S is AnoLo*400 + MesLo*32 + DiaLo.
 
 writeGreatestDouble([],TAcc,AZona,TAcc,AZona).
 

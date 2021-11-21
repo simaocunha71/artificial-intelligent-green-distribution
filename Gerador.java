@@ -76,7 +76,7 @@ estafeta(
 
     public static String pedidos (String freg, String mt){
         Random r = new Random();
-        int id = ids_r();
+        int id = r.nextInt(101);
         int mes = r.nextInt(12)+1;
         int dia = r.nextInt(31)+1;
         if (mes==2 && dia>28){
