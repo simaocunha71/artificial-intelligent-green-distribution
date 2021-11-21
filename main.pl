@@ -325,6 +325,19 @@ estafeta("joaquim", 938283, "lamas", meio_transporte(417169, carro, 25, 100), 33
      pedido(688685, 2021/11/22, "Rua 13", "lamas", 77, 2021/11/1, 0)], 0).
 */
 
+%------------------------------------------------------------------------------%
+calcula_peso_total(ID, Ano/Mes/Dia, PesoTotal) :-
+    estafeta(_, ID, _, _, _, LPed, _),
+    filtra_pedidos_dia(LPed,Ano/Mes/Dia,0,PesoTotal).
+
+filtra_pedidos_dia([],_,R,R).
+filtra_pedidos_dia([pedido(_, A/M/D, _,_,Peso, _, _)|T],Ano/Mes/Dia,Acc,R) :-
+    ((A == Ano , M == Mes , D == Dia) ->
+        NewAcc is Acc+Peso,
+        filtra_pedidos_dia(T,Ano/Mes/Dia,NewAcc,R);
+        filtra_pedidos_dia(T,Ano/Mes/Dia,Acc,R)
+    ).
+    
 
 
 

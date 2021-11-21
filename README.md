@@ -14,7 +14,7 @@ o mesmo cliente (neste momento nem tem chance)
 - identificar as zonas com maior volume de entregas
 - identificar o numero total de entregas pelos estafetos num determinado tempo
 - calcular o numero de entregas concluidas e nao concluidas num determinado tempo
-- calcular o peso total transportado por um estafeta em um dia
+
 
 - relatorio
 
@@ -27,3 +27,4 @@ Done :
 - calcular valor faturado pela empresa em um dado dia
 - calcular classificacao media de um estafeta
 - calcular numero de entregas para cada transporte num intervalo de tempo
+- calcular o peso total transportado por um estafeta em um dia
