@@ -216,7 +216,28 @@ calcular_valor(Y/M/D,YLim/MLim/DLim,Peso,Valor):-
 
 %calcular_valor_faturado_dia(2021/4/1).
 
-
+%------------------------------------------------------------------------------%
+%Calcular zonas com maior volume de entregas
+maior_volume_entregas_zona(R):-
+    findall(estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,T,Vel,Peso), SomatClassf/NumClassf, LPed, Penaliz), 
+            estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,T,Vel,Peso), SomatClassf/NumClassf, LPed, Penaliz),
+            Lista),
+    maior_volume_entregas_zonaAux(Lista,R),print(R).
+    
+maior_volume_entregas_zonaAux([],_):- !.
+maior_volume_entregas_zonaAux([H|T],L):-
+    H = estafeta(_,_,_,_,_,ListaPedidos,_),
+    adicionaContagem(ListaPedidos,L),
+    maior_volume_entregas_zonaAux(T,L).
+%A estou a apagar coisas da lista vai ser preciso auxiliar da adiciona contagem
+adicionaContagem([],_):- !.
+adicionaContagem([H|T],[]):-
+    H = pedido(_,_,_,Freg,_,_,_),adicionaContagem(T,[(Freg,1)]).
+adicionaContagem([P|TP],[(E1,C)|T]):-
+    P = pedido(_,_,_,Freg,_,_,_),
+   ( Freg == E1 -> NovoC is C + 1,
+    adicionaContagem(TP,[(E1,NovoC)|T]);
+    adicionaContagem([P|TP],T)).
 
     
 
