@@ -237,7 +237,7 @@ classificacao_media(EstafetaId):-
 %------------------------------------------------------------------------------%
 %Calcular numero de entregas para cada transporte num intervalo de tempo
 
-numero_entregas_intervalo_transporte(AnoLo/MesLo/DiaLo,AnoHi/MesHi/DiaHi,TotalBic,TotalMo,TotalCar):-
+numero_entregas_intervalo_transporte(AnoLo/MesLo/DiaLo,AnoHi/MesHi/DiaHi):-
     findall(estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,T,Vel,Peso), SomatClassf/NumClassf, LPed, Penaliz), 
             estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,T,Vel,Peso), SomatClassf/NumClassf, LPed, Penaliz),
             Lista),
@@ -246,16 +246,16 @@ numero_entregas_intervalo_transporte(AnoLo/MesLo/DiaLo,AnoHi/MesHi/DiaHi,TotalBi
 
 numero_entregas_intervalo_transporte_aux(_,_,[],TotalBic,TotalMo,TotalCar,TotalBic,TotalMo,TotalCar):-
     writeln("Total entregas:"),
-    writeln("Bicicleta -> "+ TotalBic),
-    writeln("Moto -> "+ TotalMo),
-    writeln("Carro -> "+ TotalCar).
+    write("Bicicleta -> "),writeln(TotalBic),
+    write("Moto -> "),writeln(TotalMo),
+    write("Carro -> "),writeln(TotalCar).
 
 numero_entregas_intervalo_transporte_aux(AnoLo/MesLo/DiaLo,AnoHi/MesHi/DiaHi,[H|T],CalcBi,CalcMo,CalcCar,TotalBic,TotalMo,TotalCar):-
     H = estafeta(_,_,_,meio_transporte(_,Meio,_,_),_,Pedidos,_),
     numero_entregas_intervalo_transporte_aux2(AnoLo/MesLo/DiaLo,AnoHi/MesHi/DiaHi,Meio,Pedidos,0,0,0,B,M,C),
-    CalcBiNovo is CalcBi + B,
-    CalcMoNovo is CalcMo + M,
-    CalcCarNovo is CalcCar + C,
+    NovoCalcBi is CalcBi + B,
+    NovoCalcMo is CalcMo + M,
+    NovoCalcCar is CalcCar + C,
     numero_entregas_intervalo_transporte_aux(AnoLo/MesLo/DiaLo,AnoHi/MesHi/DiaHi,T,NovoCalcBi,NovoCalcMo,NovoCalcCar,TotalBic,TotalMo,TotalCar).
 
 numero_entregas_intervalo_transporte_aux2(_,_,_,[],B,M,C,B,M,C).
