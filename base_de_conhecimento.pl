@@ -43,4 +43,4 @@ estafeta("hugo", 659410, "priscos", meio_transporte(90939, carro, 25, 100), 287/
 
 
 % pedido: cliente,id_do_pedido,valor_da_encomenda,prazo,zona,peso,preco,data,estado -> { V, F }
-%pedido(42, 637187, 2021/6/21, "Rua 7", "priscos", 50, 2021/6/19, 0).
+%pedido(58, 537988, 2021/2/14, "Rua 6", "priscos", 100, 2021/2/11, 1).
