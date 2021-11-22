@@ -1,7 +1,7 @@
 %Para poder inserir e remover
 :- (dynamic estafeta/6). 
 :- (dynamic meio_transporte/3). 
-:- (dynamic pedido/7). 
+:- (dynamic pedido/8). 
 
 %-----------------------------Ficheiros auxiliares ----------------------------
 :- consult(base_de_conhecimento).
@@ -59,17 +59,17 @@ meioTransporte_peso(Peso,R) :- findall((Tipo,Velocidade,Peso),meio_transporte(Ti
 
 % Procura todos os pedidos por -------------------------------------------------
 /*... cliente */
-pedido_cliente(Cliente,R) :- findall((Cliente,Prazo,Zona,Peso,Preco,Data,Estado), pedido(Cliente,Prazo,Zona,Peso,Preco,Data,Estado), R).
+pedido_cliente(Cliente,R) :- findall((Cliente,ID,Prazo,Zona,Peso,Preco,Data,Estado), pedido(Cliente,ID,Prazo,Zona,Peso,Preco,Data,Estado), R).
 /*... prazo */
-pedido_prazo(Prazo,R) :- findall((Cliente,Prazo,Zona,Peso,Preco,Data,Estado), pedido(Cliente,Prazo,Zona,Peso,Preco,Data,Estado), R).
+pedido_prazo(Prazo,R) :- findall((Cliente,ID,Prazo,Zona,Peso,Preco,Data,Estado), pedido(Cliente,ID,Prazo,Zona,Peso,Preco,Data,Estado), R).
 /*... zona */
-pedido_zona(Zona,R) :- findall((Cliente,Prazo,Zona,Peso,Preco,Data,Estado), pedido(Cliente,Prazo,Zona,Peso,Preco,Data,Estado), R).
+pedido_zona(Zona,R) :- findall((Cliente,ID,Prazo,Zona,Peso,Preco,Data,Estado), pedido(Cliente,ID,Prazo,Zona,Peso,Preco,Data,Estado), R).
 /*... peso */
-pedido_peso(Peso,R) :- findall((Cliente,Prazo,Zona,Peso,Preco,Data,Estado), pedido(Cliente,Prazo,Zona,Peso,Preco,Data,Estado), R).
+pedido_peso(Peso,R) :- findall((Cliente,ID,Prazo,Zona,Peso,Preco,Data,Estado), pedido(Cliente,ID,Prazo,Zona,Peso,Preco,Data,Estado), R).
 /*... data */
-pedido_data(Data,R) :- findall((Cliente,Prazo,Zona,Peso,Preco,Data,Estado), pedido(Cliente,Prazo,Zona,Peso,Preco,Data,Estado), R).
+pedido_data(Data,R) :- findall((Cliente,ID,Prazo,Zona,Peso,Preco,Data,Estado), pedido(Cliente,ID,Prazo,Zona,Peso,Preco,Data,Estado), R).
 /*... estado */
-pedido_estado(Estado,R) :- findall((Cliente,Prazo,Zona,Peso,Preco,Data,Estado), pedido(Cliente,Prazo,Zona,Peso,Preco,Data,Estado), R).
+pedido_estado(Estado,R) :- findall((Cliente,ID,Prazo,Zona,Peso,Preco,Data,Estado), pedido(Cliente,ID,Prazo,Zona,Peso,Preco,Data,Estado), R).
 %------------------------------------------------------------------------------%
 %Estafeta mais ecologico 
 
@@ -93,32 +93,33 @@ estafeta_mais_ecologico(EstafetaSol) :-
                             findall(estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,carro,Vel,Peso), SomatClassf/NumClassf, LPed, Penaliz), 
                                 estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,carro,Vel,Peso), SomatClassf/NumClassf, LPed, Penaliz),
                                 LLL)
-                            ,maiorLista(LLL,EstafetaSol)
+                            ,maiorLista(LLL,_,EstafetaSol)
                         )
-                   ;maiorLista(LL,EstafetaSol) 
+                   ;maiorLista(LL,_,EstafetaSol) 
                 )  
             )
-            ;maiorLista(L,EstafetaSol)
-    ).
+            ;maiorLista(L,_,EstafetaSol)
+    )
+    .
 
 %comprimento da lista de entregas do estafeta
 getListPed(estafeta(_, _, _, _, _, LPed, _),LPed).
 
 
 %devolve o estafeta com mais entregas
-maiorLista([],L):-
+maiorLista([],L,L):-
     (\+var(L) ->
-        writeln(L);
+        writeln(L); %por no menu
         writeln("Não existem estafetas")
-    ),!.
-maiorLista([H|T],L) :-
+    ).
+maiorLista([H|T],L,R) :-
     getListPed(H,L1),
     length(L1,R1),
     getListPed(L,L2),
     length(L2,R2),
     (R1 >= R2 ->
-        maiorLista(T,H);
-        maiorLista(T,L)
+        maiorLista(T,H,R);
+        maiorLista(T,L,R)
     ).
 
 
@@ -146,7 +147,7 @@ estafeta_mais_entregou_aux(Cliente,[H|T],Max,R2,S):-
 vezes_entregue(_,[],R,R).
 
 
-vezes_entregue(Cliente,[pedido(IdCliente, _, _, _, _, _, _)|T],X,R):-
+vezes_entregue(Cliente,[pedido(IdCliente,_, _, _, _, _, _, _)|T],X,R):-
     (Cliente == IdCliente->
         X2 is X +1,
         vezes_entregue(Cliente,T,X2,R);
@@ -166,7 +167,7 @@ clientes_servidos_aux([],S):- writeln(S).
 
 
 clientes_servidos_aux([H|T],S):-
-    H = pedido(IdCliente, _, _, _, _, _, _),
+    H = pedido(IdCliente,_, _, _, _, _, _, _),
     clientes_servidos_aux(T,[IdCliente|S]).
 
 
@@ -199,7 +200,7 @@ estafeta_valor_faturado_dia(Ano/Mes/Dia,H,R):-
 estafeta_valor_faturado_dia_aux(_,[],R,R).
 
 estafeta_valor_faturado_dia_aux(Ano/Mes/Dia,[H|T],C,R):-
-    H = pedido(_, Limite, _, _, Peso, Y/M/D, _),
+    H = pedido(_,_, Limite, _, _, Peso, Y/M/D, _),
     (Y == Ano , M == Mes , D == Dia ->
         calcular_valor(Y/M/D,Limite,Peso,Valor),
         NovoC is C + Valor,
@@ -241,7 +242,7 @@ maior_volume_entregas_zonaAux([H|T],Zona_Acc):-
 %atualiza lista de zona/contagem
 adicionaContagem([],S,S).
 adicionaContagem([H|T],Zona_Acc,NovaZona_Acc):-
-    H = pedido(_, _, _, Zona, _, _, _),
+    H = pedido(_,_, _, _, Zona, _, _, _),
     atualiza_lista_pares(Zona,1,Zona_Acc,[],S,0),
     adicionaContagem(T,S,NovaZona_Acc).
 
@@ -304,7 +305,7 @@ numero_entregas_intervalo_transporte_aux(AnoLo/MesLo/DiaLo,AnoHi/MesHi/DiaHi,[H|
 numero_entregas_intervalo_transporte_aux2(_,_,_,[],B,M,C,B,M,C).
 
 numero_entregas_intervalo_transporte_aux2(AnoLo/MesLo/DiaLo,AnoHi/MesHi/DiaHi,Meio,[H|T],CB,CM,CC,B,M,C):-
-    H = pedido(_, _, _, _, _,Ano/Mes/Dia , _),
+    H = pedido(_,_, _, _, _, _,Ano/Mes/Dia , _),
     data_no_intervalo(AnoLo/MesLo/DiaLo,AnoHi/MesHi/DiaHi,Ano/Mes/Dia,S),
     (S == 1 -> 
         (Meio == bicicleta ->
@@ -353,8 +354,8 @@ filtra_pedidos([[P|T]|TS],DataI,DataF,Acc1/Acc2,R) :-
         filtra_pedidos([T|TS],DataI,DataF,Acc1/Acc2,R)
     ).   
 
-getData(pedido(_, _,DataP, _, _,_, _),DataP).
-getEstado(pedido(_, _, _, _, _,_, Estado),Estado).
+getData(pedido(_,_, _,DataP, _, _,_, _),DataP).
+getEstado(pedido(_,_, _, _, _, _,_, Estado),Estado).
 %------------------------------------------------------------------------------%
 %calcular o peso total transportado por um estafeta em um dia
 
@@ -363,7 +364,7 @@ calcula_peso_total(ID, Ano/Mes/Dia, PesoTotal) :-
     filtra_pedidos_dia(LPed,Ano/Mes/Dia,0,PesoTotal).
 
 filtra_pedidos_dia([],_,R,R).
-filtra_pedidos_dia([pedido(_, A/M/D, _,_,Peso, _, _)|T],Ano/Mes/Dia,Acc,R) :-
+filtra_pedidos_dia([pedido(_,_, A/M/D, _,_,Peso, _, _)|T],Ano/Mes/Dia,Acc,R) :-
     ((A == Ano , M == Mes , D == Dia) ->
         NewAcc is Acc+Peso,
         filtra_pedidos_dia(T,Ano/Mes/Dia,NewAcc,R);
@@ -390,22 +391,21 @@ total_entregas_intervalo_aux(AnoLo/MesLo/DiaLo,AnoHi/MesHi/DiaHi,[H|T],R):-
 
 
 /*
-estafeta("joaquim", 938283, "lamas", meio_transporte(417169, carro, 25, 100), 33/15, 
-    [pedido(146065, 2021/3/4, "Rua 11", "lamas", 73, 2021/3/1, 1), 
-     pedido(3858, 2021/4/17, "Rua 10", "lamas", 42, 2021/4/1, 0), 
-     pedido(457710, 2021/10/10, "Rua 0", "lamas", 24, 2021/10/1, 1), 
-     pedido(321960, 2021/4/12, "Rua 8", "lamas", 97, 2021/4/1, 1), 
-     pedido(339500, 2021/7/14, "Rua 5", "lamas", 3, 2021/7/1, 1), 
-     pedido(408132, 2021/7/18, "Rua 2", "lamas", 46, 2021/7/1, 1), 
-     pedido(7725, 2021/9/14, "Rua 0", "lamas", 92, 2021/9/1, 1), 
-     pedido(427064, 2021/6/28, "Rua 17", "lamas", 66, 2021/6/1, 1), 
-     pedido(745235, 2021/2/23, "Rua 2", "lamas", 23, 2021/2/1, 0), 
-     pedido(281199, 2021/4/16, "Rua 0", "lamas", 11, 2021/4/1, 0), 
-     pedido(814554, 2021/3/18, "Rua 7", "lamas", 4, 2021/3/1, 0), 
-     pedido(315704, 2021/5/6, "Rua 7", "lamas", 10, 2021/5/1, 0), 
-     pedido(496065, 2021/10/1, "Rua 16", "lamas", 30, 2021/10/1, 1), 
-     pedido(711540, 2021/6/30, "Rua 2", "lamas", 87, 2021/6/1, 0), 
-     pedido(688685, 2021/11/22, "Rua 13", "lamas", 77, 2021/11/1, 0)], 0).
+estafeta("hugo", 659410, "priscos", meio_transporte(90939, carro, 25, 100), 287/117, 
+    [pedido(58, 537988, 2021/2/14, "Rua 6", "priscos", 100, 2021/2/11, 1), 
+     pedido(56, 468745, 2021/9/8, "Rua 1", "priscos", 10, 2021/9/2, 0), 
+     pedido(93, 600493, 2021/5/10, "Rua 0", "priscos", 29, 2021/5/1, 1), 
+     pedido(100, 513280, 2021/7/21, "Rua 1", "priscos", 54, 2021/7/10, 1), 
+     pedido(31, 311289, 2021/10/25, "Rua 7", "priscos", 52, 2021/10/9, 0), 
+     pedido(26, 659410, 2021/8/26, "Rua 18", "priscos", 22, 2021/8/15, 1), 
+     pedido(39, 553811, 2021/8/31, "Rua 17", "priscos", 98, 2021/8/13, 0), 
+     pedido(22, 205019, 2021/5/29, "Rua 5", "priscos", 45, 2021/5/15, 1), 
+     pedido(46, 736360, 2021/9/14, "Rua 14", "priscos", 80, 2021/9/12, 0), 
+     pedido(81, 149877, 2021/8/20, "Rua 13", "priscos", 49, 2021/8/9, 0), 
+     pedido(63, 372857, 2021/9/25, "Rua 11", "priscos", 57, 2021/9/3, 1), 
+     pedido(42, 637187, 2021/6/21, "Rua 7", "priscos", 50, 2021/6/19, 0)], 
+1).
+
 */
 
 

@@ -76,7 +76,8 @@ estafeta(
 
     public static String pedidos (String freg, String mt){
         Random r = new Random();
-        int id = r.nextInt(101);
+        int cliente = r.nextInt(101);
+        int id = ids_r();
         int mes = r.nextInt(12)+1;
         int dia = r.nextInt(31)+1;
         if (mes==2 && dia>28){
@@ -103,7 +104,8 @@ estafeta(
         int p = peso(mt);
         int estado = r.nextInt(2);
         StringBuilder sb = new StringBuilder();
-        sb.append("pedido(").append(id).append(",")
+        sb.append("pedido(").append(cliente).append(",")
+                            .append(id).append(",")
                             .append(dateLimite.getYear()).append("/").append(dateLimite.getMonthValue()).append("/").append(dateLimite.getDayOfMonth()).append(",")
                             .append("\"").append(rua).append("\"").append(",")
                             .append("\"").append(freg).append("\"").append(",")
