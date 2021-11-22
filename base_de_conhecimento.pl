@@ -20,7 +20,8 @@ meio_transporte(
 */
 /*
 pedido(
-    cliente, -> NIF
+    cliente,
+    id do pedido,
     valor_da_encomenda, 
     prazo, -> data limite
     rua,
@@ -44,3 +45,21 @@ estafeta("hugo", 659410, "priscos", meio_transporte(90939, carro, 25, 100), 287/
 
 % pedido: cliente,id_do_pedido,valor_da_encomenda,prazo,zona,peso,preco,data,estado -> { V, F }
 %pedido(58, 537988, 2021/2/14, "Rua 6", "priscos", 100, 2021/2/11, 1).
+
+/*
+estafeta("hugo", 659410, "priscos", meio_transporte(90939, carro, 25, 100), 287/117, 
+    [pedido(58, 537988, 2021/2/14, "Rua 6", "priscos", 100, 2021/2/11, 1), 
+     pedido(56, 468745, 2021/9/8, "Rua 1", "priscos", 10, 2021/9/2, 0), 
+     pedido(93, 600493, 2021/5/10, "Rua 0", "priscos", 29, 2021/5/1, 1), 
+     pedido(100, 513280, 2021/7/21, "Rua 1", "priscos", 54, 2021/7/10, 1), 
+     pedido(31, 311289, 2021/10/25, "Rua 7", "priscos", 52, 2021/10/9, 0), 
+     pedido(26, 659410, 2021/8/26, "Rua 18", "priscos", 22, 2021/8/15, 1), 
+     pedido(39, 553811, 2021/8/31, "Rua 17", "priscos", 98, 2021/8/13, 0), 
+     pedido(22, 205019, 2021/5/29, "Rua 5", "priscos", 45, 2021/5/15, 1), 
+     pedido(46, 736360, 2021/9/14, "Rua 14", "priscos", 80, 2021/9/12, 0), 
+     pedido(81, 149877, 2021/8/20, "Rua 13", "priscos", 49, 2021/8/9, 0), 
+     pedido(63, 372857, 2021/9/25, "Rua 11", "priscos", 57, 2021/9/3, 1), 
+     pedido(42, 637187, 2021/6/21, "Rua 7", "priscos", 50, 2021/6/19, 0)], 
+1).
+
+*/

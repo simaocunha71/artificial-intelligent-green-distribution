@@ -7,7 +7,7 @@
 :- consult(base_de_conhecimento).
 :- consult(invariantes).
 %------------------------------------------------------------------------------%
-%---------------------------------- Regras  -----------------------------------%
+%---------------------------------- Listagens  --------------------------------%
 %------------------------------------------------------------------------------%
 
 % (1) Estafeta -----------------------------------------------------------------
@@ -15,34 +15,19 @@
 % Procura todos os estafetas por -----------------------------------------------
 
 /*... um certo nome */
-estafeta_nome(Nome,R) :- findall((Nome,ID,Zona,MeioT,SumClassf/ClTotais,LE),estafeta(Nome,ID,Zona,MeioT,SumClassf/ClTotais,LE), R).
+estafeta_nome(Nome,R) :- findall(estafeta(Nome,ID,Zona,MeioT,SumClassf/ClTotais,LE),estafeta(Nome,ID,Zona,MeioT,SumClassf/ClTotais,LE), R).
 /*... um certo id */
-estafeta_id(ID,R) :- findall((Nome,ID,Zona,MeioT,SumClassf/ClTotais,LE),estafeta(Nome,ID,Zona,MeioT,SumClassf/ClTotais,LE), R).
+estafeta_id(ID,R) :- findall(estafeta(Nome,ID,Zona,MeioT,SumClassf/ClTotais,LE),estafeta(Nome,ID,Zona,MeioT,SumClassf/ClTotais,LE), R).
 /*... uma certa zona */
-estafeta_zona(Zona,R) :- findall((Nome,ID,Zona,MeioT,SumClassf/ClTotais,LE),estafeta(Nome,ID,Zona,MeioT,SumClassf/ClTotais,LE), R).
+estafeta_zona(Zona,R) :- findall(estafeta(Nome,ID,Zona,MeioT,SumClassf/ClTotais,LE),estafeta(Nome,ID,Zona,MeioT,SumClassf/ClTotais,LE), R).
 /*... um certo tipo de transporte */
-estafeta_meioT(MeioT,R) :- findall((Nome,ID,Zona,MeioT,SumClassf/ClTotais,LE),estafeta(Nome,ID,Zona,MeioT,SumClassf/ClTotais,LE), R).
+estafeta_meioT(MeioT,R) :- findall(estafeta(Nome,ID,Zona,MeioT,SumClassf/ClTotais,LE),estafeta(Nome,ID,Zona,MeioT,SumClassf/ClTotais,LE), R).
 /*... um somatorio de classificacoes*/
-estafeta_sumClassf(SumClassf,R) :- findall((Nome,ID,Zona,MeioT,SumClassf/ClTotais,LE),estafeta(Nome,ID,Zona,MeioT,SumClassf/ClTotais,LE), R).
+estafeta_sumClassf(SumClassf,R) :- findall(estafeta(Nome,ID,Zona,MeioT,SumClassf/ClTotais,LE),estafeta(Nome,ID,Zona,MeioT,SumClassf/ClTotais,LE), R).
 /*... uma certa numero de classificacoes*/
-estafeta_clTotais(ClTotais,R) :- findall((Nome,ID,Zona,MeioT,SumClassf/ClTotais,LE),estafeta(Nome,ID,Zona,MeioT,SumClassf/ClTotais,LE), R).
+estafeta_clTotais(ClTotais,R) :- findall(estafeta(Nome,ID,Zona,MeioT,SumClassf/ClTotais,LE),estafeta(Nome,ID,Zona,MeioT,SumClassf/ClTotais,LE), R).
 /*... uma certa lista de entregas */
-%cestafeta_LEntrega(LE,R) :- 
-
-adiciona_classificacao(estafeta(A, B, C, D, E, Somatorio/Total, F), Classificacao, estafeta(A, B, C, D, E, NovoSomatorio/NovoTotal, F)) :-
-    NovoSomatorio is Somatorio+Classificacao,
-    NovoTotal is Total+1.
-    
-remove_estafeta(E) :- remove_pred(E).
-remove_pred(T) :- findall(I,-T::I,Li),
-                remove_bc(T),
-                teste(Li).
-%- remocao: T -> {V,F}
-remove_bc(T) :- retract(T).
-
-%- teste: L -> {V,F}
-teste([]).
-teste([I|Is]):-I,teste(Is).
+estafeta_LEntrega(LE,R) :- findall(estafeta(Nome,ID,Zona,MeioT,SumClassf/ClTotais,LE),estafeta(Nome,ID,Zona,MeioT,SumClassf/ClTotais,LE), R).
 
 
 % (2) Meio de transporte -------------------------------------------------------
@@ -71,9 +56,29 @@ pedido_data(Data,R) :- findall((Cliente,ID,Prazo,Zona,Peso,Preco,Data,Estado), p
 /*... estado */
 pedido_estado(Estado,R) :- findall((Cliente,ID,Prazo,Zona,Peso,Preco,Data,Estado), pedido(Cliente,ID,Prazo,Zona,Peso,Preco,Data,Estado), R).
 %------------------------------------------------------------------------------%
-%Estafeta mais ecologico 
 
-%estafeta(Nome, ID, Freg, MeioT, SomatClassf/NumClassf, LPed, Penaliz)
+
+adiciona_classificacao(estafeta(A, B, C, D, E, Somatorio/Total, F), Classificacao, estafeta(A, B, C, D, E, NovoSomatorio/NovoTotal, F)) :-
+    NovoSomatorio is Somatorio+Classificacao,
+    NovoTotal is Total+1.
+    
+remove_estafeta(E) :- remove_pred(E).
+remove_pred(T) :- findall(I,-T::I,Li),
+                remove_bc(T),
+                teste(Li).
+%- remocao: T -> {V,F}
+remove_bc(T) :- retract(T).
+
+%- teste: L -> {V,F}
+teste([]).
+teste([I|Is]):-I,teste(Is).
+
+%------------------------------------------------------------------------------%
+%---------------------------------- Querys   ----------------------------------%
+%------------------------------------------------------------------------------%
+
+% Query 1: Estafeta mais ecologico 
+
 estafeta_mais_ecologico(EstafetaSol) :-
     findall(estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,bicicleta,Vel,Peso), SomatClassf/NumClassf, LPed, Penaliz), 
             estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,bicicleta,Vel,Peso), SomatClassf/NumClassf, LPed, Penaliz),
@@ -102,7 +107,7 @@ estafeta_mais_ecologico(EstafetaSol) :-
     )
     .
 
-%comprimento da lista de entregas do estafeta
+% Devolve a lista de entregas do estafeta
 getListPed(estafeta(_, _, _, _, _, LPed, _),LPed).
 
 
@@ -124,7 +129,7 @@ maiorLista([H|T],L,R) :-
 
 
 %------------------------------------------------------------------------------%
-%Estafeta que mais entregou a um dado pedido_cliente
+% Query 2: Estafeta que mais entregou a um dado pedido_cliente
 
 estafeta_mais_entregou(Cliente,S):-
 findall(estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,T,Vel,Peso), SomatClassf/NumClassf, LPed, Penaliz), 
@@ -156,7 +161,7 @@ vezes_entregue(Cliente,[pedido(IdCliente,_, _, _, _, _, _, _)|T],X,R):-
 % estafeta_mais_entregou(924093).
 
 %------------------------------------------------------------------------------%
-%Clientes servidos por um determinado estafeta
+% Query 3: Clientes servidos por um determinado estafeta
 
 clientes_servidos(EstafetaId):-
     estafeta(_, EstafetaId, _, _, _, LPed, _),
@@ -174,9 +179,8 @@ clientes_servidos_aux([H|T],S):-
 % clientes_servidos(938283).
 
 
-
 %------------------------------------------------------------------------------%
-%Calcular valor faturado pela empresa em um dado dia
+% Query 4: Calcular valor faturado pela empresa em um dado dia
 
 calcular_valor_faturado_dia(Ano/Mes/Dia,Total):-
     findall(estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,T,Vel,Peso), SomatClassf/NumClassf, LPed, Penaliz), 
@@ -217,7 +221,7 @@ calcular_valor(_/_/D,_/_/DLim,Peso,Valor):-
 %calcular_valor_faturado_dia(2021/4/1).
 
 %------------------------------------------------------------------------------%
-%Calcular zonas com maior volume de entregas
+% Query 5: Calcular zonas com maior volume de entregas
 
 maior_volume_entregas_zona():-
     findall(estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,T,Vel,Peso), SomatClassf/NumClassf, LPed, Penaliz), 
@@ -265,7 +269,7 @@ atualiza_lista_pares(Z,Acc,[H|T],R,S,0):-
 %atualiza_lista_pares(ferreiros,1,[figueiredo/1,ferreiros/5],[],S,0).
 
 %------------------------------------------------------------------------------%
-%Calcular classificacao media de um estafeta
+% Query 6: Calcular classificacao media de um estafeta
 
 classificacao_media(EstafetaId):-
     estafeta(_,EstafetaId,_,_,SomatClassf/ClTotais,_,_),
@@ -278,7 +282,7 @@ classificacao_media(EstafetaId):-
 
 
 %------------------------------------------------------------------------------%
-%Calcular numero de entregas para cada transporte num intervalo de tempo
+% Query 7: Calcular numero de entregas para cada transporte num intervalo de tempo
 
 numero_entregas_intervalo_transporte(AnoLo/MesLo/DiaLo,AnoHi/MesHi/DiaHi):-
     findall(estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,T,Vel,Peso), SomatClassf/NumClassf, LPed, Penaliz), 
@@ -327,7 +331,25 @@ numero_entregas_intervalo_transporte_aux2(AnoLo/MesLo/DiaLo,AnoHi/MesHi/DiaHi,Me
 %numero_entregas_intervalo_transporte(2021/1/1,2021/5/20).
 
 %------------------------------------------------------------------------------%
-%nº de encomendas entregues e nao entregues num intervalo de tempo-------------%
+% Query 8: identificar o numero total de entregas pelos estafetas num determinado tempo
+
+total_entregas_intervalo(AnoLo/MesLo/DiaLo,AnoHi/MesHi/DiaHi) :-
+    findall(estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,T,Vel,Peso), SomatClassf/NumClassf, LPed, Penaliz), 
+            estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,T,Vel,Peso), SomatClassf/NumClassf, LPed, Penaliz),
+            Lista),
+    total_entregas_intervalo_aux(AnoLo/MesLo/DiaLo,AnoHi/MesHi/DiaHi,Lista,0).
+
+total_entregas_intervalo_aux(_,_,[],R):-writeln(R).
+total_entregas_intervalo_aux(AnoLo/MesLo/DiaLo,AnoHi/MesHi/DiaHi,[H|T],R):-
+    getListPed(H,Pedidos),
+    numero_entregas_intervalo_transporte_aux2(AnoLo/MesLo/DiaLo,AnoHi/MesHi/DiaHi,__,Pedidos,0,0,0,B,M,C),
+    CalcEstafeta is R +B + M + C,
+    total_entregas_intervalo_aux(AnoLo/MesLo/DiaLo,AnoHi/MesHi/DiaHi,T,CalcEstafeta).
+
+%total_entregas_intervalo(2021/1/1,2021/12/31).
+
+%------------------------------------------------------------------------------%
+% Query 9: nº de encomendas entregues e nao entregues num intervalo de tempo-------------%
 
 calcula_n_encomendas(AnoI/MesI/DiaI,AnoF/MesF/DiaF,R_NEnt/R_Ent) :-
     findall(LPed, 
@@ -356,7 +378,7 @@ filtra_pedidos([[P|T]|TS],DataI,DataF,Acc1/Acc2,R) :-
 getData(pedido(_,_, DataP,_, _, _,_, _),DataP).
 getEstado(pedido(_,_, _, _, _, _,_, Estado),Estado).
 %------------------------------------------------------------------------------%
-%calcular o peso total transportado por um estafeta em um dia
+% Query 10: calcular o peso total transportado por um estafeta em um dia
 
 calcula_peso_total(ID, Ano/Mes/Dia, PesoTotal) :-
     estafeta(_, ID, _, _, _, LPed, _),
@@ -371,45 +393,6 @@ filtra_pedidos_dia([pedido(_,_, A/M/D, _,_,Peso, _, _)|T],Ano/Mes/Dia,Acc,R) :-
     ).
 
 %------------------------------------------------------------------------------%
-%identificar o numero total de entregas pelos estafetas num determinado tempo
-
-total_entregas_intervalo(AnoLo/MesLo/DiaLo,AnoHi/MesHi/DiaHi) :-
-    findall(estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,T,Vel,Peso), SomatClassf/NumClassf, LPed, Penaliz), 
-            estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,T,Vel,Peso), SomatClassf/NumClassf, LPed, Penaliz),
-            Lista),
-    total_entregas_intervalo_aux(AnoLo/MesLo/DiaLo,AnoHi/MesHi/DiaHi,Lista,0).
-
-total_entregas_intervalo_aux(_,_,[],R):-writeln(R).
-total_entregas_intervalo_aux(AnoLo/MesLo/DiaLo,AnoHi/MesHi/DiaHi,[H|T],R):-
-    getListPed(H,Pedidos),
-    numero_entregas_intervalo_transporte_aux2(AnoLo/MesLo/DiaLo,AnoHi/MesHi/DiaHi,__,Pedidos,0,0,0,B,M,C),
-    CalcEstafeta is R +B + M + C,
-    total_entregas_intervalo_aux(AnoLo/MesLo/DiaLo,AnoHi/MesHi/DiaHi,T,CalcEstafeta).
-
-%total_entregas_intervalo(2021/1/1,2021/12/31).
-
-
-/*
-estafeta("hugo", 659410, "priscos", meio_transporte(90939, carro, 25, 100), 287/117, 
-    [pedido(58, 537988, 2021/2/14, "Rua 6", "priscos", 100, 2021/2/11, 1), 
-     pedido(56, 468745, 2021/9/8, "Rua 1", "priscos", 10, 2021/9/2, 0), 
-     pedido(93, 600493, 2021/5/10, "Rua 0", "priscos", 29, 2021/5/1, 1), 
-     pedido(100, 513280, 2021/7/21, "Rua 1", "priscos", 54, 2021/7/10, 1), 
-     pedido(31, 311289, 2021/10/25, "Rua 7", "priscos", 52, 2021/10/9, 0), 
-     pedido(26, 659410, 2021/8/26, "Rua 18", "priscos", 22, 2021/8/15, 1), 
-     pedido(39, 553811, 2021/8/31, "Rua 17", "priscos", 98, 2021/8/13, 0), 
-     pedido(22, 205019, 2021/5/29, "Rua 5", "priscos", 45, 2021/5/15, 1), 
-     pedido(46, 736360, 2021/9/14, "Rua 14", "priscos", 80, 2021/9/12, 0), 
-     pedido(81, 149877, 2021/8/20, "Rua 13", "priscos", 49, 2021/8/9, 0), 
-     pedido(63, 372857, 2021/9/25, "Rua 11", "priscos", 57, 2021/9/3, 1), 
-     pedido(42, 637187, 2021/6/21, "Rua 7", "priscos", 50, 2021/6/19, 0)], 
-1).
-
-*/
-
-
-%------------------------------------------------------------------------------%
-
 %Auxiliares
 valida_data((Ano, Mes, Dia)) :-
     Ano>0,
