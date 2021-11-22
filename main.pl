@@ -80,23 +80,23 @@ teste([I|Is]):-I,teste(Is).
 % Query 1: Estafeta mais ecologico 
 
 estafeta_mais_ecologico(EstafetaSol) :-
-    findall(estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,bicicleta,Vel,Peso), SomatClassf/NumClassf, LPed, Penaliz), 
-            estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,bicicleta,Vel,Peso), SomatClassf/NumClassf, LPed, Penaliz),
+    findall(estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,bicicleta,Vel,Peso), Classf, LPed, Penaliz), 
+            estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,bicicleta,Vel,Peso), Classf, LPed, Penaliz),
             L),
     
     length(L, LS),
     (  
         LS == 0 ->    % Caso nao existam estafetas de bicicleta, procura os que andam de moto
             (
-                findall(estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,moto,Vel,Peso), SomatClassf/NumClassf, LPed, Penaliz), 
-                    estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,moto,Vel,Peso), SomatClassf/NumClassf, LPed, Penaliz),
+                findall(estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,moto,Vel,Peso), Classf, LPed, Penaliz), 
+                    estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,moto,Vel,Peso), Classf, LPed, Penaliz),
                     LL),
                 length(LL, NewL),
                 (
                     NewL == 0 -> % Caso nao existam estafetas de moto, procura os de carro
                         (
-                            findall(estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,carro,Vel,Peso), SomatClassf/NumClassf, LPed, Penaliz), 
-                                estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,carro,Vel,Peso), SomatClassf/NumClassf, LPed, Penaliz),
+                            findall(estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,carro,Vel,Peso), Classf, LPed, Penaliz), 
+                                estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,carro,Vel,Peso), Classf, LPed, Penaliz),
                                 LLL)
                             ,maiorLista(LLL,_,EstafetaSol)
                         )
@@ -132,8 +132,8 @@ maiorLista([H|T],L,R) :-
 % Query 2: Estafeta que mais entregou a um dado pedido_cliente
 
 estafeta_mais_entregou(Cliente,S):-
-findall(estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,T,Vel,Peso), SomatClassf/NumClassf, LPed, Penaliz), 
-            estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,T,Vel,Peso), SomatClassf/NumClassf, LPed, Penaliz),
+findall(estafeta(Nome, ID, Freg, MT, Classf, LPed, Penaliz), 
+            estafeta(Nome, ID, Freg, MT, Classf, LPed, Penaliz),
             Lista),
     estafeta_mais_entregou_aux(Cliente,Lista,_,0,S).
 
@@ -182,24 +182,24 @@ clientes_servidos_aux([H|T],S):-
 %------------------------------------------------------------------------------%
 % Query 4: Calcular valor faturado pela empresa em um dado dia
 
-calcular_valor_faturado_dia(Ano/Mes/Dia,Total):-
-    findall(estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,T,Vel,Peso), SomatClassf/NumClassf, LPed, Penaliz), 
-            estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,T,Vel,Peso), SomatClassf/NumClassf, LPed, Penaliz),
+calcular_valor_faturado_dia(Data,Total):-
+    findall(estafeta(Nome, ID, Freg, MT, Classf, LPed, Penaliz), 
+            estafeta(Nome, ID, Freg, MT, Classf, LPed, Penaliz),
             Lista),
-    calcular_valor_faturado_dia_aux(Ano/Mes/Dia,Lista,0,Total).
+    calcular_valor_faturado_dia_aux(Data,Lista,0,Total).
 
 
 calcular_valor_faturado_dia_aux(_,[],Total,Total):- writeln(Total).
 
-calcular_valor_faturado_dia_aux(Ano/Mes/Dia,[H|T],Calculado,Total):-
-    estafeta_valor_faturado_dia(Ano/Mes/Dia,H,R),
+calcular_valor_faturado_dia_aux(Data,[H|T],Calculado,Total):-
+    estafeta_valor_faturado_dia(Data,H,R),
     NovoCalculado is R + Calculado,
-    calcular_valor_faturado_dia_aux(Ano/Mes/Dia,T,NovoCalculado,Total) . 
+    calcular_valor_faturado_dia_aux(Data,T,NovoCalculado,Total) . 
 
 
-estafeta_valor_faturado_dia(Ano/Mes/Dia,H,R):-
+estafeta_valor_faturado_dia(Data,H,R):-
     getListPed(H,Pedidos),
-    estafeta_valor_faturado_dia_aux(Ano/Mes/Dia,Pedidos,0,R).
+    estafeta_valor_faturado_dia_aux(Data,Pedidos,0,R).
 
 estafeta_valor_faturado_dia_aux(_,[],R,R).
 
@@ -224,8 +224,8 @@ calcular_valor(_/_/D,_/_/DLim,Peso,Valor):-
 % Query 5: Calcular zonas com maior volume de entregas
 
 maior_volume_entregas_zona():-
-    findall(estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,T,Vel,Peso), SomatClassf/NumClassf, LPed, Penaliz), 
-            estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,T,Vel,Peso), SomatClassf/NumClassf, LPed, Penaliz),
+    findall(estafeta(Nome, ID, Freg, MT, Classf, LPed, Penaliz), 
+            estafeta(Nome, ID, Freg, MT, Classf, LPed, Penaliz),
             Lista),
     maior_volume_entregas_zonaAux(Lista,[]).
    
@@ -284,11 +284,11 @@ classificacao_media(EstafetaId):-
 %------------------------------------------------------------------------------%
 % Query 7: Calcular numero de entregas para cada transporte num intervalo de tempo
 
-numero_entregas_intervalo_transporte(AnoLo/MesLo/DiaLo,AnoHi/MesHi/DiaHi):-
+numero_entregas_intervalo_transporte(DataLo,DataHi):-
     findall(estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,T,Vel,Peso), SomatClassf/NumClassf, LPed, Penaliz), 
             estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,T,Vel,Peso), SomatClassf/NumClassf, LPed, Penaliz),
             Lista),
-    numero_entregas_intervalo_transporte_aux(AnoLo/MesLo/DiaLo,AnoHi/MesHi/DiaHi,Lista,0,0,0,_,_,_).
+    numero_entregas_intervalo_transporte_aux(DataLo,DataHi,Lista,0,0,0,_,_,_).
 
 
 numero_entregas_intervalo_transporte_aux(_,_,[],TotalBic,TotalMo,TotalCar,TotalBic,TotalMo,TotalCar):-
@@ -297,34 +297,34 @@ numero_entregas_intervalo_transporte_aux(_,_,[],TotalBic,TotalMo,TotalCar,TotalB
     write("Moto -> "),writeln(TotalMo),
     write("Carro -> "),writeln(TotalCar).
 
-numero_entregas_intervalo_transporte_aux(AnoLo/MesLo/DiaLo,AnoHi/MesHi/DiaHi,[H|T],CalcBi,CalcMo,CalcCar,TotalBic,TotalMo,TotalCar):-
+numero_entregas_intervalo_transporte_aux(DataLo,DataHi,[H|T],CalcBi,CalcMo,CalcCar,TotalBic,TotalMo,TotalCar):-
     H = estafeta(_,_,_,meio_transporte(_,Meio,_,_),_,Pedidos,_),
-    numero_entregas_intervalo_transporte_aux2(AnoLo/MesLo/DiaLo,AnoHi/MesHi/DiaHi,Meio,Pedidos,0,0,0,B,M,C),
+    numero_entregas_intervalo_transporte_aux2(DataLo,DataHi,Meio,Pedidos,0,0,0,B,M,C),
     NovoCalcBi is CalcBi + B,
     NovoCalcMo is CalcMo + M,
     NovoCalcCar is CalcCar + C,
-    numero_entregas_intervalo_transporte_aux(AnoLo/MesLo/DiaLo,AnoHi/MesHi/DiaHi,T,NovoCalcBi,NovoCalcMo,NovoCalcCar,TotalBic,TotalMo,TotalCar).
+    numero_entregas_intervalo_transporte_aux(DataLo,DataHi,T,NovoCalcBi,NovoCalcMo,NovoCalcCar,TotalBic,TotalMo,TotalCar).
 
 numero_entregas_intervalo_transporte_aux2(_,_,_,[],B,M,C,B,M,C).
 
-numero_entregas_intervalo_transporte_aux2(AnoLo/MesLo/DiaLo,AnoHi/MesHi/DiaHi,Meio,[H|T],CB,CM,CC,B,M,C):-
-    H = pedido(_,_, _, _, _, _,Ano/Mes/Dia , _),
-    data_no_intervalo(AnoLo/MesLo/DiaLo,AnoHi/MesHi/DiaHi,Ano/Mes/Dia,S),
+numero_entregas_intervalo_transporte_aux2(DataLo,DataHi,Meio,[H|T],CB,CM,CC,B,M,C):-
+    H = pedido(_,_, _, _, _, _,Data, _),
+    data_no_intervalo(DataLo,DataHi,Data,S),
     (S == 1 -> 
         (Meio == bicicleta ->
             (
                 NovoCB is CB + 1,
-                numero_entregas_intervalo_transporte_aux2(AnoLo/MesLo/DiaLo,AnoHi/MesHi/DiaHi,Meio,T,NovoCB,CM,CC,B,M,C)
+                numero_entregas_intervalo_transporte_aux2(DataLo,DataHi,Meio,T,NovoCB,CM,CC,B,M,C)
                 );
             Meio == moto ->
             (
                 NovoCM is CM + 1,
-                numero_entregas_intervalo_transporte_aux2(AnoLo/MesLo/DiaLo,AnoHi/MesHi/DiaHi,Meio,T,CB,NovoCM,CC,B,M,C)
+                numero_entregas_intervalo_transporte_aux2(DataLo,DataHi,Meio,T,CB,NovoCM,CC,B,M,C)
                 );
             NovoCC is CC + 1,
-            numero_entregas_intervalo_transporte_aux2(AnoLo/MesLo/DiaLo,AnoHi/MesHi/DiaHi,Meio,T,CB,CM,NovoCC,B,M,C)
+            numero_entregas_intervalo_transporte_aux2(DataLo,DataHi,Meio,T,CB,CM,NovoCC,B,M,C)
             );
-        numero_entregas_intervalo_transporte_aux2(AnoLo/MesLo/DiaLo,AnoHi/MesHi/DiaHi,Meio,T,CB,CM,CC,B,M,C)
+        numero_entregas_intervalo_transporte_aux2(DataLo,DataHi,Meio,T,CB,CM,CC,B,M,C)
         ).
 
 
@@ -333,31 +333,31 @@ numero_entregas_intervalo_transporte_aux2(AnoLo/MesLo/DiaLo,AnoHi/MesHi/DiaHi,Me
 %------------------------------------------------------------------------------%
 % Query 8: identificar o numero total de entregas pelos estafetas num determinado tempo
 
-total_entregas_intervalo(AnoLo/MesLo/DiaLo,AnoHi/MesHi/DiaHi) :-
+total_entregas_intervalo(DataLo,DataHi) :-
     findall(estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,T,Vel,Peso), SomatClassf/NumClassf, LPed, Penaliz), 
             estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,T,Vel,Peso), SomatClassf/NumClassf, LPed, Penaliz),
             Lista),
-    total_entregas_intervalo_aux(AnoLo/MesLo/DiaLo,AnoHi/MesHi/DiaHi,Lista,0).
+    total_entregas_intervalo_aux(DataLo,DataHi,Lista,0).
 
 total_entregas_intervalo_aux(_,_,[],R):-writeln(R).
-total_entregas_intervalo_aux(AnoLo/MesLo/DiaLo,AnoHi/MesHi/DiaHi,[H|T],R):-
+total_entregas_intervalo_aux(DataLo,DataHi,[H|T],R):-
     getListPed(H,Pedidos),
-    numero_entregas_intervalo_transporte_aux2(AnoLo/MesLo/DiaLo,AnoHi/MesHi/DiaHi,__,Pedidos,0,0,0,B,M,C),
+    numero_entregas_intervalo_transporte_aux2(DataLo,DataHi,__,Pedidos,0,0,0,B,M,C),
     CalcEstafeta is R +B + M + C,
-    total_entregas_intervalo_aux(AnoLo/MesLo/DiaLo,AnoHi/MesHi/DiaHi,T,CalcEstafeta).
+    total_entregas_intervalo_aux(DataLo,DataHi,T,CalcEstafeta).
 
 %total_entregas_intervalo(2021/1/1,2021/12/31).
 
 %------------------------------------------------------------------------------%
 % Query 9: nº de encomendas entregues e nao entregues num intervalo de tempo-------------%
 
-calcula_n_encomendas(AnoI/MesI/DiaI,AnoF/MesF/DiaF,R_NEnt/R_Ent) :-
+calcula_n_encomendas(DataI,DataF,R) :-
     findall(LPed, 
             estafeta(_, _, _, _, _, LPed, _),
             L),
-    filtra_pedidos(L,AnoI/MesI/DiaI,AnoF/MesF/DiaF,0/0,R_NEnt/R_Ent). 
+    filtra_pedidos(L,DataI,DataF,0/0,R). 
 
-filtra_pedidos([],_,_,R1/R2,R1/R2).
+filtra_pedidos([],_,_,R,R).
 filtra_pedidos([[]|TS],D1,D2,Accs,Rs) :- filtra_pedidos(TS,D1,D2,Accs,Rs).
 filtra_pedidos([[P|T]|TS],DataI,DataF,Acc1/Acc2,R) :-
     getData(P,DataP),
@@ -380,9 +380,9 @@ getEstado(pedido(_,_, _, _, _, _,_, Estado),Estado).
 %------------------------------------------------------------------------------%
 % Query 10: calcular o peso total transportado por um estafeta em um dia
 
-calcula_peso_total(ID, Ano/Mes/Dia, PesoTotal) :-
+calcula_peso_total(ID, Data, PesoTotal) :-
     estafeta(_, ID, _, _, _, LPed, _),
-    filtra_pedidos_dia(LPed,Ano/Mes/Dia,0,PesoTotal).
+    filtra_pedidos_dia(LPed,Data,0,PesoTotal).
 
 filtra_pedidos_dia([],_,R,R).
 filtra_pedidos_dia([pedido(_,_, A/M/D, _,_,Peso, _, _)|T],Ano/Mes/Dia,Acc,R) :-
@@ -415,10 +415,10 @@ valida_transporte(carro,V,P) :-
     V >= 0, V =< 100,
     P >= 0, P =< 25.
 
-data_no_intervalo(AnoLo/MesLo/DiaLo,AnoHi/MesHi/DiaHi,Ano/Mes/Dia,S):-
-    data_valor(AnoLo/MesLo/DiaLo, Lo),
-    data_valor(AnoHi/MesHi/DiaHi,Li),
-    data_valor(Ano/Mes/Dia,L),
+data_no_intervalo(DataLo,DataHi,Data,S):-
+    data_valor(DataLo, Lo),
+    data_valor(DataHi,Li),
+    data_valor(Data,L),
     (L>=Lo , L=<Li -> S is 1; S is 0).
 
 
