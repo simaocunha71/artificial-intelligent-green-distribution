@@ -1,6 +1,6 @@
 %Para poder inserir e remover
-:- (dynamic estafeta/6). 
-:- (dynamic meio_transporte/3). 
+:- (dynamic estafeta/7). 
+:- (dynamic meio_transporte/4). 
 :- (dynamic pedido/8). 
 
 %-----------------------------Ficheiros auxiliares ----------------------------
@@ -15,30 +15,33 @@
 % Procura todos os estafetas por -----------------------------------------------
 
 /*... um certo nome */
-estafeta_nome(Nome,R) :- findall(estafeta(Nome,ID,Zona,MeioT,SumClassf/ClTotais,LE),estafeta(Nome,ID,Zona,MeioT,SumClassf/ClTotais,LE), R).
+estafeta_nome(Nome,R) :- findall(estafeta(Nome,ID,Zona,MeioT,SumClassf/ClTotais,LE,Penaliz),estafeta(Nome,ID,Zona,MeioT,SumClassf/ClTotais,LE,Penaliz), R).
 /*... um certo id */
-estafeta_id(ID,R) :- findall(estafeta(Nome,ID,Zona,MeioT,SumClassf/ClTotais,LE),estafeta(Nome,ID,Zona,MeioT,SumClassf/ClTotais,LE), R).
+estafeta_id(ID,R) :- findall(estafeta(Nome,ID,Zona,MeioT,SumClassf/ClTotais,LE,Penaliz),estafeta(Nome,ID,Zona,MeioT,SumClassf/ClTotais,LE,Penaliz), R).
 /*... uma certa zona */
-estafeta_zona(Zona,R) :- findall(estafeta(Nome,ID,Zona,MeioT,SumClassf/ClTotais,LE),estafeta(Nome,ID,Zona,MeioT,SumClassf/ClTotais,LE), R).
+estafeta_zona(Zona,R) :- findall(estafeta(Nome,ID,Zona,MeioT,SumClassf/ClTotais,LE,Penaliz),estafeta(Nome,ID,Zona,MeioT,SumClassf/ClTotais,LE,Penaliz), R).
 /*... um certo tipo de transporte */
-estafeta_meioT(MeioT,R) :- findall(estafeta(Nome,ID,Zona,MeioT,SumClassf/ClTotais,LE),estafeta(Nome,ID,Zona,MeioT,SumClassf/ClTotais,LE), R).
+estafeta_meioT(MeioT,R) :- findall(estafeta(Nome,ID,Zona,MeioT,SumClassf/ClTotais,LE,Penaliz),estafeta(Nome,ID,Zona,MeioT,SumClassf/ClTotais,LE,Penaliz), R).
 /*... um somatorio de classificacoes*/
-estafeta_sumClassf(SumClassf,R) :- findall(estafeta(Nome,ID,Zona,MeioT,SumClassf/ClTotais,LE),estafeta(Nome,ID,Zona,MeioT,SumClassf/ClTotais,LE), R).
+estafeta_sumClassf(SumClassf,R) :- findall(estafeta(Nome,ID,Zona,MeioT,SumClassf/ClTotais,LE,Penaliz),estafeta(Nome,ID,Zona,MeioT,SumClassf/ClTotais,LE,Penaliz), R).
 /*... uma certa numero de classificacoes*/
-estafeta_clTotais(ClTotais,R) :- findall(estafeta(Nome,ID,Zona,MeioT,SumClassf/ClTotais,LE),estafeta(Nome,ID,Zona,MeioT,SumClassf/ClTotais,LE), R).
+estafeta_clTotais(ClTotais,R) :- findall(estafeta(Nome,ID,Zona,MeioT,SumClassf/ClTotais,LE,Penaliz),estafeta(Nome,ID,Zona,MeioT,SumClassf/ClTotais,LE,Penaliz), R).
 /*... uma certa lista de entregas */
-estafeta_LEntrega(LE,R) :- findall(estafeta(Nome,ID,Zona,MeioT,SumClassf/ClTotais,LE),estafeta(Nome,ID,Zona,MeioT,SumClassf/ClTotais,LE), R).
-
+estafeta_LEntrega(LE,R) :- findall(estafeta(Nome,ID,Zona,MeioT,SumClassf/ClTotais,LE,Penaliz),estafeta(Nome,ID,Zona,MeioT,SumClassf/ClTotais,LE,Penaliz), R).
+/*... um certo tipo de penalização */
+estafeta_Penaliz(Penaliz,R) :- findall(estafeta(Nome,ID,Zona,MeioT,SumClassf/ClTotais,LE,Penaliz),estafeta(Nome,ID,Zona,MeioT,SumClassf/ClTotais,LE,Penaliz), R).
 
 % (2) Meio de transporte -------------------------------------------------------
 
 % Procura todos os meios de transporte por -------------------------------------
+/*... uma certa matricula */
+meioTransporte_matricula(Matr,R) :- findall((Matr,Tipo,Velocidade,Peso),meio_transporte(Matr,Tipo,Velocidade,Peso), R).
 /*... um certo tipo */
-meioTransporte_tipo(Tipo,R) :- findall((Tipo,Velocidade,Peso),meio_transporte(Tipo,Velocidade,Peso), R).
+meioTransporte_tipo(Tipo,R) :- findall((Matr,Tipo,Velocidade,Peso),meio_transporte(Matr,Tipo,Velocidade,Peso), R).
 /*... uma certa velocidade */
-meioTransporte_vel(Velocidade,R) :- findall((Tipo,Velocidade,Peso),meio_transporte(Tipo,Velocidade,Peso), R).
+meioTransporte_vel(Velocidade,R) :- findall((Matr,Tipo,Velocidade,Peso),meio_transporte(Matr,Tipo,Velocidade,Peso), R).
 /*... um certo peso */
-meioTransporte_peso(Peso,R) :- findall((Tipo,Velocidade,Peso),meio_transporte(Tipo,Velocidade,Peso), R).
+meioTransporte_peso(Peso,R) :- findall((Matr,Tipo,Velocidade,Peso),meio_transporte(Matr,Tipo,Velocidade,Peso), R).
 
 % (3) Pedido -------------------------------------------------------------------
 

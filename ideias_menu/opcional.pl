@@ -182,3 +182,34 @@ pedido_estado :-
     pedido_estado(Estado, R),
     write(R),
     write('\n').
+
+
+writeEstafeta(estafeta(Nome,ID,Zona,MeioT,CL,LE,Penaliz)) :-
+  write('Nome do estafeta: '), write(Nome), writeln(';'),
+  write('ID: '), write(ID), writeln(';'),
+  write('Zona: '), write(Zona), writeln(';'),
+  writeln('Meio de transporte: '), writeMT(MeioT), writeln(';'),
+  write('Somatório/Número de classificações: '), write(CL), writeln(';'),
+  writeln('Pedidos associados: '), printPedidos(LE),
+  write('Nível de penalização: '), write(Penaliz), write('\n').
+
+writeMT(meio_transporte(ID,T,P,V)) :-
+  write('> Matricula: '), write(ID), writeln('; '),  
+  write('> Tipo: '), write(T), writeln('; '),
+  write('> Peso máximo: '), write(P), writeln('; '),
+  write('> Velocidade máxima: '), write(V), write('.').
+
+printPedidos([]).
+printPedidos([H|T]) :-
+    writePedido(H),
+    printPedidos(T).
+
+writePedido(pedido(ID_Cl, ID_Ped, DataEnt, Rua, Freg, Peso, DataPed, Est)) :-
+  write('> ID do pedido: '), write(ID_Ped), write('; '),
+  write('ID do cliente: ' ), write(ID_Cl), write('; '),
+  write('Data de entrega: '), write(DataEnt), write('; '),
+  write('Rua: '), write(Rua), write('; '),
+  write('Freguesia: '), write(Freg), write('; '),
+  write('Peso: '), write(Peso), write('; '),
+  write('Data do pedido: '), write(DataPed), write('; '),
+  write('Estado: '), write(Est), writeln('.').
