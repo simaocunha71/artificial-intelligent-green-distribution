@@ -166,17 +166,16 @@ vezes_entregue(Cliente,[pedido(IdCliente,_, _, _, _, _, _, _)|T],X,R):-
 %------------------------------------------------------------------------------%
 % Query 3: Clientes servidos por um determinado estafeta
 
-clientes_servidos(EstafetaId):-
+clientes_servidos(EstafetaId,L):-
     estafeta(_, EstafetaId, _, _, _, LPed, _),
-    clientes_servidos_aux(LPed,[]).
+    clientes_servidos_aux(LPed,[],L).
 
 
-clientes_servidos_aux([],S):- writeln(S).
+clientes_servidos_aux([],S,S).
 
-
-clientes_servidos_aux([H|T],S):-
+clientes_servidos_aux([H|T],Acc,S):-
     H = pedido(IdCliente,_, _, _, _, _, _, _),
-    clientes_servidos_aux(T,[IdCliente|S]).
+    clientes_servidos_aux(T,[IdCliente|Acc],S).
 
 
 % clientes_servidos(938283).
@@ -192,7 +191,7 @@ calcular_valor_faturado_dia(Data,Total):-
     calcular_valor_faturado_dia_aux(Data,Lista,0,Total).
 
 
-calcular_valor_faturado_dia_aux(_,[],Total,Total):- writeln(Total).
+calcular_valor_faturado_dia_aux(_,[],Total,Total).
 
 calcular_valor_faturado_dia_aux(Data,[H|T],Calculado,Total):-
     estafeta_valor_faturado_dia(Data,H,R),
@@ -225,7 +224,7 @@ calcular_valor(_/_/D,_/_/DLim,Peso,Valor):-
 
 %------------------------------------------------------------------------------%
 % Query 5: Calcular zonas com maior volume de entregas
-
+% tirar writes para por no menu
 maior_volume_entregas_zona():-
     findall(estafeta(Nome, ID, Freg, MT, Classf, LPed, Penaliz), 
             estafeta(Nome, ID, Freg, MT, Classf, LPed, Penaliz),
@@ -274,10 +273,9 @@ atualiza_lista_pares(Z,Acc,[H|T],R,S,0):-
 %------------------------------------------------------------------------------%
 % Query 6: Calcular classificacao media de um estafeta
 
-classificacao_media(EstafetaId):-
+classificacao_media(EstafetaId, Media):-
     estafeta(_,EstafetaId,_,_,SomatClassf/ClTotais,_,_),
-    Media is SomatClassf / ClTotais,
-    writeln(Media).
+    Media is SomatClassf / ClTotais.
 
 
 
@@ -286,7 +284,7 @@ classificacao_media(EstafetaId):-
 
 %------------------------------------------------------------------------------%
 % Query 7: Calcular numero de entregas para cada transporte num intervalo de tempo
-
+%tirar writes para o menu
 numero_entregas_intervalo_transporte(DataLo,DataHi):-
     findall(estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,T,Vel,Peso), SomatClassf/NumClassf, LPed, Penaliz), 
             estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,T,Vel,Peso), SomatClassf/NumClassf, LPed, Penaliz),
@@ -335,7 +333,7 @@ numero_entregas_intervalo_transporte_aux2(DataLo,DataHi,Meio,[H|T],CB,CM,CC,B,M,
 
 %------------------------------------------------------------------------------%
 % Query 8: identificar o numero total de entregas pelos estafetas num determinado tempo
-
+%tirar writes para menu
 total_entregas_intervalo(DataLo,DataHi) :-
     findall(estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,T,Vel,Peso), SomatClassf/NumClassf, LPed, Penaliz), 
             estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,T,Vel,Peso), SomatClassf/NumClassf, LPed, Penaliz),
