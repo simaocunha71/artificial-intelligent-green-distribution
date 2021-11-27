@@ -12,7 +12,8 @@ menuListas :-
     write('-----------Listagens-----------\n'),
     write(' 1. Listar estafetas\n'),
     write(' 2. Listar meios de transporte\n'),
-    write(' 3. Listar pedidos\n').
+    write(' 3. Listar pedidos\n'),
+    write(' 0. Sair\n').
 
 menuListar_estafetas :-
     write('Listar estafetas por:\n'),
@@ -20,16 +21,19 @@ menuListar_estafetas :-
     write('  2.ID \n'),
     write('  3.Zona \n'),
     write('  4.Meio de Transporte \n'),
-    write('  5.Número de classificações totais \n'),
-    write('  6.Pedido \n'),
-    write('  7.Nível de penalização \n').
+    write('  5.Somatório de classificações \n'),
+    write('  6.Número de classificações totais \n'),
+    write('  7.Pedido \n'),
+    write('  8.Nível de penalização \n\n'),
+    write('  0. Sair\n').
 
 menuListar_MT :-
     write('\nListar meios de transporte por:\n'),
     write('  8.Matricula\n'),
     write('  9.Tipo \n'),
     write(' 10.Velocidade \n'),
-    write(' 11.Peso \n').
+    write(' 11.Peso \n\n'),
+    write('  0. Sair\n').
 
 menuListar_Pedidos :-
     write('\nListar pedidos por:\n'),
@@ -41,8 +45,7 @@ menuListar_Pedidos :-
     write(' 17.Freguesia \n'),
     write(' 18.Peso \n'),
     write(' 19.Data do pedido \n'),
-    write(' 20.Estado \n'),
-    write('\n'),
+    write(' 20.Estado \n\n'),
     write('0.Sair \n').
 
 %-------------------------------------------------------------------------------------%
@@ -58,7 +61,7 @@ menuQuery_view :-
     write(' 7. Identificar o número total de entregas pelos diferentes meios de transporte, num determinado intervalo de tempo\n'),
     write(' 8. Identificar o número total de entregas pelos estafetas, num determinado intervalo de tempo\n'),
     write(' 9. Calcular o número de encomendas entregues e não entregues pela Green Distribution, num determinado período de tempo\n'),
-    write('10. Calcular o peso total transportado por estafeta num determinado dia\n'),
+    write('10. Calcular o peso total transportado por estafeta num determinado dia\n\n'),
     write(' 0.Sair \n').
 
 %-------------------------------------------------------------------------------------%

@@ -2,7 +2,7 @@
 
 % consultar -> https://www.swi-prolog.org/pldoc/man?predicate=op/3
 :- op(900, xfy, '::').
-:- ensure_loaded(main).
+:- ensure_loaded(querys).
 
 % (a) Estafetas
 % Id do estafeta é unico e é um Integer
