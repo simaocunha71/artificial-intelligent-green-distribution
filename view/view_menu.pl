@@ -81,7 +81,7 @@ writeMT(meio_transporte(ID,T,P,V)) :-
   write('> Matricula: '), write(ID), writeln('; '),  
   write('> Tipo: '), write(T), writeln('; '),
   write('> Peso máximo: '), write(P), writeln('; '),
-  write('> Velocidade máxima: '), write(V), write('.').
+  write('> Velocidade máxima: '), write(V).
 
 printMts([]).
 printMts([H|T]) :-

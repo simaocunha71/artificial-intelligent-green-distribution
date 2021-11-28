@@ -1,4 +1,4 @@
-package script;
+//package script;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Random;
@@ -33,6 +33,14 @@ estafeta(
             "marchel", "jo", "jacinto", "manafa", "conceicao", "leite", "martins", "leal", "amorim"
 
     };// 50
+
+    private static final String[] nomesContribuinte = { "simao,1", "tiago,2", "joao,3", "nuno,4", "luis,5", "geremias,6", "paulo,7", "goncalo,8",
+    "pedro,9", "nelson,10", "fabio,11", "gil,12", "antonio,13", "miguel,14", "rogerio,15", "guilherme,16", "jose,17", "chico,18", "rafael,19",
+    "eduardo,20", "jonas,21", "rodrigo,22", "rui,23", "diogo,24", "tomas,25", "tobias,26", "raul,27", "jorge,28", "hugo,29", "andre,30", "runlo,31",
+    "ricardo,32", "eder,33", "helder,34", "cristiano,35", "armindo,36", "zeferino,37", "bernardo,38", "bruno,39", "xavier,40", "joaquim,41",
+    "claudio,42", "patricio,43", "gustavo,44", "ruben,45", "francisco,46", "oscar,47", "alexandre,48", "amilcar,49", "jo,50"
+
+};// 50
 
     // Array de strings com apelidos possíveis de ser escolhidos aleatoriamente
     private static final String[] freguesias = {"ferreiros","adaufe","nogueira","lomar","sequeira","real","tadim","ruilhe",
@@ -77,7 +85,7 @@ estafeta(
 
     public static String pedidos (String freg, String mt){
         Random r = new Random();
-        int cliente = r.nextInt(101);
+        String cliente = nomesContribuinte[r.nextInt(nomesContribuinte.length)];
         int id = ids_r();
         int mes = r.nextInt(12)+1;
         int dia = r.nextInt(31)+1;
@@ -105,7 +113,7 @@ estafeta(
         int p = peso(mt);
         int estado = r.nextInt(2);
         StringBuilder sb = new StringBuilder();
-        sb.append("pedido(").append(cliente).append(",")
+        sb.append("pedido(").append("cliente(").append(cliente).append("),")
                             .append(id).append(",")
                             .append(dateLimite.getYear()).append("/").append(dateLimite.getMonthValue()).append("/").append(dateLimite.getDayOfMonth()).append(",")
                             .append("\"").append(rua).append("\"").append(",")
