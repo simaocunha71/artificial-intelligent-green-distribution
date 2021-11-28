@@ -129,36 +129,27 @@ maiorLista([H|T],L,R) :-
 
 
 %------------------------------------------------------------------------------%
-% Query 2: Estafeta que mais entregou a um dado pedido_cliente
-%faz o necessário?
-estafeta_mais_entregou(Cliente,S):-
+% Query 2: Estafetas que entregaram a um dado pedido_cliente
+
+estafeta_entregaram_cliente(Cliente,S):-
 findall(estafeta(Nome, ID, Freg, MT, Classf, LPed, Penaliz), 
             estafeta(Nome, ID, Freg, MT, Classf, LPed, Penaliz),
             Lista),
-    estafeta_mais_entregou_aux(Cliente,Lista,_,0,S).
+    estafeta_entregaram_cliente_aux(Cliente,Lista,[],S).
 
 
-estafeta_mais_entregou_aux(_,[],S,_,S).
+estafeta_entregaram_cliente_aux(_,[],S,S).
 
 
-estafeta_mais_entregou_aux(Cliente,[H|T],Max,R2,S):-
+estafeta_entregaram_cliente_aux(Cliente,[H|T],Lista,S):-
     getListPed(H,Pedidos),
-    vezes_entregue(Cliente,Pedidos,0,R1),
-    (R1>=R2 ->
-        estafeta_mais_entregou_aux(Cliente,T,H,R1,S);
-        estafeta_mais_entregou_aux(Cliente,T,Max,R2,S)
+    vezes_entregue(Cliente,Pedidos,0,R),
+    (R>0 ->
+        estafeta_entregaram_cliente_aux(Cliente,T,[H|Lista],S);
+        estafeta_entregaram_cliente_aux(Cliente,T,Lista,S)
         ).
 
-vezes_entregue(_,[],R,R).
-
-
-vezes_entregue(Cliente,[pedido(IdCliente,_, _, _, _, _, _, _)|T],X,R):-
-    (Cliente == IdCliente->
-        X2 is X +1,
-        vezes_entregue(Cliente,T,X2,R);
-        vezes_entregue(Cliente,T,X,R)
-        ).
-% estafeta_mais_entregou(924093).
+% estafeta_mais_entregou(6).
 
 %------------------------------------------------------------------------------%
 % Query 3: Clientes servidos por um determinado estafeta
@@ -387,6 +378,40 @@ filtra_pedidos_dia([pedido(_,_, A/M/D, _,_,Peso, _, _)|T],Ano/Mes/Dia,Acc,R) :-
     ).
 
 %------------------------------------------------------------------------------%
+
+
+% Query Extra: Estafeta que mais entregou a um dado pedido_cliente
+%faz o necessário?
+estafeta_mais_entregou(Cliente,S):-
+findall(estafeta(Nome, ID, Freg, MT, Classf, LPed, Penaliz), 
+            estafeta(Nome, ID, Freg, MT, Classf, LPed, Penaliz),
+            Lista),
+    estafeta_mais_entregou_aux(Cliente,Lista,_,0,S).
+
+
+estafeta_mais_entregou_aux(_,[],S,_,S).
+
+
+estafeta_mais_entregou_aux(Cliente,[H|T],Max,R2,S):-
+    getListPed(H,Pedidos),
+    vezes_entregue(Cliente,Pedidos,0,R1),
+    (R1>=R2 ->
+        estafeta_mais_entregou_aux(Cliente,T,H,R1,S);
+        estafeta_mais_entregou_aux(Cliente,T,Max,R2,S)
+        ).
+
+vezes_entregue(_,[],R,R).
+
+
+vezes_entregue(Cliente,[pedido(cliente(_,IdCliente),_, _, _, _, _, _, _)|T],X,R):-
+    (Cliente == IdCliente->
+        X2 is X + 1,
+        vezes_entregue(Cliente,T,X2,R);
+        vezes_entregue(Cliente,T,X,R)
+        ).
+% estafeta_mais_entregou(6).
+%------------------------------------------------------------------------------%
+
 %Auxiliares
 valida_data((Ano, Mes, Dia)) :-
     Ano>0,

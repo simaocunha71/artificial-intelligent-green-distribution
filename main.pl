@@ -88,7 +88,7 @@ menuQuerys :-
 
 
 executarQuery(Option) :-(Option=:=1, estafeta_mais_ecologico_view;
-                         Option=:=2, estafeta_mais_entregou_view;
+                         Option=:=2, estafeta_entregaram_cliente;
                          Option=:=3, clientes_servidos_view;
                          Option=:=4, calcular_valor_faturado_dia_view;
                          Option=:=5, maior_volume_entregas_zona_view;
@@ -232,6 +232,15 @@ estafeta_mais_ecologico_view :-
         writeln('Não existem estafetas na base de conhecimento')
     ).
     
+estafeta_entregaram_cliente :-
+    writeln('Cliente: '),
+    read(Cliente),
+    estafeta_entregaram_cliente(Cliente,S),
+    (\+var(S) ->
+        writeln(S);
+        writeln('Não existem estafetas na base de conhecimento')
+    ).
+
 
 estafeta_mais_entregou_view :-
     writeln('Cliente: '),
