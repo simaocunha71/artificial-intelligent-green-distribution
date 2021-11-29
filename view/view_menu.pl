@@ -77,6 +77,18 @@ writeEstafeta(estafeta(Nome,ID,Zona,MeioT,CL,LE,Penaliz)) :-
   writeln('Pedidos associados: '), printPedidos(LE),
   write('Nível de penalização: '), write(Penaliz), write('\n').
 
+
+write_lista_estafeta([],_).
+
+write_lista_estafeta([H|T],Option):-
+    (Option == 0 ->
+        writeEstafeta(H);
+        H = estafeta(Nome,_,_,_,_,_,_),
+        write('Nome do estafeta: '), write(Nome), writeln(';')
+        ),
+    write_lista_estafeta(T,Option).
+
+
 writeMT(meio_transporte(ID,T,P,V)) :-
   write('> Matricula: '), write(ID), writeln('; '),  
   write('> Tipo: '), write(T), writeln('; '),

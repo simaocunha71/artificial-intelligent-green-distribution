@@ -237,7 +237,7 @@ estafeta_entregaram_cliente :-
     read(Cliente),
     estafeta_entregaram_cliente(Cliente,S),
     (\+var(S) ->
-        writeln(S);
+        write_lista_estafeta(S,1);
         writeln('Não existem estafetas na base de conhecimento')
     ).
 
