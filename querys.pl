@@ -88,13 +88,23 @@ pedido_estado(Estado,R) :- findall(LE,
 adiciona_classificacao(estafeta(A, B, C, D, E, Somatorio/Total, F), Classificacao, estafeta(A, B, C, D, E, NovoSomatorio/NovoTotal, F)) :-
     NovoSomatorio is Somatorio+Classificacao,
     NovoTotal is Total+1.
-    
+%------------------------------------------
+add_estafeta(E) :- add_pred(E).
+add_pred(T) :- findall(I,+T::I,Li),
+               add_bc(T),
+               teste(Li).
+
+add_bc(T) :- assert(T).
+add_bc(T) :- retract(T),!, fail.
+
+
+%------------------------------------------
 remove_estafeta(E) :- remove_pred(E).
 remove_pred(T) :- findall(I,-T::I,Li),
-                remove_bc(T),
-                teste(Li).
+                  remove_bc(T),
+                  teste(Li).
 %- remocao: T -> {V,F}
-remove_bc(T) :- retract(T).
+remove_bc(T) :- retract(T),!, fail.
 
 %- teste: L -> {V,F}
 teste([]).
@@ -455,8 +465,8 @@ valida_transporte(bicicleta,V,P) :-
     V >= 0, V =< 10, 
     P >= 0, P =< 5.
 valida_transporte(carro,V,P) :-
-    V >= 0, V =< 100,
-    P >= 0, P =< 25.
+    V >= 0, V =< 25,
+    P >= 0, P =< 100.
 
 data_no_intervalo(DataLo,DataHi,Data,S):-
     data_valor(DataLo, Lo),
