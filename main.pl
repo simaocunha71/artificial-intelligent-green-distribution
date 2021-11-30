@@ -3,9 +3,11 @@
 
 
 run_opt(1) :-
+    limpaT,
     menuListagens.
 
 run_opt(2) :-
+    limpaT,
     menuQuerys.
 
 run_opt(3) :- write('Adeus\n'), halt.
@@ -14,6 +16,7 @@ run_opt(_) :- write('Opção Inválida\n').
 
 
 main :-
+    limpaT,
     menuPrincipal,
     read(Choice),
     run_opt(Choice).
@@ -24,6 +27,7 @@ main :-
 menuListagens :-
     menuListas,
     read(Option),
+    limpaT,
     executarListagem(Option).
 
 menuListagens_estafetas :-
@@ -82,6 +86,7 @@ executarListagem_pedidos(Option) :-( Option=:=1, pedido_cliente_view;
                                     ),menuListagens_Pedidos.
 
 menuQuerys :-
+    limpaT,
     menuQuery_view,
     read(Option),
     executarQuery(Option).
@@ -110,49 +115,49 @@ estafeta_nome_view :-
     write('Nome:'),
     read(Nome),
     estafeta_nome(Nome, R),
-    printPedidos(R).
+    write_lista_estafeta(R,0).
 
 estafeta_id_view :-
     write('ID:'),
     read(ID),
     estafeta_id(ID, R),
-    printPedidos(R).
+    write_lista_estafeta(R,0).
 
 estafeta_zona_view :-
     write('Zona:'),
     read(Zona),
     estafeta_zona(Zona, R),
-    printPedidos(R).
+    write_lista_estafeta(R,0).
 
 estafeta_meioT_view :-
-    write('Meio de transporte:'),
+    write('Meio de transporte (escreve apenas o tipo):'),
     read(MTranp),
     estafeta_meioT(MTranp, R),
-    printPedidos(R).
+    write_lista_estafeta(R,0).
 
 estafeta_sumClassf_view :-
     write('Somatório das classificações:'),
     read(sumClassf),
     estafeta_sumClassf(sumClassf, R),
-    printPedidos(R).
+    write_lista_estafeta(R,0).
 
 estafeta_clTotais_view :-
     write('Classificação total: '),
     read(clTotais),
     estafeta_clTotais(clTotais, R),
-    printPedidos(R).
+    write_lista_estafeta(R,0).
 
 estafeta_LEntrega_view :-
     write('Lista de entregas: '),
     read(ClTotal),
     estafeta_clTotais(ClTotal, R),
-    printPedidos(R).
+    write_lista_estafeta(R,0).
 
 estafeta_Penaliz_view :-
     write('Nível de penalização: '),
     read(ClTotal),
     estafeta_clTotais(ClTotal, R),
-    printPedidos(R).
+    write_lista_estafeta(R,0).
 
 
 /*------------------------------ Meios de transporte ---------------------------------- */

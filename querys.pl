@@ -15,49 +15,73 @@
 % Procura todos os estafetas por -----------------------------------------------
 
 /*... um certo nome */
-estafeta_nome(Nome,R) :- findall(estafeta(Nome,ID,Zona,MeioT,SumClassf/ClTotais,LE,Penaliz),estafeta(Nome,ID,Zona,MeioT,SumClassf/ClTotais,LE,Penaliz), R).
+estafeta_nome(Nome,R) :- findall(estafeta(Nome,ID,Z,MT,Cl,LE,P),
+                                 estafeta(Nome,ID,Z,MT,Cl,LE,P), R).
 /*... um certo id */
-estafeta_id(ID,R) :- findall(estafeta(Nome,ID,Zona,MeioT,SumClassf/ClTotais,LE,Penaliz),estafeta(Nome,ID,Zona,MeioT,SumClassf/ClTotais,LE,Penaliz), R).
+estafeta_id(ID,R) :- findall(estafeta(N,ID,Z,MT,Cl,LE,P),
+                             estafeta(N,ID,Z,MT,Cl,LE,P), R).
 /*... uma certa zona */
-estafeta_zona(Zona,R) :- findall(estafeta(Nome,ID,Zona,MeioT,SumClassf/ClTotais,LE,Penaliz),estafeta(Nome,ID,Zona,MeioT,SumClassf/ClTotais,LE,Penaliz), R).
+estafeta_zona(Zona,R) :- findall(estafeta(N,ID,Zona,MT,Cl,LE,P),
+                                 estafeta(N,ID,Zona,MT,Cl,LE,P), R).
 /*... um certo tipo de transporte */
-estafeta_meioT(MeioT,R) :- findall(estafeta(Nome,ID,Zona,MeioT,SumClassf/ClTotais,LE,Penaliz),estafeta(Nome,ID,Zona,MeioT,SumClassf/ClTotais,LE,Penaliz), R).
+estafeta_meioT(TipoMT,R) :- findall(estafeta(N,ID,Z,meio_transporte(Matr,TipoMT,V,Peso),Cl,LE,P),
+                                    estafeta(N,ID,Z,meio_transporte(Matr,TipoMT,V,Peso),Cl,LE,P), R).
 /*... um somatorio de classificacoes*/
-estafeta_sumClassf(SumClassf,R) :- findall(estafeta(Nome,ID,Zona,MeioT,SumClassf/ClTotais,LE,Penaliz),estafeta(Nome,ID,Zona,MeioT,SumClassf/ClTotais,LE,Penaliz), R).
+estafeta_sumClassf(SumClassf,R) :- findall(estafeta(N,ID,Z,MT,SumClassf/ClTotais,LE,P),
+                                           estafeta(N,ID,Z,MT,SumClassf/ClTotais,LE,P), R).
 /*... uma certa numero de classificacoes*/
-estafeta_clTotais(ClTotais,R) :- findall(estafeta(Nome,ID,Zona,MeioT,SumClassf/ClTotais,LE,Penaliz),estafeta(Nome,ID,Zona,MeioT,SumClassf/ClTotais,LE,Penaliz), R).
+estafeta_clTotais(ClTotais,R) :- findall(estafeta(N,ID,Z,MT,SumClassf/ClTotais,LE,P),
+                                         estafeta(N,ID,Z,MT,SumClassf/ClTotais,LE,P), R).
 /*... uma certa lista de entregas */
-estafeta_LEntrega(LE,R) :- findall(estafeta(Nome,ID,Zona,MeioT,SumClassf/ClTotais,LE,Penaliz),estafeta(Nome,ID,Zona,MeioT,SumClassf/ClTotais,LE,Penaliz), R).
+estafeta_LEntrega(LE,R) :- findall(estafeta(Nome,ID,Z,MT,Cl,LE,P),
+                                   estafeta(Nome,ID,Z,MT,Cl,LE,P), R).
 /*... um certo tipo de penalização */
-estafeta_Penaliz(Penaliz,R) :- findall(estafeta(Nome,ID,Zona,MeioT,SumClassf/ClTotais,LE,Penaliz),estafeta(Nome,ID,Zona,MeioT,SumClassf/ClTotais,LE,Penaliz), R).
+estafeta_Penaliz(Penaliz,R) :- findall(estafeta(Nome,ID,Z,MT,Cl,LE,Penaliz),
+                                       estafeta(Nome,ID,Z,MT,Cl,LE,Penaliz), R).
 
 % (2) Meio de transporte -------------------------------------------------------
 
 % Procura todos os meios de transporte por -------------------------------------
 /*... uma certa matricula */
-meioTransporte_matricula(Matr,R) :- findall((Matr,Tipo,Velocidade,Peso),meio_transporte(Matr,Tipo,Velocidade,Peso), R).
+meioTransporte_matricula(Matr,R) :- findall(meio_transporte(Matr,Tipo,V,Peso),
+                                            estafeta(_,_,_,meio_transporte(Matr,Tipo,V,Peso),_,_,_), R).
 /*... um certo tipo */
-meioTransporte_tipo(Tipo,R) :- findall((Matr,Tipo,Velocidade,Peso),meio_transporte(Matr,Tipo,Velocidade,Peso), R).
+meioTransporte_tipo(Tipo,R) :- findall(meio_transporte(Matr,Tipo,V,Peso),
+                                            estafeta(_,_,_,meio_transporte(Matr,Tipo,V,Peso),_,_,_), R).
 /*... uma certa velocidade */
-meioTransporte_vel(Velocidade,R) :- findall((Matr,Tipo,Velocidade,Peso),meio_transporte(Matr,Tipo,Velocidade,Peso), R).
+meioTransporte_vel(V,R) :- findall(meio_transporte(Matr,Tipo,V,Peso),
+                                            estafeta(_,_,_,meio_transporte(Matr,Tipo,V,Peso),_,_,_), R).
 /*... um certo peso */
-meioTransporte_peso(Peso,R) :- findall((Matr,Tipo,Velocidade,Peso),meio_transporte(Matr,Tipo,Velocidade,Peso), R).
+meioTransporte_peso(Peso,R) :- findall(meio_transporte(Matr,Tipo,V,Peso),
+                                            estafeta(_,_,_,meio_transporte(Matr,Tipo,V,Peso),_,_,_), R).
 
 % (3) Pedido -------------------------------------------------------------------
 
 % Procura todos os pedidos por -------------------------------------------------
 /*... cliente */
-pedido_cliente(Cliente,R) :- findall((Cliente,ID,Prazo,Zona,Peso,Preco,Data,Estado), pedido(Cliente,ID,Prazo,Zona,Peso,Preco,Data,Estado), R).
+pedido_cliente(ID_Cli,R) :- findall(LE, 
+                                    estafeta(_,_,_,_,_,LE,_), LAux),
+                            filter_by_IDC(ID_Cli,LAux,[],R).
 /*... prazo */
-pedido_prazo(Prazo,R) :- findall((Cliente,ID,Prazo,Zona,Peso,Preco,Data,Estado), pedido(Cliente,ID,Prazo,Zona,Peso,Preco,Data,Estado), R).
+pedido_prazo(Prazo,R) :- findall(LE, 
+                                estafeta(_,_,_,_,_,LE,_), LAux),
+                         filter_by_Prazo(Prazo,LAux,[],R).
 /*... zona */
-pedido_zona(Zona,R) :- findall((Cliente,ID,Prazo,Zona,Peso,Preco,Data,Estado), pedido(Cliente,ID,Prazo,Zona,Peso,Preco,Data,Estado), R).
+pedido_zona(Zona,R) :- findall(LE, 
+                                estafeta(_,_,_,_,_,LE,_), LAux),
+                         filter_by_Zona(Zona,LAux,[],R).
 /*... peso */
-pedido_peso(Peso,R) :- findall((Cliente,ID,Prazo,Zona,Peso,Preco,Data,Estado), pedido(Cliente,ID,Prazo,Zona,Peso,Preco,Data,Estado), R).
+pedido_peso(Peso,R) :- findall(LE, 
+                                estafeta(_,_,_,_,_,LE,_), LAux),
+                         filter_by_Peso(Peso,LAux,[],R).
 /*... data */
-pedido_data(Data,R) :- findall((Cliente,ID,Prazo,Zona,Peso,Preco,Data,Estado), pedido(Cliente,ID,Prazo,Zona,Peso,Preco,Data,Estado), R).
+pedido_data(Data,R) :- findall(LE, 
+                                estafeta(_,_,_,_,_,LE,_), LAux),
+                         filter_by_DataPed(Data,LAux,[],R).
 /*... estado */
-pedido_estado(Estado,R) :- findall((Cliente,ID,Prazo,Zona,Peso,Preco,Data,Estado), pedido(Cliente,ID,Prazo,Zona,Peso,Preco,Data,Estado), R).
+pedido_estado(Estado,R) :- findall(LE, 
+                                estafeta(_,_,_,_,_,LE,_), LAux),
+                         filter_by_Estado(Estado,LAux,[],R).
 %------------------------------------------------------------------------------%
 
 
@@ -381,7 +405,7 @@ filtra_pedidos_dia([pedido(_,_, A/M/D, _,_,Peso, _, _)|T],Ano/Mes/Dia,Acc,R) :-
 
 
 % Query Extra: Estafeta que mais entregou a um dado pedido_cliente
-%faz o necessário?
+
 estafeta_mais_entregou(Cliente,S):-
 findall(estafeta(Nome, ID, Freg, MT, Classf, LPed, Penaliz), 
             estafeta(Nome, ID, Freg, MT, Classf, LPed, Penaliz),
@@ -451,4 +475,52 @@ writeGreatestDouble([Z/A|T],Acc,Zona,TAcc,AZona):-
     (A>Acc ->
         writeGreatestDouble(T,A,Z,TAcc,AZona);
         writeGreatestDouble(T,Acc,Zona,TAcc,AZona)
+        ).
+
+filter_by_IDC(_,[],R,R).
+filter_by_IDC(ID_Cli,[[]|TS], Acc,R) :- filter_by_IDC(ID_Cli,TS, Acc,R).
+filter_by_IDC(ID_Cli,[[pedido(cliente(NomeCliente,IdCliente),ID_Ped, DataE, R_, Z, Pes, DataP, Est)|T]|TS],Acc,R) :-
+    (ID_Cli == IdCliente->
+        filter_by_IDC(ID_Cli,[T|TS],[pedido(cliente(NomeCliente,IdCliente),ID_Ped, DataE, R_, Z, Pes, DataP, Est)|Acc],R);
+        filter_by_IDC(ID_Cli,[T|TS],Acc,R)
+        ).
+
+filter_by_Prazo(_,[],R,R).
+filter_by_Prazo(Prazo,[[]|TS], Acc,R) :- filter_by_Prazo(Prazo,TS, Acc,R).
+filter_by_Prazo(Prazo,[[pedido(Cl,ID_Ped, DataE, R_, Z, Pes, DataP, Est)|T]|TS],Acc,R) :-
+    (DataE == Prazo->
+        filter_by_Prazo(Prazo,[T|TS],[pedido(Cl,ID_Ped, DataE, R_, Z, Pes, DataP, Est)|Acc],R);
+        filter_by_Prazo(Prazo,[T|TS],Acc,R)
+        ).
+
+filter_by_Zona(_,[],R,R).
+filter_by_Zona(Zona,[[]|TS], Acc,R) :- filter_by_Zona(Zona,TS, Acc,R).
+filter_by_Zona(Zona,[[pedido(Cl,ID_Ped, DataE, R_, Z, Pes, DataP, Est)|T]|TS],Acc,R) :-
+    (Zona == Z->
+        filter_by_Zona(Zona,[T|TS],[pedido(Cl,ID_Ped, DataE, R_, Z, Pes, DataP, Est)|Acc],R);
+        filter_by_Zona(Zona,[T|TS],Acc,R)
+        ).
+
+filter_by_Peso(_,[],R,R).
+filter_by_Peso(Peso,[[]|TS], Acc,R) :- filter_by_Peso(Peso,TS, Acc,R).
+filter_by_Peso(Peso,[[pedido(Cl,ID_Ped, DataE, R_, Z, Pes, DataP, Est)|T]|TS],Acc,R) :-
+    (Peso == Pes->
+        filter_by_Peso(Peso,[T|TS],[pedido(Cl,ID_Ped, DataE, R_, Z, Pes, DataP, Est)|Acc],R);
+        filter_by_Peso(Peso,[T|TS],Acc,R)
+        ).
+
+filter_by_DataPed(_,[],R,R).
+filter_by_DataPed(DataPed,[[]|TS], Acc,R) :- filter_by_DataPed(DataPed,TS, Acc,R).
+filter_by_DataPed(DataPed,[[pedido(Cl,ID_Ped, DataE, R_, Z, Pes, DataP, Est)|T]|TS],Acc,R) :-
+    (DataPed == DataP->
+        filter_by_DataPed(DataPed,[T|TS],[pedido(Cl,ID_Ped, DataE, R_, Z, Pes, DataP, Est)|Acc],R);
+        filter_by_DataPed(DataPed,[T|TS],Acc,R)
+        ).
+
+filter_by_Estado(_,[],R,R).
+filter_by_Estado(Estado,[[]|TS], Acc,R) :- filter_by_Estado(Estado,TS, Acc,R).
+filter_by_Estado(Estado,[[pedido(Cl,ID_Ped, DataE, R_, Z, Pes, DataP, Est)|T]|TS],Acc,R) :-
+    (Est == Estado->
+        filter_by_Estado(Estado,[T|TS],[pedido(Cl,ID_Ped, DataE, R_, Z, Pes, DataP, Est)|Acc],R);
+        filter_by_Estado(Estado,[T|TS],Acc,R)
         ).

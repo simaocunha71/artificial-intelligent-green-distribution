@@ -9,7 +9,7 @@ to do:
 - descobrir como alterar factos
 - decidir se se deve modificar o random dos clientes para ter mais chance de sair
 o mesmo cliente (neste momento nem tem chance)
-- ver que listagens valem a pena ter no trabalho
+- atualizar menus das novas listagens 
 - ficheiro dos invariantes
 - relatorio
 

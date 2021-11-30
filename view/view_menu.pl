@@ -84,7 +84,8 @@ write_lista_estafeta([H|T],Option):-
     (Option == 0 ->
         writeEstafeta(H);
         H = estafeta(Nome,_,_,_,_,_,_),
-        write('Nome do estafeta: '), write(Nome), writeln(';')
+        write('Nome do estafeta: '), write(Nome), writeln(';'),
+        writeln('-----------------------------------------------')
         ),
     write_lista_estafeta(T,Option).
 
@@ -114,3 +115,7 @@ writePedido(pedido(ID_Cl, ID_Ped, DataEnt, Rua, Freg, Peso, DataPed, Est)) :-
   write('Peso: '), write(Peso), write('; '),
   write('Data do pedido: '), write(DataPed), write('; '),
   write('Estado: '), write(Est), writeln('.').
+
+% limpar tela
+limpaT :-
+    write('\033[H\033[2J').
