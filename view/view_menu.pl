@@ -61,7 +61,8 @@ menuQuery_view :-
     write(' 7. Identificar o número total de entregas pelos diferentes meios de transporte, num determinado intervalo de tempo\n'),
     write(' 8. Identificar o número total de entregas pelos estafetas, num determinado intervalo de tempo\n'),
     write(' 9. Calcular o número de encomendas entregues e não entregues pela Green Distribution, num determinado período de tempo\n'),
-    write('10. Calcular o peso total transportado por estafeta num determinado dia\n\n'),
+    write('10. Calcular o peso total transportado por estafeta num determinado dia\n'),
+    write('11. Calcular o peso total transportado por um dado estafeta num determinado dia\n\n'),
     write(' 0.Sair \n').
 
 %-------------------------------------------------------------------------------------%
@@ -88,6 +89,12 @@ write_lista_estafeta([H|T],Option):-
         writeln('-----------------------------------------------')
         ),
     write_lista_estafeta(T,Option).
+
+write_lista_estafPesos([]).
+write_lista_estafPesos([Name/Peso|T]):-
+    writeln(Name),write("-"),write(Peso),write('nl'),
+    write_lista_estafPesos(T).
+
 
 
 writeMT(meio_transporte(ID,T,P,V)) :-

@@ -101,10 +101,11 @@ executarQuery(Option) :-(Option=:=1, estafeta_mais_ecologico_view;
                          Option=:=7, numero_entregas_intervalo_transporte_view;
                          Option=:=8, total_entregas_intervalo_view;
                          Option=:=9, calcula_n_encomendas_view;
-                         Option=:=10, calcula_peso_total_view; 
+                         Option=:=10, calcula_pesos_totais_view;
+                         Option=:=11, calcula_peso_total_view; 
                     
                          Option=:=0, true,write('BYE'),nl,halt
-                         ),main.
+                         ).
 
 /*-------------------------------------------------------------------------- */
 /*------------------------------ Listagens --------------------------------- */
@@ -310,6 +311,12 @@ calcula_n_encomendas_view :-
     write('Encomendas efetuadas: '),
     writeln(N).    
 
+calcula_pesos_totais_view :-
+    writeln('Data: '),
+    read(Data),
+    calcula_pesos(Data,L),
+    write_lista_estafPesos(L).
+
 calcula_peso_total_view :-
     writeln('Id do estafeta: '),
     read(ID),
@@ -318,3 +325,6 @@ calcula_peso_total_view :-
     calcula_peso_total(ID, Data, P),
     write('Peso total: '),
     writeln(P).
+
+
+    
