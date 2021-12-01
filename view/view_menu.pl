@@ -92,7 +92,7 @@ write_lista_estafeta([H|T],Option):-
 
 write_lista_estafPesos([]).
 write_lista_estafPesos([Name/Peso|T]):-
-    writeln(Name),write("-"),write(Peso),write('nl'),
+    nl,write(Name),write(" - "),write(Peso),nl,
     write_lista_estafPesos(T).
 
 
