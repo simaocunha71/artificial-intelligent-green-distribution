@@ -97,9 +97,8 @@ evolucao_backup(TA,TN) :-
     retract(TA),
     findall(I,+TN::I,Li),
     add_bc(TN),
-    (not(teste(Li)) ->
-        assert(TA)
-    ).
+    teste(Li).
+        
 
     
 
@@ -480,12 +479,17 @@ dentroZona([H|T],Zona) :-
 
 %------------------------------------------------------------------------------%
 %Auxiliares
-valida_data((Ano, Mes, Dia)) :-
+valida_data((Ano/Mes/Dia)) :-
     Ano>0,
     Mes>0,
     Mes<13,
     Dia>0,
     Dia<32.
+
+clienteUnico([],_).
+clienteUnico([H|T],N) :-
+    H == N,
+    clienteUnico(T,N).
 
 
 data_no_intervalo(DataLo,DataHi,Data,S):-

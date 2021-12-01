@@ -58,6 +58,7 @@ pesoMax(bicicleta, 5).
 pesoMax(carro, 100).
 
 morada("ruilhe","Rua 1").
+morada(braga,rua1).
 %...
 
 % meio_transporte: tipo, velocidade, peso -> { V, F }
@@ -65,7 +66,7 @@ morada("ruilhe","Rua 1").
 
 
 % pedido: cliente,id_do_pedido,valor_da_encomenda,prazo,zona,peso,preco,data,estado -> { V, F }
-%pedido(58, 537988, 2021/2/14, "Rua 6", "priscos", 100, 2021/2/11, 1).
+%pedido(58, 537988, 2021/2/14, "Rua 6",evolucao_backup(estafeta(gerundio,123,Braga,meio_transporte(43, carro, 25, 100),5/1,[],0),estafeta(gerundio,123,Braga,meio_transporte(43, carro, 25, 100),5/1,[pedido(cliente(simao,1),105489,2021/11/26,"Rua 19",Braga,21,2021/11/18,1)],0)). "priscos", 100, 2021/2/11, 1).
 
 /*
 estafeta("tina",814885,"semelhe",meio_transporte(23700,carro,25,100),438/171,

@@ -147,8 +147,6 @@ addEstafeta :-
     writeln('Penalização: '), read(P),
     evolucao(estafeta(Nome,ID,Z,MT,SC/NC,[],P)).
 
-%evolucao(estafeta(gerundio,123,Braga,meio_transporte(43, carro, 25, 100),5/1,[],0)).
-%evolucao_backup(estafeta(gerundio,123,Braga,meio_transporte(43, carro, 25, 100),5/1,[],0),estafeta(gerundio,123,Braga,meio_transporte(43, carro, 25, 100),5/1,[pedido(cliente(simao,1),105489,2021/11/26,"Rua 19","Braga",21,2021/11/18,1)],0)).
 
 addPedidoAoEstafeta :-
     writeln('ID do estafeta: '), read(ID),
@@ -158,7 +156,10 @@ addPedidoAoEstafeta :-
        R = [H|_],
        H = estafeta(Nome,ID,Z,MT,Cl,LE,Penaliz),
        addPedido(E),
-       evolucao_backup(H,estafeta(Nome,ID,Z,MT,Cl,[E|LE],Penaliz));
+       evolucao_backup(H,estafeta(Nome,ID,Z,MT,Cl,[E|LE],Penaliz)),
+       (estafeta(_,ID,_,_,_,_,_) -> 
+         evolucao(H)
+        );
        writeln('Estafeta não existe') %ir para menu anterior
     ).
 

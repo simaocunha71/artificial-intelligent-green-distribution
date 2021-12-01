@@ -32,10 +32,10 @@
                               L == 1).
 
 % pedido associado a uma morada correta
-+pedido(_,_,_,Rua,Zona,_,_,_) :: (morada(Rua,Zona)).
++pedido(_,_,_,Rua,Zona,_,_,_) :: (morada(Zona,Rua)).
 
 % data de entrega tem de ser posterior à data de pedido
-+pedido(_,DataE,_,_,_,_,DataP,_) :: (valida_data(DataE),
++pedido(_,_,DataE,_,_,_,DataP,_) :: (valida_data(DataE),
                                      valida_data(DataP),
                                      data_valor(DataE,VE),
                                      data_valor(DataP,VP),
@@ -51,10 +51,11 @@
                               pesoMax(T,P)
                               ).
 
-+cliente(_,ID) :: (integer(ID),
-                   findall(ID,cliente(_,ID),S),
-                           length(S,L),
-                           L == 1).
++cliente(Nome,ID) :: (integer(ID),
+                     findall(X,cliente(X,ID),S),
+                     length(S,L),
+                     (L == 1;
+                     clienteUnico(S,Nome))).
                         
 %--------------------------- Remoção ---------------------------
 -estafeta(Nome,ID,Z,MT,Cl,LE,Penaliz) :: (findall(estafeta(Nome,ID,Z,MT,Cl,LE,Penaliz),
