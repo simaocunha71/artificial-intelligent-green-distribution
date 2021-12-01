@@ -407,7 +407,7 @@ calcula_pesos(Data,ListaRes):-
 
 
 calcula_pesosAux(_,[],_).
-calcula_pesosAux(Data,[estafeta(Nome,ID,_,_,_,_,_)|T],ListaRes):-
+calcula_pesosAux(Data,[estafeta(Nome,ID,_,_,_,_,_)|T],[ListaRes]):-
     calcula_peso_total(ID,Data,PesoTotal),
     calcula_pesosAux(Data,T,[Nome/PesoTotal|T]).
     
@@ -419,7 +419,7 @@ calcula_peso_total(ID, Data, PesoTotal) :-
     
 
 filtra_pedidos_dia([],_,R,R).
-filtra_pedidos_dia([pedido(_,_,_, _,_,Peso,A/M/D, _)|T],Ano/Mes/Dia,Acc,R) :-
+filtra_pedidos_dia([pedido(_,_,_,A/M/D,_,Peso,_,_)|T],Ano/Mes/Dia,Acc,R) :-
     ((A == Ano , M == Mes , D == Dia) ->
         NewAcc is Acc+Peso,
         filtra_pedidos_dia(T,Ano/Mes/Dia,NewAcc,R);

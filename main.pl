@@ -12,7 +12,7 @@ run_opt(2) :-
 
 run_opt(3) :- write('Adeus\n'), halt.
 
-run_opt(_) :- write('Opção Inválida\n').
+run_opt(_) :- write('Opção Inválida'),menuPrincipal,read(Choice),run_opt(Choice).
 
 
 main :-
@@ -105,7 +105,7 @@ executarQuery(Option) :-(Option=:=1, estafeta_mais_ecologico_view;
                          Option=:=11, calcula_peso_total_view; 
                     
                          Option=:=0, true,write('BYE'),nl,halt
-                         ),main.
+                         ).
 
 /*-------------------------------------------------------------------------- */
 /*------------------------------ Listagens --------------------------------- */
