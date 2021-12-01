@@ -403,13 +403,13 @@ calcula_pesos(Data,ListaRes):-
     findall(estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,T,Vel,Peso), SomatClassf/NumClassf, LPed, Penaliz), 
             estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,T,Vel,Peso), SomatClassf/NumClassf, LPed, Penaliz),
             ListaEstaf),
-    calcula_pesosAux(Data,ListaEstaf,ListaRes).
+    calcula_pesosAux(Data,ListaEstaf,[],ListaRes).
 
 
-calcula_pesosAux(_,[],_).
-calcula_pesosAux(Data,[estafeta(Nome,ID,_,_,_,_,_)|T],[ListaRes]):-
+calcula_pesosAux(_,[],S,S).
+calcula_pesosAux(Data,[estafeta(Nome,ID,_,_,_,_,_)|T],Sol,ListaRes):-
     calcula_peso_total(ID,Data,PesoTotal),
-    calcula_pesosAux(Data,T,[Nome/PesoTotal|T]).
+    calcula_pesosAux(Data,T,[Nome/PesoTotal|Sol],ListaRes).
     
 
 
@@ -419,7 +419,7 @@ calcula_peso_total(ID, Data, PesoTotal) :-
     
 
 filtra_pedidos_dia([],_,R,R).
-filtra_pedidos_dia([pedido(_,_,_,A/M/D,_,Peso,_,_)|T],Ano/Mes/Dia,Acc,R) :-
+filtra_pedidos_dia([pedido(_,_, A/M/D, _,_,Peso, _, _)|T],Ano/Mes/Dia,Acc,R) :-
     ((A == Ano , M == Mes , D == Dia) ->
         NewAcc is Acc+Peso,
         filtra_pedidos_dia(T,Ano/Mes/Dia,NewAcc,R);
