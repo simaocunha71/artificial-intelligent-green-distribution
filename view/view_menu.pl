@@ -3,10 +3,15 @@ menuPrincipal :-
     write('\n'),
     write('-----------MENU-------------\n'),
     write('Seleciona um número (não te esqueças do ponto final):\n'),
-    write('>   1. Efetuar listagens\n'),
-    write('>   2. Efetuar querys\n'),
-    write('>   3. Sair\n').
+    write('>   1. Adicionar termos\n'),
+    write('>   2. Efetuar listagens\n'),
+    write('>   3. Efetuar querys\n\n'),
+    write('>   4. Sair\n').
 %-------------------------------------------------------------------------------------%
+menuAddTermos :-
+    write('Pretendes adicionar:\n'),
+    write('> ').
+
 menuListas :-
     write('\n'),
     write('-----------Listagens-----------\n'),

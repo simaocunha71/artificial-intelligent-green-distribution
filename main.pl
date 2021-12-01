@@ -106,6 +106,61 @@ executarQuery(Option) :-(Option=:=1, estafeta_mais_ecologico_view;
                     
                          Option=:=0, true,write('BYE'),nl,halt
                          ).
+/*-------------------------------------------------------------------------- */
+/*------------------------------ Adicionar termos -------------------------- */
+/*-------------------------------------------------------------------------- */
+
+addMorada(Zona,Rua) :-
+    writeln('Zona: '), read(Zona),
+    writeln('Rua: '), read(Rua),
+    evolucao(morada(Zona,Rua)).
+
+addMT(meio_transporte(ID,Tipo,V,P)) :-
+    writeln('ID do transporte: '), read(ID),
+    writeln('Tipo do transporte: '), read(Tipo),
+    writeln('Velocidade média do transporte: '), read(V),
+    writeln('Peso máximo do transporte: '), read(P),
+    evolucao(meio_transporte(ID,Tipo,V,P)).
+
+addCliente(cliente(Nome,ID)) :-
+    writeln('Nome do cliente: '), read(Nome),
+    writeln('ID do cliente: '), read(ID),
+    evolucao(cliente(Nome,ID)). 
+
+addPedido(pedido(C,ID,DataE,R,Z,Peso,DataP,Est)) :-
+    addCliente(C),
+    writeln('ID do pedido: '), read(ID),
+    writeln('Data de entrega: '), read(DataE),
+    addMorada(Z,R),
+    writeln('Peso: '), read(Peso),
+    writeln('Data do pedido: '), read(DataP),
+    writeln('Estado: '), read(Est),
+    evolucao(pedido(C,ID,DataE,R,Z,Peso,DataP,Est)).
+
+addEstafeta :-
+    writeln('Nome: '), read(Nome),
+    writeln('ID do estafeta: '), read(ID),
+    writeln('Zona: '), read(Z),
+    addMT(MT),
+    writeln('Somatório de classificações '), read(SC),
+    writeln('Número de classificações: '), read(NC),
+    writeln('Penalização: '), read(P),
+    evolucao(estafeta(Nome,ID,Z,MT,SC/NC,[],P)).
+
+%evolucao(estafeta(gerundio,123,Braga,meio_transporte(43, carro, 25, 100),5/1,[],0)).
+%evolucao_backup(estafeta(gerundio,123,Braga,meio_transporte(43, carro, 25, 100),5/1,[],0),estafeta(gerundio,123,Braga,meio_transporte(43, carro, 25, 100),5/1,[pedido(cliente(simao,1),105489,2021/11/26,"Rua 19","Braga",21,2021/11/18,1)],0)).
+
+addPedidoAoEstafeta :-
+    writeln('ID do estafeta: '), read(ID),
+    estafeta_id(ID,R),
+    length(R, L),
+    (L == 1 ->
+       R = [H|_],
+       H = estafeta(Nome,ID,Z,MT,Cl,LE,Penaliz),
+       addPedido(E),
+       evolucao_backup(H,estafeta(Nome,ID,Z,MT,Cl,[E|LE],Penaliz));
+       writeln('Estafeta não existe') %ir para menu anterior
+    ).
 
 /*-------------------------------------------------------------------------- */
 /*------------------------------ Listagens --------------------------------- */
@@ -116,7 +171,7 @@ estafeta_nome_view :-
     write('Nome:'),
     read(Nome),
     estafeta_nome(Nome, R),
-    write_lista_estafeta(R,0).
+    write_lista_estafeta(R, 0).
 
 estafeta_id_view :-
     write('ID:'),

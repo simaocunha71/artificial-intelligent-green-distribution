@@ -89,24 +89,30 @@ adiciona_classificacao(estafeta(A, B, C, D, E, Somatorio/Total, F), Classificaca
     NovoSomatorio is Somatorio+Classificacao,
     NovoTotal is Total+1.
 %------------------------------------------
-add_estafeta(E) :- add_pred(E).
-add_pred(T) :- findall(I,+T::I,Li),
+evolucao(T) :- findall(I,+T::I,Li),
                add_bc(T),
                teste(Li).
+
+evolucao_backup(TA,TN) :-
+    retract(TA),
+    findall(I,+TN::I,Li),
+    add_bc(TN),
+    (not(teste(Li)) ->
+        assert(TA)
+    ).
+
+    
 
 add_bc(T) :- assert(T).
 add_bc(T) :- retract(T),!, fail.
 
-
 %------------------------------------------
-remove_estafeta(E) :- remove_pred(E).
-remove_pred(T) :- findall(I,-T::I,Li),
+involucao(T) :- findall(I,-T::I,Li),
                   remove_bc(T),
                   teste(Li).
-%- remocao: T -> {V,F}
+
 remove_bc(T) :- retract(T),!, fail.
 
-%- teste: L -> {V,F}
 teste([]).
 teste([I|Is]):-I,teste(Is).
 
@@ -460,7 +466,19 @@ vezes_entregue(Cliente,[pedido(cliente(_,IdCliente),_, _, _, _, _, _, _)|T],X,R)
         ).
 % estafeta_mais_entregou(6).
 %------------------------------------------------------------------------------%
+pesoMenores([],_).
+pesoMenores([H|T],PMax) :-
+    H = pedido(_,_, _, _, _, P, _, _),
+    P =< PMax,
+    pesoMenores(T,PMax).
 
+dentroZona([],_).
+dentroZona([H|T],Zona) :-
+    H = pedido(_,_, _, _, Z, _, _, _),
+    Z == Zona,
+    dentroZona(T,Zona).
+
+%------------------------------------------------------------------------------%
 %Auxiliares
 valida_data((Ano, Mes, Dia)) :-
     Ano>0,
@@ -469,19 +487,6 @@ valida_data((Ano, Mes, Dia)) :-
     Dia>0,
     Dia<32.
 
-is_transporte(moto).
-is_transporte(bicicleta).
-is_transporte(carro).
-
-valida_transporte(moto, V, P) :-
-    V >= 0, V =< 35,
-    P >= 0, P =< 20.
-valida_transporte(bicicleta,V,P) :-
-    V >= 0, V =< 10, 
-    P >= 0, P =< 5.
-valida_transporte(carro,V,P) :-
-    V >= 0, V =< 25,
-    P >= 0, P =< 100.
 
 data_no_intervalo(DataLo,DataHi,Data,S):-
     data_valor(DataLo, Lo),

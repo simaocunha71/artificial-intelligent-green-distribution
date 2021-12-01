@@ -45,6 +45,21 @@ estafeta("palmeira",14305,"cabreiros",meio_transporte(115571,moto,35,20),225/87,
 estafeta("raul",79381,"ruilhe",meio_transporte(744395,carro,25,100),83/43,[pedido(cliente(jo,50),222048,2021/12/23,"Rua 6","ruilhe",7,2021/12/22,0),pedido(cliente(jose,17),345770,2021/3/21,"Rua 18","ruilhe",57,2021/3/14,1),pedido(cliente(ricardo,32),86165,2021/6/28,"Rua 1","ruilhe",4,2021/6/15,1),pedido(cliente(zeferino,37),901822,2021/4/18,"Rua 5","ruilhe",40,2021/4/2,0),pedido(cliente(francisco,46),63393,2021/3/3,"Rua 1","ruilhe",39,2021/3/1,1),pedido(cliente(simao,1),161628,2021/5/24,"Rua 1","ruilhe",85,2021/5/24,0),pedido(cliente(goncalo,8),61172,2021/1/21,"Rua 8","ruilhe",39,2021/1/12,1),pedido(cliente(pedro,9),38501,2021/6/19,"Rua 3","ruilhe",76,2021/6/3,1),pedido(cliente(fabio,11),186691,2021/4/25,"Rua 19","ruilhe",14,2021/4/2,1),pedido(cliente(geremias,6),99058,2021/5/21,"Rua 10","ruilhe",98,2021/5/1,0),pedido(cliente(miguel,14),39822,2021/11/15,"Rua 4","ruilhe",39,2021/11/5,1),pedido(cliente(rui,23),514673,2021/10/13,"Rua 19","ruilhe",85,2021/10/8,0)],0).
 estafeta("tina",814885,"semelhe",meio_transporte(23700,carro,25,100),438/171,[pedido(cliente(joaquim,41),947217,2021/7/16,"Rua 13","semelhe",78,2021/7/14,1),pedido(cliente(runlo,31),72870,2021/12/9,"Rua 12","semelhe",75,2021/12/9,1),pedido(cliente(amilcar,49),528424,2021/12/25,"Rua 3","semelhe",83,2021/12/6,1),pedido(cliente(tiago,2),737008,2021/10/8,"Rua 19","semelhe",81,2021/10/7,0),pedido(cliente(tobias,26),240573,2021/8/19,"Rua 3","semelhe",45,2021/8/19,0),pedido(cliente(guilherme,16),762157,2021/8/12,"Rua 11","semelhe",29,2021/8/12,1),pedido(cliente(patricio,43),600391,2021/1/25,"Rua 7","semelhe",53,2021/1/23,0),pedido(cliente(pedro,9),44158,2021/8/18,"Rua 0","semelhe",39,2021/8/10,1),pedido(cliente(ruben,45),248011,2021/11/25,"Rua 3","semelhe",2,2021/11/21,1),pedido(cliente(simao,1),105489,2021/11/26,"Rua 19","semelhe",21,2021/11/18,1),pedido(cliente(raul,27),857761,2021/11/28,"Rua 16","semelhe",100,2021/11/19,0),pedido(cliente(rogerio,15),432772,2021/9/24,"Rua 18","semelhe",90,2021/9/14,0),pedido(cliente(paulo,7),19795,2021/7/23,"Rua 8","semelhe",58,2021/7/6,0),pedido(cliente(joao,3),375344,2021/12/13,"Rua 0","semelhe",66,2021/12/8,0),pedido(cliente(simao,1),955987,2021/9/7,"Rua 1","semelhe",7,2021/9/6,0),pedido(cliente(diogo,24),423674,2021/7/31,"Rua 8","semelhe",99,2021/7/30,1),pedido(cliente(gil,12),637496,2021/10/5,"Rua 15","semelhe",39,2021/10/1,0)],0).
 
+transporte(moto).
+transporte(bicicleta).
+transporte(carro).
+
+velMed(moto, 35).
+velMed(bicicleta, 10). 
+velMed(carro, 25).
+
+pesoMax(moto, 20).
+pesoMax(bicicleta, 5).
+pesoMax(carro, 100).
+
+morada("ruilhe","Rua 1").
+%...
+
 % meio_transporte: tipo, velocidade, peso -> { V, F }
 %meio_transporte(417169, carro, 25, 100).
 
