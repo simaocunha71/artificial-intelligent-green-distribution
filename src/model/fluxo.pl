@@ -12,11 +12,9 @@ evolucao(T) :- findall(I,+T::I,Li),
                add_bc(T),
                teste(Li).
 
-evolucao_backup(TA,TN) :-
+evolucao_troca(TA,TN) :-
     retract(TA),
-    findall(I,+TN::I,Li),
-    add_bc(TN),
-    teste(Li).
+    evolucao(TN).
         
 
     

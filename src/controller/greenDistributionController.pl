@@ -187,7 +187,7 @@ addPedidoAoEstafeta :-
        R = [H|_],
        H = estafeta(Nome,ID,Z,MT,Cl,LE,Penaliz),
        addPedido(E),
-       evolucao_backup(H,estafeta(Nome,ID,Z,MT,Cl,[E|LE],Penaliz)),
+       evolucao_troca(H,estafeta(Nome,ID,Z,MT,Cl,[E|LE],Penaliz)),
        (estafeta(_,ID,_,_,_,_,_) -> 
          evolucao(H)
         );
