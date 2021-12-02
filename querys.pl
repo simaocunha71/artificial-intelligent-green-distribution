@@ -58,7 +58,11 @@ meioTransporte_peso(Peso,R) :- findall(meio_transporte(Matr,Tipo,V,Peso),
 % (3) Pedido -------------------------------------------------------------------
 
 % Procura todos os pedidos por -------------------------------------------------
-/*... cliente */
+
+pedido_id(ID,R) :- findall(LE, 
+                            estafeta(_,_,_,_,_,LE,_), LAux),
+                    filter_by_ID(ID,LAux,[],R).
+
 pedido_cliente(ID_Cli,R) :- findall(LE, 
                                     estafeta(_,_,_,_,_,LE,_), LAux),
                             filter_by_IDC(ID_Cli,LAux,[],R).
@@ -66,7 +70,11 @@ pedido_cliente(ID_Cli,R) :- findall(LE,
 pedido_prazo(Prazo,R) :- findall(LE, 
                                 estafeta(_,_,_,_,_,LE,_), LAux),
                          filter_by_Prazo(Prazo,LAux,[],R).
-/*... zona */
+
+pedido_rua(Rua,R) :- findall(LE, 
+                                estafeta(_,_,_,_,_,LE,_), LAux),
+                         filter_by_Rua(Rua,LAux,[],R).
+
 pedido_zona(Zona,R) :- findall(LE, 
                                 estafeta(_,_,_,_,_,LE,_), LAux),
                          filter_by_Zona(Zona,LAux,[],R).
@@ -511,6 +519,14 @@ writeGreatestDouble([Z/A|T],Acc,Zona,TAcc,AZona):-
         writeGreatestDouble(T,Acc,Zona,TAcc,AZona)
         ).
 
+filter_by_ID(_,[],R,R).
+filter_by_ID(ID,[[]|TS], Acc,R) :- filter_by_ID(ID,TS, Acc,R).
+filter_by_ID(ID,[[pedido(Cli,ID_Ped, DataE, R_, Z, Pes, DataP, Est)|T]|TS],Acc,R) :-
+    (ID == ID_Ped->
+        filter_by_ID(ID,[T|TS],[pedido(Cli,ID_Ped, DataE, R_, Z, Pes, DataP, Est)|Acc],R);
+        filter_by_ID(ID,[T|TS],Acc,R)
+        ).
+
 filter_by_IDC(_,[],R,R).
 filter_by_IDC(ID_Cli,[[]|TS], Acc,R) :- filter_by_IDC(ID_Cli,TS, Acc,R).
 filter_by_IDC(ID_Cli,[[pedido(cliente(NomeCliente,IdCliente),ID_Ped, DataE, R_, Z, Pes, DataP, Est)|T]|TS],Acc,R) :-
@@ -525,6 +541,14 @@ filter_by_Prazo(Prazo,[[pedido(Cl,ID_Ped, DataE, R_, Z, Pes, DataP, Est)|T]|TS],
     (DataE == Prazo->
         filter_by_Prazo(Prazo,[T|TS],[pedido(Cl,ID_Ped, DataE, R_, Z, Pes, DataP, Est)|Acc],R);
         filter_by_Prazo(Prazo,[T|TS],Acc,R)
+        ).
+
+filter_by_Rua(_,[],R,R).
+filter_by_Rua(Rua,[[]|TS], Acc,R) :- filter_by_Rua(Rua,TS, Acc,R).
+filter_by_Rua(Rua,[[pedido(Cl,ID_Ped, DataE, R_, Z, Pes, DataP, Est)|T]|TS],Acc,R) :-
+    (R == Rua->
+        filter_by_Rua(Rua,[T|TS],[pedido(Cl,ID_Ped, DataE, R_, Z, Pes, DataP, Est)|Acc],R);
+        filter_by_Rua(Rua,[T|TS],Acc,R)
         ).
 
 filter_by_Zona(_,[],R,R).

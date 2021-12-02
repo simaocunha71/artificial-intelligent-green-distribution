@@ -1,18 +1,27 @@
 :- consult(view/view_menu).
 :- consult(querys).
 
-
 run_opt(1) :-
     limpaT,
-    menuListagens.
+    menuAddTermos.
 
 run_opt(2) :-
     limpaT,
+    menuListagens.
+
+run_opt(3) :-
+    limpaT,
     menuQuerys.
 
-run_opt(3) :- write('Adeus\n'), halt.
+run_opt(0) :-
+    write('\033\[31m----------Adeus!------------\033\[0m\n'),
+    halt.
 
-run_opt(_) :- write('Opção Inválida'),menuPrincipal,read(Choice),run_opt(Choice).
+run_opt(_) :- limpaT,
+              write('Opção Inválida'),
+              menuPrincipal,
+              read(Choice),
+              run_opt(Choice).
 
 
 main :-
@@ -22,7 +31,7 @@ main :-
     run_opt(Choice).
 
 
-% ------------------------------ Menu auxiliar ------------------------------------------
+% ------------------------------ Menu listagens ------------------------------------------
 
 menuListagens :-
     menuListas,
@@ -50,7 +59,7 @@ executarListagem(Option) :-(Option=:=1, menuListagens_estafetas;
                             Option=:=2, menuListagens_MT;
                             Option=:=3, menuListagens_Pedidos;
                     
-                            Option=:=0, true,write('BYE'),nl,halt
+                            Option=:=0, main,limpaT
                             ),menuListagens.
 
 executarListagem_estafetas(Option) :-(Option=:=1, estafeta_nome_view;
@@ -62,7 +71,7 @@ executarListagem_estafetas(Option) :-(Option=:=1, estafeta_nome_view;
                                       Option=:=7, estafeta_LEntrega_view;
                                       Option=:=8, estafeta_Penaliz_view; 
                     
-                                      Option=:=0, true,write('BYE'),nl,halt
+                                      Option=:=0, limpaT,menuListagens
                                       ),menuListagens_estafetas.
 
 
@@ -71,49 +80,67 @@ executarListagem_mt(Option) :-(Option=:=1, meioTransporte_matricula_view;
                                Option=:=3, meioTransporte_vel_view;
                                Option=:=4, meioTransporte_peso_view;
                     
-                               Option=:=0, true,write('BYE'),nl,halt
+                               Option=:=0, limpaT,menuListagens
                               ),menuListagens_MT.
 
 
-executarListagem_pedidos(Option) :-( Option=:=1, pedido_cliente_view;
-                                     Option=:=2, pedido_prazo_view;
-                                     Option=:=3, pedido_zona_view;  
-                                     Option=:=4, pedido_peso_view;
-                                     Option=:=5, pedido_data_view; 
-                                     Option=:=6, pedido_estado_view;   
+executarListagem_pedidos(Option) :-( Option=:=1, pedido_id_view;
+                                     Option=:=2, pedido_cliente_view;
+                                     Option=:=3, pedido_prazo_view;  
+                                     Option=:=4, pedido_rua_view;
+                                     Option=:=5, pedido_zona_view; 
+                                     Option=:=6, pedido_peso_view;   
+                                     Option=:=7, pedido_data_view; 
+                                     Option=:=8, pedido_estado_view; 
                     
-                                     Option=:=0, true,write('BYE'),nl,halt
+                                     Option=:=0, limpaT,menuListagens
                                     ),menuListagens_Pedidos.
 
-menuQuerys :-
-    limpaT,
-    menuQuery_view,
-    read(Option),
-    executarQuery(Option).
-
-
-executarQuery(Option) :-(Option=:=1, estafeta_mais_ecologico_view;
-                         Option=:=2, estafeta_entregaram_cliente;
-                         Option=:=3, clientes_servidos_view;
-                         Option=:=4, calcular_valor_faturado_dia_view;
-                         Option=:=5, maior_volume_entregas_zona_view;
-                         Option=:=6, classificacao_media_view;
-                         Option=:=7, numero_entregas_intervalo_transporte_view;
-                         Option=:=8, total_entregas_intervalo_view;
-                         Option=:=9, calcula_n_encomendas_view;
-                         Option=:=10, calcula_pesos_totais_view;
-                         Option=:=11, calcula_peso_total_view; 
-                    
-                         Option=:=0, true,write('BYE'),nl,halt
-                         ).
 /*-------------------------------------------------------------------------- */
 /*------------------------------ Adicionar termos -------------------------- */
 /*-------------------------------------------------------------------------- */
+
+menuAddTermos :-
+    limpaT,
+    menuAddTermosGeral,
+    read(Option),
+    executarAdd(Option).
+
+executarAdd(Option) :-( Option=:=1, (writeln('Zona: '), read(Zona),
+                                     writeln('Rua: '), read(Rua),
+                                     evolucao(morada(Zona,Rua)),limpaT);
+
+                        Option=:=2, (writeln('ID do transporte: '), read(ID),
+                                     writeln('Tipo do transporte: '), read(Tipo),
+                                     writeln('Velocidade média do transporte: '), read(V),
+                                     writeln('Peso máximo do transporte: '), read(P),
+                                     evolucao(meio_transporte(ID,Tipo,V,P)),limpaT);
+
+                        Option=:=3, (writeln('Nome do cliente: '), read(Nome),
+                                     writeln('ID do cliente: '), read(ID),
+                                     evolucao(cliente(Nome,ID)),limpaT);  
+
+                        Option=:=4, (addCliente(C),
+                                     writeln('ID do pedido: '), read(ID),
+                                     writeln('Data de entrega: '), read(DataE),
+                                     addMorada(Z,R),
+                                     writeln('Peso: '), read(Peso),
+                                     writeln('Data do pedido: '), read(DataP),
+                                     writeln('Estado: '), read(Est),
+                                     evolucao(pedido(C,ID,DataE,R,Z,Peso,DataP,Est)),limpaT);
+
+                        Option=:=5, addEstafeta,limpaT; 
+
+                        Option=:=6, addPedidoAoEstafeta,limpaT;   
+                    
+                        Option=:=0, main,limpaT
+                    ),menuAddTermos.
 
 addMorada(Zona,Rua) :-
     writeln('Zona: '), read(Zona),
     writeln('Rua: '), read(Rua),
     evolucao(morada(Zona,Rua)).
+
 
 addMT(meio_transporte(ID,Tipo,V,P)) :-
     writeln('ID do transporte: '), read(ID),
@@ -160,8 +187,31 @@ addPedidoAoEstafeta :-
        (estafeta(_,ID,_,_,_,_,_) -> 
          evolucao(H)
         );
-       writeln('Estafeta não existe') %ir para menu anterior
+       writeln('Estafeta não existe') 
     ).
+
+% ------------------------------ Menu queries ------------------------------------------
+
+menuQuerys :-
+    menuQuery_view,
+    read(Option),
+    executarQuery(Option).
+
+
+executarQuery(Option) :-(Option=:=1, estafeta_mais_ecologico_view;
+                         Option=:=2, estafeta_entregaram_cliente;
+                         Option=:=3, clientes_servidos_view;
+                         Option=:=4, calcular_valor_faturado_dia_view;
+                         Option=:=5, maior_volume_entregas_zona_view;
+                         Option=:=6, classificacao_media_view;
+                         Option=:=7, numero_entregas_intervalo_transporte_view;
+                         Option=:=8, total_entregas_intervalo_view;
+                         Option=:=9, calcula_n_encomendas_view;
+                         Option=:=10, calcula_pesos_totais_view;
+                         Option=:=11, calcula_peso_total_view; 
+                    
+                         Option=:=0, main, limpaT
+                         ), menuQuerys.
 
 /*-------------------------------------------------------------------------- */
 /*------------------------------ Listagens --------------------------------- */
@@ -184,13 +234,13 @@ estafeta_zona_view :-
     write('Zona:'),
     read(Zona),
     estafeta_zona(Zona, R),
-    write_lista_estafeta(R,0).
+    write_lista_estafeta(R,1).
 
 estafeta_meioT_view :-
     write('Meio de transporte (escreve apenas o tipo):'),
     read(MTranp),
     estafeta_meioT(MTranp, R),
-    write_lista_estafeta(R,0).
+    write_lista_estafeta(R,1).
 
 estafeta_sumClassf_view :-
     write('Somatório das classificações:'),
@@ -206,15 +256,15 @@ estafeta_clTotais_view :-
 
 estafeta_LEntrega_view :-
     write('Lista de entregas: '),
-    read(ClTotal),
-    estafeta_clTotais(ClTotal, R),
+    read(LE),
+    estafeta_LEntrega(LE, R),
     write_lista_estafeta(R,0).
 
 estafeta_Penaliz_view :-
     write('Nível de penalização: '),
-    read(ClTotal),
-    estafeta_clTotais(ClTotal, R),
-    write_lista_estafeta(R,0).
+    read(P),
+    estafeta_Penaliz(P, R),
+    write_lista_estafeta(R,1).
 
 
 /*------------------------------ Meios de transporte ---------------------------------- */
@@ -245,42 +295,54 @@ meioTransporte_peso_view :-
 
 
 /*------------------------------ Pedidos ---------------------------------- */
+pedido_id_view :-
+    write('ID do pedido: '),
+    read(ID),
+    pedido_cliente(ID, R),
+    printPedidos(R).
+
 pedido_cliente_view :-
-    write('Cliente: '),
-    read(Cliente),
-    pedido_cliente(Cliente, R),
-    writeln(R).
+    write('ID do cliente: '),
+    read(ClienteID),
+    pedido_cliente(ClienteID, R),
+    printPedidos(R).
 
 
 pedido_prazo_view :-
     write('Prazo: '),
     read(Prazo),
     pedido_prazo(Prazo, R),
-    writeln(R).
+    printPedidos(R).
+
+pedido_rua_view :-
+    write('Rua: '),
+    read(Rua),
+    pedido_rua(Rua, R),
+    printPedidos(R).
 
 pedido_zona_view :-
     write('Zona: '),
     read(Zona),
     pedido_zona(Zona, R),
-    writeln(R).
+    printPedidos(R).
 
 pedido_peso_view :-
     write('Peso: '),
     read(Peso),
     pedido_peso(Peso, R),
-    writeln(R).
+    printPedidos(R).
 
 pedido_data_view :-
     write('Data: '),
     read(Data),
     pedido_data(Data, R),
-     writeln(R).
+    printPedidos(R).
 
 pedido_estado_view :-
     write('Estado: '),
     read(Estado),
     pedido_estado(Estado, R),
-    writeln(R).
+    printPedidos(R).
 
 /*-------------------------------------------------------------------------- */
 /*------------------------------ Querys ------------------------------------ */
