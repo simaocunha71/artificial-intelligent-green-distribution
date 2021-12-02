@@ -35,16 +35,16 @@ estafeta_Penaliz(Penaliz,R) :- findall(estafeta(Nome,ID,Z,MT,Cl,LE,Penaliz),
 % Procura todos os meios de transporte por -------------------------------------
 /*... uma certa matricula */
 meioTransporte_matricula(Matr,R) :- findall(meio_transporte(Matr,Tipo,V,Peso),
-                                            estafeta(_,_,_,meio_transporte(Matr,Tipo,V,Peso),_,_,_), R).
+                                            meio_transporte(Matr,Tipo,V,Peso), R).
 /*... um certo tipo */
 meioTransporte_tipo(Tipo,R) :- findall(meio_transporte(Matr,Tipo,V,Peso),
-                                            estafeta(_,_,_,meio_transporte(Matr,Tipo,V,Peso),_,_,_), R).
+                                            meio_transporte(Matr,Tipo,V,Peso), R).
 /*... uma certa velocidade */
 meioTransporte_vel(V,R) :- findall(meio_transporte(Matr,Tipo,V,Peso),
-                                            estafeta(_,_,_,meio_transporte(Matr,Tipo,V,Peso),_,_,_), R).
+                                            meio_transporte(Matr,Tipo,V,Peso), R).
 /*... um certo peso */
 meioTransporte_peso(Peso,R) :- findall(meio_transporte(Matr,Tipo,V,Peso),
-                                            estafeta(_,_,_,meio_transporte(Matr,Tipo,V,Peso),_,_,_), R).
+                                            meio_transporte(Matr,Tipo,V,Peso), R).
 
 % (3) Pedido -------------------------------------------------------------------
 

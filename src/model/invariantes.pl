@@ -2,6 +2,7 @@
 
 :- op(900, xfy, '::').
 :- ensure_loaded(queries).
+:- consult(base_de_conhecimento).
 
 %--------------------------- Adição ---------------------------
 % estafetas com ids unicos

@@ -1,3 +1,3 @@
-:-consult(controller/greenDistributionController).
+:-consult(src/controller/greenDistributionController).
 
 main:- runApp().

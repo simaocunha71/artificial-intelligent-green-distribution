@@ -105,6 +105,11 @@ pesoMax(moto, 20).
 pesoMax(bicicleta, 5).
 pesoMax(carro, 100).
 
+meio_transporte(1,bicicleta,10,5).
+meio_transporte(2,bicicleta,10,5).
+meio_transporte(3,moto,35,20).
+meio_transporte(4,carro,25,100).
+meio_transporte(5,carro,25,100).
 
 cliente("Simão",1).
 cliente("Tiago",2).

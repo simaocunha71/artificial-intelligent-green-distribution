@@ -13,9 +13,8 @@ menuAddTermosGeral :-
     write('> 1. Morada\n'),
     write('> 2. Meio de transporte\n'),
     write('> 3. Cliente\n'),
-    write('> 4. Pedido\n'),
-    write('> 5. Estafeta\n'),
-    write('> 6. Pedido ao estafeta\n\n'),
+    write('> 4. Estafeta\n'),
+    write('> 5. Pedido ao estafeta\n\n'),
     write('> 0. Sair\n').
 
 
