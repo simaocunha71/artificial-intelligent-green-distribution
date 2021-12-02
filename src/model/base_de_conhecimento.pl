@@ -175,13 +175,13 @@ morada("Ruilhe","Rua 18").
 morada("Ruilhe","Rua 19").
 
 
-morada("Rua 0","Lomar").
-morada("Rua 1","Lomar").
-morada("Rua 3","Lomar").
-morada("Rua 9","Lomar").
-morada("Rua 10","Lomar").
-morada("Rua 11","Lomar").
-morada("Rua 16","Lomar").
+morada("Lomar","Rua 0").
+morada("Lomar","Rua 1").
+morada("Lomar","Rua 3").
+morada("Lomar","Rua 9").
+morada("Lomar","Rua 10").
+morada("Lomar","Rua 11").
+morada("Lomar","Rua 16").
 
 morada("Cabreiros","Rua 1").
 morada("Cabreiros","Rua 4").
