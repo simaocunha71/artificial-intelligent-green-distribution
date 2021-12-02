@@ -37,8 +37,6 @@ pedido(
     estado -> concluido ou nao concluido
 )
 */
-
-% estafeta: nome, id, zona, meio_transporte, somatorio_classificacoes/classificacoes_totais, lista das entregas  -> { V, F }
 estafeta("Amilcar",1,"Ferreiros",meio_transporte(1,bicicleta,10,5),317/141,[pedido(cliente("Joaquim",41),1,2021/6/28,"Rua 18","ferreiros",1,2021/6/20,0),
                                                                                       pedido(cliente("Jo",50),2,2021/3/14,"Rua 10","ferreiros",1,2021/3/4,1),
                                                                                       pedido(cliente("Tobias",26),3,2021/7/9,"Rua 11","ferreiros",5,2021/7/5,0)],
@@ -111,8 +109,6 @@ pesoMax(carro, 100).
 cliente("Simão",1).
 cliente("Tiago",2).
 cliente("João",3).
-%4
-%5
 cliente("Geremias",6).
 cliente("Paulo",7).
 cliente("Gonçalo",8).
@@ -120,48 +116,27 @@ cliente("Pedro",9).
 cliente("Duarte",10).
 cliente("Fábio",11).
 cliente("Gil",12).
-%13
 cliente("Miguel",14).
 cliente("Rogério",15).
 cliente("Guilherme",16).
 cliente("José",17).
-%18
-%19
 cliente("Barbosa",20).
-%21
-%22
 cliente("Rui",23).
 cliente("Diogo",24).
 cliente("Tomás",25).
 cliente("Tobias",26).
 cliente("Raul",27).
 cliente("Jorge",28).
-%29
-%30
 cliente("Runlo",31).
 cliente("Ricardo",32).
-%33
-%34
-%35
-%36
 cliente("Zeferino",37).
-%38
 cliente("Bruno",39).
-%40
 cliente("Joaquim",41).
-%42
 cliente("Patrício",43).
-%44
 cliente("Rúben",45).
 cliente("Francisco",46).
-%47
-%48
 cliente("Amilcar",49).
 cliente("Jo",50).
-
-
-
-
 
 
 morada("Ruilhe","Rua 1").
@@ -173,8 +148,6 @@ morada("Ruilhe","Rua 8").
 morada("Ruilhe","Rua 10").
 morada("Ruilhe","Rua 18").
 morada("Ruilhe","Rua 19").
-
-
 morada("Lomar","Rua 0").
 morada("Lomar","Rua 1").
 morada("Lomar","Rua 3").
@@ -182,15 +155,12 @@ morada("Lomar","Rua 9").
 morada("Lomar","Rua 10").
 morada("Lomar","Rua 11").
 morada("Lomar","Rua 16").
-
 morada("Cabreiros","Rua 1").
 morada("Cabreiros","Rua 4").
 morada("Cabreiros","Rua 10").
-
 morada("Ferreiros","Rua 10").
 morada("Ferreiros","Rua 11").
 morada("Ferreiros","Rua 18").
-
 morada("Semelhe","Rua 0").
 morada("Semelhe","Rua 1").
 morada("Semelhe","Rua 3").
@@ -205,35 +175,3 @@ morada("Semelhe","Rua 18").
 morada("Semelhe","Rua 19").
 
 
-
-%...
-
-% meio_transporte: tipo, velocidade, peso -> { V, F }
-%meio_transporte(417169, carro, 25, 100).
-
-
-% pedido: cliente,id_do_pedido,valor_da_encomenda,prazo,zona,peso,preco,data,estado -> { V, F }
-%pedido(58, 537988, 2021/2/14, "Rua 6",evolucao_backup(estafeta(gerundio,123,Braga,meio_transporte(43, carro, 25, 100),5/1,[],0),estafeta(gerundio,123,Braga,meio_transporte(43, carro, 25, 100),5/1,[pedido(cliente(simao,1),105489,2021/11/26,"Rua 19",Braga,21,2021/11/18,1)],0)). "priscos", 100, 2021/2/11, 1).
-
-/*
-estafeta("tina",814885,"semelhe",meio_transporte(23700,carro,25,100),438/171,
-[pedido(cliente(joaquim,41),947217,2021/7/16,"Rua 13","semelhe",78,2021/7/14,1),
- pedido(cliente(runlo,31),72870,2021/12/9,"Rua 12","semelhe",75,2021/12/9,1),
- pedido(cliente(amilcar,49),528424,2021/12/25,"Rua 3","semelhe",83,2021/12/6,1),
- pedido(cliente(tiago,2),737008,2021/10/8,"Rua 19","semelhe",81,2021/10/7,0),
- pedido(cliente(tobias,26),240573,2021/8/19,"Rua 3","semelhe",45,2021/8/19,0),
- pedido(cliente(guilherme,16),762157,2021/8/12,"Rua 11","semelhe",29,2021/8/12,1),
- pedido(cliente(patricio,43),600391,2021/1/25,"Rua 7","semelhe",53,2021/1/23,0),
- pedido(cliente(pedro,9),44158,2021/8/18,"Rua 0","semelhe",39,2021/8/10,1),
- pedido(cliente(ruben,45),248011,2021/11/25,"Rua 3","semelhe",2,2021/11/21,1),
- pedido(cliente(simao,1),105489,2021/11/26,"Rua 19","semelhe",21,2021/11/18,1),
- pedido(cliente(raul,27),857761,2021/11/28,"Rua 16","semelhe",100,2021/11/19,0),
- pedido(cliente(rogerio,15),432772,2021/9/24,"Rua 18","semelhe",90,2021/9/14,0),
- pedido(cliente(paulo,7),19795,2021/7/23,"Rua 8","semelhe",58,2021/7/6,0),
- pedido(cliente(joao,3),375344,2021/12/13,"Rua 0","semelhe",66,2021/12/8,0),
- pedido(cliente(simao,1),955987,2021/9/7,"Rua 1","semelhe",7,2021/9/6,0),
- pedido(cliente(diogo,24),423674,2021/7/31,"Rua 8","semelhe",99,2021/7/30,1),
- pedido(cliente(gil,12),637496,2021/10/5,"Rua 15","semelhe",39,2021/10/1,0)],0).
-
-
-*/

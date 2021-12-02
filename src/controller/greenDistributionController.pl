@@ -4,6 +4,11 @@
 :- consult(src/model/fluxo).
 :- consult(src/model/invariantes).
 
+:- (dynamic estafeta/7). 
+:- (dynamic meio_transporte/4). 
+:- (dynamic pedido/8). 
+:- (dynamic morada/2). 
+:- (dynamic cliente/2). 
 
 run_opt(1) :-
     limpaT,
@@ -159,24 +164,29 @@ addCliente(cliente(Nome,ID)) :-
     evolucao(cliente(Nome,ID)). 
 
 addPedido(pedido(C,ID,DataE,R,Z,Peso,DataP,Est)) :-
-    addCliente(C),
+    writeln('Nome do cliente: '), read(Nome),
+    writeln('ID do cliente: '), read(IDC),
     writeln('ID do pedido: '), read(ID),
     writeln('Data de entrega: '), read(DataE),
-    addMorada(Z,R),
+    writeln('Zona: '), read(Zona),
+    writeln('Rua: '), read(Rua),
     writeln('Peso: '), read(Peso),
     writeln('Data do pedido: '), read(DataP),
     writeln('Estado: '), read(Est),
-    evolucao(pedido(C,ID,DataE,R,Z,Peso,DataP,Est)).
+    evolucao(pedido(cliente(Nome,IDC),ID,DataE,Rua,Zona,Peso,DataP,Est)).
 
 addEstafeta :-
     writeln('Nome: '), read(Nome),
     writeln('ID do estafeta: '), read(ID),
     writeln('Zona: '), read(Z),
-    addMT(MT),
+    writeln('ID do transporte: '), read(IDT),
+    writeln('Tipo do transporte: '), read(Tipo),
+    writeln('Velocidade média do transporte: '), read(V),
+    writeln('Peso máximo do transporte: '), read(P),
     writeln('Somatório de classificações '), read(SC),
     writeln('Número de classificações: '), read(NC),
     writeln('Penalização: '), read(P),
-    evolucao(estafeta(Nome,ID,Z,MT,SC/NC,[],P)).
+    evolucao(estafeta(Nome,ID,Z,meio_transporte(IDT,Tipo,V,P),SC/NC,[],P)).
 
 
 addPedidoAoEstafeta :-
@@ -273,9 +283,9 @@ estafeta_Penaliz_view :-
 
 /*------------------------------ Meios de transporte ---------------------------------- */
 meioTransporte_matricula_view :-
-    write('Tipo de transporte:'),
-    read(Tipo),
-    meioTransporte_tipo(Tipo, R),
+    write('Matricula do transporte:'),
+    read(Matricula),
+    meioTransporte_matricula(Matricula, R),
     printMts(R).
 
 meioTransporte_tipo_view :-

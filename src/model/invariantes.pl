@@ -72,3 +72,7 @@
                                        meio_transporte(ID,T,P,V),S),
                                        length(S,L),
                                        L > 0).
+-cliente(N,ID) ::(findall(cliente(N,ID),
+                                cliente(N,ID),S),
+                                length(S,L),
+                                L > 0).
