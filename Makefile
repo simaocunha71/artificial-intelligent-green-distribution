@@ -1,7 +1,7 @@
 CC=swipl
-FLAGS=--goal=main --stand_alone=true --quiet
-EXE=main
-FILE=main.pl
+FLAGS=--goal=main --stand_alone=true 
+EXE=prog
+FILE=src/greenDistributionApp.pl
 
 $(EXE): $(FILE)
 	$(CC) $(FLAGS) -o $@ -c $^
