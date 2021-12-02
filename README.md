@@ -6,14 +6,9 @@ to do:
 
 
 
-- descobrir como alterar factos
-- decidir se se deve modificar o random dos clientes para ter mais chance de sair
-o mesmo cliente (neste momento nem tem chance)
-- atualizar menus das novas listagens 
-- ficheiro dos invariantes
-- relatorio
 
 
+(eu tiago é que tenho a última palavra a dizer).
 Done : 
 
 - identificar o estafeta mais ecologico 
@@ -26,3 +21,9 @@ Done :
 - identificar o numero total de entregas pelos estafetos num determinado tempo
 - calcular o numero de entregas concluidas e nao concluidas num determinado tempo
 - identificar as zonas com maior volume de entregas
+- descobrir como alterar factos
+- decidir se se deve modificar o random dos clientes para ter mais chance de sair
+o mesmo cliente (neste momento nem tem chance)
+- atualizar menus das novas listagens 
+- ficheiro dos invariantes
+- relatorio
