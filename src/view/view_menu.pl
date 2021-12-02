@@ -110,11 +110,11 @@ write_lista_estafPesos([Name/Peso|T]):-
 
 
 
-writeMT(meio_transporte(ID,T,P,V)) :-
+writeMT(meio_transporte(ID,T,V,P)) :-
   write('> Matricula: '), write(ID), write('; '),  
   write('Tipo: '), write(T), write('; '),
-  write('Peso máximo: '), write(P), write('; '),
-  write('Velocidade máxima: '), writeln(V).
+  write('Velocidade média: '), write(V),write('; '),
+  write('Peso máximo: '), writeln(P).
 
 printMts([]).
 printMts([H|T]) :-

@@ -1,5 +1,6 @@
 :- consult(src/view/view_menu).
 :- consult(src/model/queries).
+:- consult(src/model/base_de_conhecimento).
 :- consult(src/model/listagens).
 :- consult(src/model/fluxo).
 :- consult(src/model/invariantes).
@@ -147,7 +148,7 @@ addCliente:-
     writeln('ID do cliente: '), read(ID),
     evolucao(cliente(Nome,ID)). 
 
-addPedido(pedido(C,ID,DataE,R,Z,Peso,DataP,Est)) :-
+addPedido :-
     writeln('Nome do cliente: '), read(Nome),
     writeln('ID do cliente: '), read(IDC),
     writeln('ID do pedido: '), read(ID),
@@ -180,7 +181,19 @@ addPedidoAoEstafeta :-
     (L == 1 ->
        R = [H|_],
        H = estafeta(Nome,ID,Z,MT,Cl,LE,Penaliz),
-       addPedido(E),
+
+           writeln('Nome do cliente: '), read(NomeC),
+           writeln('ID do cliente: '), read(IDC),
+           writeln('ID do pedido: '), read(IDP),
+           writeln('Data de entrega: '), read(DataE),
+           writeln('Zona: '), read(Zona),
+           writeln('Rua: '), read(Rua),
+           writeln('Peso: '), read(Peso),
+           writeln('Data do pedido: '), read(DataP),
+           writeln('Estado: '), read(Est),
+           E = pedido(cliente(NomeC,IDC),IDP,DataE,Rua,Zona,Peso,DataP,Est),
+           evolucao(E),
+
        evolucao_troca(H,estafeta(Nome,ID,Z,MT,Cl,[E|LE],Penaliz)),
        (estafeta(_,ID,_,_,_,_,_) -> 
          evolucao(H)
