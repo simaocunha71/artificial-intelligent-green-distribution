@@ -1,5 +1,6 @@
 :- consult(src/view/view_menu).
 :- consult(src/model/queries).
+:- consult(src/model/base_de_conhecimento).
 :- consult(src/model/listagens).
 :- consult(src/model/fluxo).
 :- consult(src/model/invariantes).
@@ -115,28 +116,13 @@ menuAddTermos :-
     read(Option),
     executarAdd(Option).
 
-executarAdd(Option) :-( Option=:=1, (writeln('Zona: '), read(Zona),
-                                     writeln('Rua: '), read(Rua),
-                                     evolucao(morada(Zona,Rua)),limpaT);
+executarAdd(Option) :-( Option=:=1, addMorada,limpaT;
 
-                        Option=:=2, (writeln('ID do transporte: '), read(ID),
-                                     writeln('Tipo do transporte: '), read(Tipo),
-                                     writeln('Velocidade média do transporte: '), read(V),
-                                     writeln('Peso máximo do transporte: '), read(P),
-                                     evolucao(meio_transporte(ID,Tipo,V,P)),limpaT);
+                        Option=:=2, addMT,limpaT;
 
-                        Option=:=3, (writeln('Nome do cliente: '), read(Nome),
-                                     writeln('ID do cliente: '), read(ID),
-                                     evolucao(cliente(Nome,ID)),limpaT);  
+                        Option=:=3, addCliente,limpaT;  
 
-                        Option=:=4, (addCliente(C),
-                                     writeln('ID do pedido: '), read(ID),
-                                     writeln('Data de entrega: '), read(DataE),
-                                     addMorada(Z,R),
-                                     writeln('Peso: '), read(Peso),
-                                     writeln('Data do pedido: '), read(DataP),
-                                     writeln('Estado: '), read(Est),
-                                     evolucao(pedido(C,ID,DataE,R,Z,Peso,DataP,Est)),limpaT);
+                        Option=:=4, addPedido,limpaT;
 
                         Option=:=5, addEstafeta,limpaT; 
 
@@ -145,25 +131,25 @@ executarAdd(Option) :-( Option=:=1, (writeln('Zona: '), read(Zona),
                         Option=:=0, runApp,limpaT
                     ),menuAddTermos.
 
-addMorada(Zona,Rua) :-
+addMorada :-
     writeln('Zona: '), read(Zona),
     writeln('Rua: '), read(Rua),
     evolucao(morada(Zona,Rua)).
 
 
-addMT(meio_transporte(ID,Tipo,V,P)) :-
+addMT :-
     writeln('ID do transporte: '), read(ID),
     writeln('Tipo do transporte: '), read(Tipo),
     writeln('Velocidade média do transporte: '), read(V),
     writeln('Peso máximo do transporte: '), read(P),
     evolucao(meio_transporte(ID,Tipo,V,P)).
 
-addCliente(cliente(Nome,ID)) :-
+addCliente :-
     writeln('Nome do cliente: '), read(Nome),
     writeln('ID do cliente: '), read(ID),
     evolucao(cliente(Nome,ID)). 
 
-addPedido(pedido(C,ID,DataE,R,Z,Peso,DataP,Est)) :-
+addPedido :-
     writeln('Nome do cliente: '), read(Nome),
     writeln('ID do cliente: '), read(IDC),
     writeln('ID do pedido: '), read(ID),
@@ -196,7 +182,19 @@ addPedidoAoEstafeta :-
     (L == 1 ->
        R = [H|_],
        H = estafeta(Nome,ID,Z,MT,Cl,LE,Penaliz),
-       addPedido(E),
+
+           writeln('Nome do cliente: '), read(NomeC),
+           writeln('ID do cliente: '), read(IDC),
+           writeln('ID do pedido: '), read(IDP),
+           writeln('Data de entrega: '), read(DataE),
+           writeln('Zona: '), read(Zona),
+           writeln('Rua: '), read(Rua),
+           writeln('Peso: '), read(Peso),
+           writeln('Data do pedido: '), read(DataP),
+           writeln('Estado: '), read(Est),
+           E = pedido(cliente(NomeC,IDC),IDP,DataE,Rua,Zona,Peso,DataP,Est),
+           evolucao(E),
+
        evolucao_troca(H,estafeta(Nome,ID,Z,MT,Cl,[E|LE],Penaliz)),
        (estafeta(_,ID,_,_,_,_,_) -> 
          evolucao(H)
