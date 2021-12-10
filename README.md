@@ -1,29 +1,16 @@
 # IA_Projeto
 
-
-
 to do:
+• Gerar os circuitos de entrega, caso existam, que cubram um determinado território
+(e.g. rua ou freguesia);
+• Representação dos diversos pontos de entrega em forma de grafo, tendo em conta
+que apenas se devem ter localizações (rua e/ou freguesia) disponíveis;
+• Identificar quais os circuitos com maior número de entregas (por volume e peso);
+• Comparar circuitos de entrega tendo em conta os indicadores de produtividade;
+• Escolher o circuito mais rápido (usando o critério da distância);
+• Escolher o circuito mais ecológico (usando um critério de tempo);
+• Gerar os circuitos de entrega, caso existam, que cubram um determinado território
+(e.g. rua ou freguesia);
+• ...
 
-
-
-
-
-(eu tiago é que tenho a última palavra a dizer).
-Done : 
-
-- identificar o estafeta mais ecologico 
-- identificar estafeta que mais entregou a um dado cliente
-- identificar clientes servidos por um dado estafeta
-- calcular valor faturado pela empresa em um dado dia
-- calcular classificacao media de um estafeta
-- calcular numero de entregas para cada transporte num intervalo de tempo
-- calcular o peso total transportado por um estafeta em um dia
-- identificar o numero total de entregas pelos estafetos num determinado tempo
-- calcular o numero de entregas concluidas e nao concluidas num determinado tempo
-- identificar as zonas com maior volume de entregas
-- descobrir como alterar factos
-- decidir se se deve modificar o random dos clientes para ter mais chance de sair
-o mesmo cliente (neste momento nem tem chance)
-- atualizar menus das novas listagens 
-- ficheiro dos invariantes
-- relatorio
+• relatorio
