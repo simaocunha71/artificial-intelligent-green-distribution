@@ -1,24 +1,24 @@
 % ------------------------ Circuitos ------------------------------ %
 
 % ------------------------ Ruilhe ------------------------------ %
-aresta("Rua 1", "Rua 8", 15).
-aresta("Rua 1","Rua 18",14).
+aresta("Ruilhe","Rua 1", "Rua 8", 15).
+aresta("Ruilhe","Rua 1","Rua 18",14).
 
-aresta("Rua 8","Rua 10",5).
-aresta("Rua 8","Rua 3" ,14).
-aresta("Rua 8","Rua 5" ,10).
-aresta("Rua 8","Rua 6" ,14).
+aresta("Ruilhe","Rua 8","Rua 10",5).
+aresta("Ruilhe","Rua 8","Rua 3" ,14).
+aresta("Ruilhe","Rua 8","Rua 5" ,10).
+aresta("Ruilhe","Rua 8","Rua 6" ,14).
 
-aresta("Rua 3","Rua 4" ,1).
-aresta("Rua 3","Rua 6" ,8).
+aresta("Ruilhe","Rua 3","Rua 4" ,1).
+aresta("Ruilhe","Rua 3", "Rua 6", 8).
 
-aresta("Rua 4","Rua 19",18).
+aresta("Ruilhe","Rua 4","Rua 19",18).
 
-aresta("Rua 5","Rua 10",6).
-aresta("Rua 5","Rua 6" ,14).
+aresta("Ruilhe","Rua 5","Rua 10",6).
+aresta("Ruilhe","Rua 5","Rua 6" ,14).
 
-aresta("Rua 18","Rua 19",15).
-aresta("Rua 18","Rua 6", 7).
+aresta("Ruilhe","Rua 18","Rua 19",15).
+aresta("Ruilhe","Rua 18","Rua 6", 7).
 
 vertice("Rua 1", 3/10).
 vertice("Rua 3", 1/9).
