@@ -5,7 +5,8 @@ menuPrincipal :-
     write('Seleciona um número (não te esqueças do ponto final):\n'),
     write('> 1. Adicionar termos\n'),
     write('> 2. Efetuar listagens\n'),
-    write('> 3. Efetuar querys\n\n'),
+    write('> 3. Efetuar querys\n'),
+    write('> 4. Efetuar travessias\n\n'),
     write('> 0. Sair\n').
 %-------------------------------------------------------------------------------------%
 menuAddTermosGeral :-
@@ -140,3 +141,14 @@ writePedido(pedido(cliente(NomeC,ID_Cl), ID_Ped, DataEnt, Rua, Freg, Peso, DataP
 % limpar tela
 limpaT :-
     write('\033[H\033[2J').
+
+menuTravessias_view :-
+    write('\n'),
+    write('\033\[32m-----------Grafos-----------\033\[0m\n'),
+    write(' Selecione a zona para observar o respetivo grafo: \n'),
+    write(' 1. Ruilhe\n'),
+    write(' 2. Lomar\n'),
+    write(' 3. Semelhe\n'),
+    write(' 4. Cabreiros\n'),
+    write(' 5. Ferreiros\n\n'),
+    write(' 0. Sair \n').

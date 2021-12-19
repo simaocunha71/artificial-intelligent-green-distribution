@@ -1,4 +1,5 @@
 :- consult(src/view/view_menu).
+:- consult(src/view/grafos_view).
 :- consult(src/model/queries).
 :- consult(src/model/base_de_conhecimento).
 :- consult(src/model/listagens).
@@ -23,6 +24,10 @@ run_opt(2) :-
 run_opt(3) :-
     limpaT,
     menuQueries.
+
+run_opt(4) :-
+    limpaT,
+    menuTravessias.
 
 run_opt(0) :-
     write('\033\[31m----------Adeus!------------\033\[0m\n'),
@@ -454,4 +459,21 @@ calcula_peso_total_view :-
     write('Peso total: '),
     writeln(P).
 
+/*-------------------------------------------------------------------------- */
+/*------------------------------ Travessias -------------------------------- */
+/*-------------------------------------------------------------------------- */
 
+menuTravessias :-
+    menuTravessias_view,
+    read(Option),
+    listaG(Option).
+
+listaG(Option) :-(Option=:=1, limpaT,print_Ruilhe;
+                  Option=:=2, limpaT,print_Lomar;
+                  Option=:=3, limpaT,print_Semelhe;
+                  Option=:=4, limpaT,print_Cabreiros;
+                  Option=:=5, limpaT,print_Ferreiros;
+
+                    
+                  Option=:=0, runApp, limpaT
+                  ), menuTravessias.
