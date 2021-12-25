@@ -6,7 +6,7 @@ menuPrincipal :-
     write('> 1. Adicionar termos\n'),
     write('> 2. Efetuar listagens\n'),
     write('> 3. Efetuar querys\n'),
-    write('> 4. Efetuar travessias\n\n'),
+    write('> 4. Efetuar pesquisas\n\n'),
     write('> 0. Sair\n').
 %-------------------------------------------------------------------------------------%
 menuAddTermosGeral :-
@@ -79,17 +79,55 @@ menuQuery_view :-
     write(' 0. Sair \n').
 
 %-------------------------------------------------------------------------------------%
+menuTravessias_view :-
+    write('\n'),
+    write('\033\[32m-----------Pesquisa-----------\033\[0m\n'),
+    write(' Selecione o tipo de pesquisa que pretende efetuar: \n'),
+    write(' > Não informada:\n'),
+    write('   1. Profundidade(DFS)\n'),
+    write('   2. Largura(BFS)\n'),
+    write('   3. Busca Iterativa Limitada em Profundidade\n'),
+    write(' > Informada:\n'),
+    write('   4. Gulosa\n'),
+    write('   5. A*\n\n'),
+    write(' 0. Sair \n').
+
+menuGrafos_view :-
+    write('\n'),
+    write('\033\[32m-----------Circuitos-----------\033\[0m\n'),
+    write(' Selecione a zona para efetuar a pesquisa: \n'),
+    write(' 1. Ruilhe\n'),
+    write(' 2. Lomar\n'),
+    write(' 3. Semelhe\n'),
+    write(' 4. Cabreiros\n'),
+    write(' 5. Ferreiros\n\n'),
+    write(' 0. Sair \n').
+
+%-------------------------------------------------------------------------------------%
 %                           Pretty print dos termos 
 %-------------------------------------------------------------------------------------%
 
-writeEstafeta(estafeta(Nome,ID,Zona,MeioT,CL,LE,Penaliz)) :-
-  write('Nome do estafeta: '), write(Nome), writeln(';'),
-  write('ID: '), write(ID), writeln(';'),
-  write('Zona: '), write(Zona), writeln(';'),
-  writeln('Meio de transporte: '), writeMT(MeioT), writeln(';'),
-  write('Somatório/Número de classificações: '), write(CL), writeln(';'),
-  writeln('Pedidos associados: '), printPedidos(LE),
-  write('Nível de penalização: '), write(Penaliz), write('\n').
+writeEstafeta(estafeta(Nome, ID, Zona, MeioT, CL, LE, Penaliz)) :-
+    write('Nome do estafeta: '),
+    write(Nome),
+    writeln(;),
+    write('ID: '),
+    write(ID),
+    writeln(;),
+    write('Zona: '),
+    write(Zona),
+    writeln(;),
+    writeln('Meio de transporte: '),
+    writeMT(MeioT),
+    writeln(;),
+    write('Somatório/Número de classificações: '),
+    write(CL),
+    writeln(;),
+    writeln('Pedidos associados: '),
+    printPedidos(LE),
+    write('Nível de penalização: '),
+    write(Penaliz),
+    write('\n').
 
 
 write_lista_estafeta([],_).
@@ -138,17 +176,11 @@ writePedido(pedido(cliente(NomeC,ID_Cl), ID_Ped, DataEnt, Rua, Freg, Peso, DataP
   write('Data do pedido: '), write(DataPed), write('; '),
   write('Estado: '), write(Est), writeln('.').
 
+printPath([]).
+printPath([H]) :- write("\033\[32m"), write(H), writeln("\033\[0m").
+printPath([H|T]) :-
+   write("\033\[32m"), write(H), write(" -> "), printPath(T).
+
 % limpar tela
 limpaT :-
     write('\033[H\033[2J').
-
-menuTravessias_view :-
-    write('\n'),
-    write('\033\[32m-----------Grafos-----------\033\[0m\n'),
-    write(' Selecione a zona para observar o respetivo grafo: \n'),
-    write(' 1. Ruilhe\n'),
-    write(' 2. Lomar\n'),
-    write(' 3. Semelhe\n'),
-    write(' 4. Cabreiros\n'),
-    write(' 5. Ferreiros\n\n'),
-    write(' 0. Sair \n').

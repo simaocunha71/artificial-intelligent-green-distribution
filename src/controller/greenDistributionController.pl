@@ -5,6 +5,7 @@
 :- consult(src/model/listagens).
 :- consult(src/model/fluxo).
 :- consult(src/model/invariantes).
+:- consult(src/model/pesquisas).
 :- consult(src/model/base_de_conhecimento).
 
 :- (dynamic estafeta/7). 
@@ -465,15 +466,30 @@ calcula_peso_total_view :-
 
 menuTravessias :-
     menuTravessias_view,
+    read(TipoPesq),
+    menuGrafos_view,
     read(Option),
-    listaG(Option).
+    selectZona(Option, TipoPesq).
 
-listaG(Option) :-(Option=:=1, limpaT,print_Ruilhe;
-                  Option=:=2, limpaT,print_Lomar;
-                  Option=:=3, limpaT,print_Semelhe;
-                  Option=:=4, limpaT,print_Cabreiros;
-                  Option=:=5, limpaT,print_Ferreiros;
 
-                    
-                  Option=:=0, runApp, limpaT
-                  ), menuTravessias.
+selectZona(TipoPesq,Option) :-(Option=:=1, limpaT, print_Ruilhe    ,zonaPesq_view("Ruilhe",TipoPesq);
+                               Option=:=2, limpaT, print_Lomar     ,zonaPesq_view("Lomar",TipoPesq);
+                               Option=:=3, limpaT, print_Cabreiros ,zonaPesq_view("Cabreiros",TipoPesq);
+                               Option=:=4, limpaT, print_Ferreiros ,zonaPesq_view("Ferreiros",TipoPesq);
+                               Option=:=5, limpaT, print_Semelhe   ,zonaPesq_view("Semelhe",TipoPesq);
+
+                               Option=:=0, runApp, limpaT
+                               ), menuTravessias.
+
+zonaPesq_view(Zona,TipoPesq) :-
+    writeln('Escreva o ponto de partida:'),
+    read(Partida),
+    writeln('Escreva o ponto de chegada'),
+    read(Chegada),
+    (TipoPesq=:=1, dfs(Zona,Partida,Chegada,Path);
+     TipoPesq=:=2, bfs(Zona,Partida,Chegada,Path);
+     TipoPesq=:=3, bilp(Zona,Partida,Chegada,Path);
+     TipoPesq=:=4, gulosa(Zona,Partida,Chegada,Path);
+     TipoPesq=:=5, a_estrela(Zona,Partida,Chegada,Path)
+    ),
+    printPath(Path).

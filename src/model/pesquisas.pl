@@ -29,5 +29,12 @@ bfs2(Zona, Dest, [LA|Outros], Cam) :-
     bfs2(Zona, Dest, Todos, Cam).
 
 %------Busca Iterativa Limitada em Profundidade -----
+bilp(_,_,_,_):- write("Procura não implementada").
 
 % https://edisciplinas.usp.br/pluginfile.php/4121068/mod_resource/content/1/ia_6_busca_nao_informada_parte1.pdf
+
+%------Pesquisa gulosa-----
+gulosa(_,_,_,_) :- write("Procura não implementada").
+
+%------Pesquisa A*-----
+a_estrela(_,_,_,_) :- write("Procura não implementada").
