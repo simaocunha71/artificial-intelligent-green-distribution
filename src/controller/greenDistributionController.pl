@@ -469,14 +469,14 @@ menuTravessias :-
     read(TipoPesq),
     menuGrafos_view,
     read(Option),
-    selectZona(Option, TipoPesq).
+    selectZona(TipoPesq,Option).
 
 
 selectZona(TipoPesq,Option) :-(Option=:=1, limpaT, print_Ruilhe    ,zonaPesq_view("Ruilhe",TipoPesq);
                                Option=:=2, limpaT, print_Lomar     ,zonaPesq_view("Lomar",TipoPesq);
-                               Option=:=3, limpaT, print_Cabreiros ,zonaPesq_view("Cabreiros",TipoPesq);
-                               Option=:=4, limpaT, print_Ferreiros ,zonaPesq_view("Ferreiros",TipoPesq);
-                               Option=:=5, limpaT, print_Semelhe   ,zonaPesq_view("Semelhe",TipoPesq);
+                               Option=:=3, limpaT, print_Semelhe   ,zonaPesq_view("Semelhe",TipoPesq);
+                               Option=:=4, limpaT, print_Cabreiros ,zonaPesq_view("Cabreiros",TipoPesq);
+                               Option=:=5, limpaT, print_Ferreiros ,zonaPesq_view("Ferreiros",TipoPesq);
 
                                Option=:=0, runApp, limpaT
                                ), menuTravessias.
