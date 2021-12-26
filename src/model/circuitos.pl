@@ -22,6 +22,9 @@ aresta("Ruilhe","Rua 5","Rua 6" ,14).
 aresta("Ruilhe","Rua 18","Rua 19",15).
 aresta("Ruilhe","Rua 18","Rua 6", 7).
 
+aresta("Ruilhe", "Centro de distribuições", "Rua 8", 7).
+aresta("Ruilhe", "Centro de distribuições", "Rua 3", 7).
+
 vertice("Ruilhe", "Rua 1", 3/10).
 vertice("Ruilhe", "Rua 3", 1/9).
 vertice("Ruilhe", "Rua 4", 3/8).
@@ -31,6 +34,7 @@ vertice("Ruilhe", "Rua 8", 4/8).
 vertice("Ruilhe", "Rua 10", 6/8).
 vertice("Ruilhe", "Rua 18", 9/9).
 vertice("Ruilhe", "Rua 19", 7/2).
+vertice("Ruilhe", "Centro de distribuições", 4/2).
 
 
 % ------------------------ Lomar ------------------------------ %
@@ -46,8 +50,11 @@ aresta("Lomar","Rua 1", "Rua 11", 11).
 aresta("Lomar","Rua 3","Rua 16", 6).
 
 aresta("Lomar","Rua 9", "Rua 10", 7).
-aresta("Lomar","Rua 9", "Rua 11", 10).
-aresta("Lomar","Rua 9", "Rua 3", 15).
+aresta("Lomar", "Rua 9", "Rua 11", 10).
+aresta("Lomar", "Rua 9", "Rua 3", 15).
+
+aresta("Lomar", "Centro de distribuições", "Rua 3", 2).
+aresta("Lomar", "Centro de distribuições", "Rua 10", 3).
 
 vertice("Lomar","Rua 0", 1/5).
 vertice("Lomar","Rua 1", 5/7).
@@ -56,24 +63,33 @@ vertice("Lomar","Rua 9", 10/6).
 vertice("Lomar","Rua 10", 9/1).
 vertice("Lomar","Rua 11", 12/2).
 vertice("Lomar","Rua 16", 4/6).
+vertice("Lomar", "Centro de distribuições", 4/1).
 
 % ------------------------ Cabreiros ------------------------------ %
 aresta("Cabreiros","Rua 1", "Rua 4", 3).
 aresta("Cabreiros","Rua 1", "Rua 10",4).
 aresta("Cabreiros","Rua 4", "Rua 10",2).
 
+aresta("Cabreiros", "Centro de distribuições", "Rua 1", 1).
+aresta("Cabreiros", "Centro de distribuições", "Rua 4", 1).
+
 vertice("Cabreiros","Rua 1", 2/3).
 vertice("Cabreiros","Rua 4", 4/7).
 vertice("Cabreiros","Rua 10", 6/2).
+vertice("Cabreiros", "Centro de distribuições", 2/7).
 
 % ------------------------ Ferreiros ------------------------------ %
 aresta("Ferreiros","Rua 10", "Rua 11", 7).
 aresta("Ferreiros","Rua 10", "Rua 18", 6).
 aresta("Ferreiros","Rua 11", "Rua 18", 2).
 
+aresta("Ferreiros", "Centro de distribuições", "Rua 10", 2).
+aresta("Ferreiros", "Centro de distribuições", "Rua 18", 3).
+
 vertice("Ferreiros","Rua 10", 3/3).
 vertice("Ferreiros","Rua 11", 6/4).
 vertice("Ferreiros","Rua 18", 4/1).
+vertice("Ferreiros", "Centro de distribuições", 4/1).
 
 % ------------------------ Semelhe ------------------------------ %
 aresta("Semelhe","Rua 1", "Rua 0", 2).
@@ -96,6 +112,9 @@ aresta("Semelhe","Rua 19", "Rua 16", 16).
 aresta("Semelhe","Rua 7", "Rua 18", 14).
 aresta("Semelhe","Rua 13", "Rua 18", 10).
 
+aresta("Semelhe", "Centro de distribuições", "Rua 15", 3).
+aresta("Semelhe", "Centro de distribuições", "Rua 16", 4).
+
 vertice("Semelhe","Rua 0", 1/5).
 vertice("Semelhe","Rua 1", 3/8).
 vertice("Semelhe","Rua 3", 5/8).
@@ -108,3 +127,4 @@ vertice("Semelhe","Rua 15", 4/2).
 vertice("Semelhe","Rua 16", 6/1).
 vertice("Semelhe","Rua 18", 9/4).
 vertice("Semelhe","Rua 19", 6/6).
+vertice("Semelhe", "Centro de distribuições", 4/1).
