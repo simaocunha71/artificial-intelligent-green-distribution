@@ -136,9 +136,8 @@ write_lista_estafeta([H|T],Option):-
     (Option == 0 ->
         writeEstafeta(H);
         H = estafeta(Nome,ID,_,_,_,_,_),
-        write('\n> Nome do estafeta: '), write(Nome), writeln(';'), 
-        write('ID do estafeta: '), writeln(ID),
-        writeln('-----------------------------------')
+        write('> Nome do estafeta: '), write(Nome), write('; '), 
+        write('ID: '), writeln(ID), nl
         ),
     write_lista_estafeta(T,Option).
 

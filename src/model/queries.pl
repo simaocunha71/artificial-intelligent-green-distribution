@@ -457,3 +457,5 @@ filter_by_Estado(Estado,[[pedido(Cl,ID_Ped, DataE, R_, Z, Pes, DataP, Est)|T]|TS
         filter_by_Estado(Estado,[T|TS],[pedido(Cl,ID_Ped, DataE, R_, Z, Pes, DataP, Est)|Acc],R);
         filter_by_Estado(Estado,[T|TS],Acc,R)
         ).
+
+    

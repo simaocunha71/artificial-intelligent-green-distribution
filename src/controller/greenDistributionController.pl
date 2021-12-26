@@ -472,21 +472,20 @@ menuTravessias :-
     selectZona(TipoPesq,Option).
 
 
-selectZona(TipoPesq,Option) :-(Option=:=1, limpaT, print_Ruilhe    ,zonaPesq_view("Ruilhe",TipoPesq);
-                               Option=:=2, limpaT, print_Lomar     ,zonaPesq_view("Lomar",TipoPesq);
-                               Option=:=3, limpaT, print_Semelhe   ,zonaPesq_view("Semelhe",TipoPesq);
-                               Option=:=4, limpaT, print_Cabreiros ,zonaPesq_view("Cabreiros",TipoPesq);
-                               Option=:=5, limpaT, print_Ferreiros ,zonaPesq_view("Ferreiros",TipoPesq);
+selectZona(TipoPesq,Option) :-(Option=:=1, limpaT, print_Ruilhe    , zonaPesq_view("Ruilhe",TipoPesq);
+                               Option=:=2, limpaT, print_Lomar     , zonaPesq_view("Lomar",TipoPesq);
+                               Option=:=3, limpaT, print_Semelhe   , zonaPesq_view("Semelhe",TipoPesq);
+                               Option=:=4, limpaT, print_Cabreiros , zonaPesq_view("Cabreiros",TipoPesq);
+                               Option=:=5, limpaT, print_Ferreiros , zonaPesq_view("Ferreiros",TipoPesq);
 
                                Option=:=0, runApp, limpaT
                                ), menuTravessias.
 
 zonaPesq_view(Zona,TipoPesq) :-
-    writeln('Escreva o ponto de partida:'),
-    read(Partida),
-    writeln('Escreva o ponto de chegada'),
-    read(Chegada),
-    (TipoPesq=:=1, dfs(Zona,Partida,Chegada,Path);
+    writeln("Estafetas disponíveis:"), 
+    estafeta_zona(Zona,R), 
+    write_lista_estafeta(R,1),
+    (TipoPesq=:=1, emProfundidade(Zona,R,Path);
      TipoPesq=:=2, bfs(Zona,Partida,Chegada,Path);
      TipoPesq=:=3, bilp(Zona,Partida,Chegada,Path);
      TipoPesq=:=4, gulosa(Zona,Partida,Chegada,Path);
