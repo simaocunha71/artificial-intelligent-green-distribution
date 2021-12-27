@@ -485,16 +485,16 @@ zonaPesq_view(Zona,TipoPesq) :-
     writeln("Estafetas disponíveis:"), 
     estafeta_zona(Zona,R), write_lista_estafeta(R,1),
     pickEstafeta(R,Ef),
-    getTodosPontosEntrega(Ef,Pts),
-    write("Pontos de entrega: "),
-    printPontos(Pts),
-    (TipoPesq=:=1, emProfundidade(Zona,Pts,Path);
-     TipoPesq=:=2, emLargura(Zona,Pts,Path);
-     TipoPesq=:=3, embilp(Zona,Pts,Path);
-     TipoPesq=:=4, emgulosa(Zona,Pts,Path);
-     TipoPesq=:=5, em_a_estrela(Zona,Pts,Path)
-    ),
-    printPath(Path).
+    getTodosPontosEntrega(Ef,Aux1),
+    append(["Centro de distribuições"], Aux1, Aux2),
+    append(Aux2, ["Centro de distribuições"], Pts),
+    (TipoPesq=:=1, emProfundidade(Zona,Pts,[],_);
+     TipoPesq=:=2, emLargura(Zona,Pts,[],_);
+     TipoPesq=:=3, embilp(Zona,Pts,[],_);
+     TipoPesq=:=4, emgulosa(Zona,Pts,[],_);
+     TipoPesq=:=5, em_a_estrela(Zona,Pts,[],_)
+    ).
+ 
 
 
 pickEstafeta([],_).

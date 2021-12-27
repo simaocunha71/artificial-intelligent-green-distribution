@@ -176,11 +176,15 @@ writePedido(pedido(cliente(NomeC,ID_Cl), ID_Ped, DataEnt, Rua, Freg, Peso, DataP
   write('Estado: '), write(Est), writeln('.').
 
 
-printPath([]) :- nl.
-printPath([H|T]) :-
-   write("\033\[32m"), write(H), write(" -> "), write("\033\[0m"), printPath(T).
+printOnePath([]) :- write('\n').
+printOnePath([X]) :- write("\033\[32m"), write(X), writeln("\033\[0m").
+printOnePath([H|T]) :-
+   write("\033\[32m"), write(H), write(" -> "), write("\033\[0m"), printOnePath(T).
 
-printPontos([]) :- nl.
+printCaminho([]).
+printCaminho([H|T]) :- printOnePath(H), printCaminho(T).
+
+printPontos([]) :- write('\n').
 printPontos([H|T]) :-
     write(H), write(", "), printPontos(T).   
     

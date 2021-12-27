@@ -1,37 +1,57 @@
 :- consult(circuitos).
 :- consult(src/view/view_menu).
 
-
 connect(Zona,X,Y):- aresta(Zona,X,Y,_).
 connect(Zona,X,Y):- aresta(Zona,Y,X,_).
 
+%------ Predicados auxiliares ---------
 % Devolve todos os pontos de entrega de um estafeta
 getTodosPontosEntrega(estafeta(_, _, _, _, _, LE, _), R) :-
-    extract(LE, [], R).
+    extract(LE, [], Aux),
+    remove_dups(Aux, R).
 
 extract([], R, R).
 extract([pedido(_, _, _, Rua, _, _, _, _)|T], Acc, R) :-
     extract(T, [Rua|Acc], R).
 
+% Remove os elementos duplicados de uma lista
+remove_dups([], []).
+remove_dups([H|T], R) :-
+    member(H, T), !,
+    remove_dups(T, R).
+remove_dups([H|T], [H|R]) :-
+    remove_dups(T, R).
 
+%-----------------------------------------
+% Percorre todos os pontos de entrega do estafeta segundo o algoritmo de pesquisa em profundidade
 
-emProfundidade(_,[],_).
+% Por exemplo, os pontos de entrega são [A,B,C]
 
-emProfundidade(Zona,[H],Cam):-
-    dfs(Zona,H,"Centro de distribuições",Cam).
+% O algoritmo emProfundidade vai fazer o seguinte:
 
-emProfundidade(Zona,[H|T],Cam) :-
-    emProfundidadeAux(Zona,[H|T],"Centro de distribuições",Cam).
+% dfs(Zona,"Centro de distribuiçoes",A,Cam).
+% dfs(Zona,A,B,Cam).
+% dfs(Zona,B,C,Cam).
+% dfs(Zona,C,"Centro de distribuiçoes",Cam).
 
-%ver se é preciso retirar o ultimo elemento da lista H|T
-emProfundidadeAux(Zona,[H|T],Prev,Cam) :-
-    dfs(Zona,Prev,H,Cam),
-    emProfundidadeAux(Zona,T,H,Cam).
+emProfundidade(_, [_], R,R).
 
-emLargura(_,_,_) :- writeln("Nao implementado").
-embilp(_,_,_) :- writeln("Nao implementado").
-emgulosa(_,_,_) :- writeln("Nao implementado").
-em_a_estrela(_,_,_) :- writeln("Nao implementado"). 
+emProfundidade(Zona, [H, X|T], Acc, Cam) :-
+    dfs(Zona, H, X, L),
+    append(Acc, L, NewL),
+    printOnePath(L), 
+    emProfundidade(Zona, [X|T], NewL, Cam).
+    
+emLargura(_, [_], R, R).
+emLargura(Zona, [H, X|T], Acc, Cam) :-
+    bfs(Zona, H, X, L),
+    append(Acc, L, NewL),
+    printOnePath(L),
+    emLargura(Zona, [X|T], NewL, Cam).
+
+embilp(_,_,_,_) :- writeln("Nao implementado").
+emgulosa(_,_,_,_) :- writeln("Nao implementado").
+em_a_estrela(_,_,_,_) :- writeln("Nao implementado"). 
 
 
 
