@@ -18,20 +18,20 @@ extract([pedido(_, _, _, Rua, _, _, _, _)|T], Acc, R) :-
 emProfundidade(_,[],_).
 
 emProfundidade(Zona,[H],Cam):-
-    dfs(Zona,H,"Centro de distribuições",Cam),
-    printPath(Cam).
+    dfs(Zona,H,"Centro de distribuições",Cam).
 
 emProfundidade(Zona,[H|T],Cam) :-
-    dfs(Zona,"Centro de distribuições",H,Cam),
-    printPath(Cam),
-    emProfundidadeAux(Zona,T,H,Cam).
+    emProfundidadeAux(Zona,[H|T],"Centro de distribuições",Cam).
 
+%ver se é preciso retirar o ultimo elemento da lista H|T
 emProfundidadeAux(Zona,[H|T],Prev,Cam) :-
     dfs(Zona,Prev,H,Cam),
-    printPath(Cam),
     emProfundidadeAux(Zona,T,H,Cam).
 
-
+emLargura(_,_,_) :- writeln("Nao implementado").
+embilp(_,_,_) :- writeln("Nao implementado").
+emgulosa(_,_,_) :- writeln("Nao implementado").
+em_a_estrela(_,_,_) :- writeln("Nao implementado"). 
 
 
 

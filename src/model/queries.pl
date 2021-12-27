@@ -458,4 +458,8 @@ filter_by_Estado(Estado,[[pedido(Cl,ID_Ped, DataE, R_, Z, Pes, DataP, Est)|T]|TS
         filter_by_Estado(Estado,[T|TS],Acc,R)
         ).
 
-    
+getElementByIndex(_, [], _).
+getElementByIndex(0, [H|_], H).
+getElementByIndex(N, [_|T], Ef) :-
+    NewN is N-1,
+    getElementByIndex(NewN, T, Ef).

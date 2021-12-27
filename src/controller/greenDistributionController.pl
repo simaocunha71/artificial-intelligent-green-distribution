@@ -483,12 +483,29 @@ selectZona(TipoPesq,Option) :-(Option=:=1, limpaT, print_Ruilhe    , zonaPesq_vi
 
 zonaPesq_view(Zona,TipoPesq) :-
     writeln("Estafetas disponíveis:"), 
-    estafeta_zona(Zona,R), 
-    write_lista_estafeta(R,1),
-    (TipoPesq=:=1, emProfundidade(Zona,R,Path);
-     TipoPesq=:=2, bfs(Zona,Partida,Chegada,Path);
-     TipoPesq=:=3, bilp(Zona,Partida,Chegada,Path);
-     TipoPesq=:=4, gulosa(Zona,Partida,Chegada,Path);
-     TipoPesq=:=5, a_estrela(Zona,Partida,Chegada,Path)
+    estafeta_zona(Zona,R), write_lista_estafeta(R,1),
+    pickEstafeta(R,Ef),
+    getTodosPontosEntrega(Ef,Pts),
+    write("Pontos de entrega: "),
+    printPontos(Pts),
+    (TipoPesq=:=1, emProfundidade(Zona,Pts,Path);
+     TipoPesq=:=2, emLargura(Zona,Pts,Path);
+     TipoPesq=:=3, embilp(Zona,Pts,Path);
+     TipoPesq=:=4, emgulosa(Zona,Pts,Path);
+     TipoPesq=:=5, em_a_estrela(Zona,Pts,Path)
     ),
     printPath(Path).
+
+
+pickEstafeta([],_).
+pickEstafeta([H],H).
+pickEstafeta(List,Ef) :-
+    writeln("Escreve o indice (a começar no 0) do estafeta que quer utilizar para as travessias"),
+    read(X),
+    ( (X >= 0 , length(List, Size), X < Size) ->
+        getElementByIndex(X,List, Ef);
+        writeln("Indice a aceder inválido"),pickEstafeta(List,Ef)
+    ).
+
+
+
