@@ -71,7 +71,84 @@ bilp(_,_,_,_):- write("Procura não implementada").
 % https://edisciplinas.usp.br/pluginfile.php/4121068/mod_resource/content/1/ia_6_busca_nao_informada_parte1.pdf
 
 %------Pesquisa gulosa-----
-gulosa(_,_,_,_) :- write("Procura não implementada").
+%Tirado das fichas. A Pesquisa gulosa (greedy algorithm) escolhe sempre o próximo nodo que oferece o melhor benificio no imediato
+resolvegulosa(Nodo,Caminho/Custo):-
+    estima(Nodo,Estima),
+    agulosa([[Nodo]/0/Estima],InvCaminho/Custo/),
+    inverso(InvCaminho,Caminho).
+
+agulosa(Caminhos,Caminho):-
+    obtem_melhorg(Caminhos,Caminho),
+    Caminho = [Nodo|]//,goal(Nodo).
+
+agulosa(Caminhos,SolucaoCaminho):-
+    obtem_melhor_g(Caminhos,MelhorCaminho),
+    seleciona(MelhorCaminho,Caminhos,OutrosCaminhos),
+    expande_gulosa(MelhorCaminho,ExpCaminhos),
+    append(OutrosCaminhos,ExpCaminhos,NovoCaminhos),
+    agulosa(NovoCaminhos,SolucaoCaminho).
+
+obtem_melhor_g([Caminho],Caminho):-!.
+
+obtem_melhorg([Caminho1/Custo1/Est1,/Custo2/Est2|Caminhos],MelhorCaminho):-
+    Est1=<Est2,
+    !,
+    obtem_melhor_g([Caminho1/Custo1/Est1|Caminhos],MelhorCaminho).
+
+obtem_melhorg([|Caminhos],MelhorCaminho):-
+    obtem_melhor_g(Caminhos,MelhorCaminho).
+
+expandegulosa(Caminho,ExpCaminhos):-
+    findall(NovoCaminho,adjacente2(Caminho,NovoCaminho),ExpCaminhos).
+
+inverso(XS,Ys):-
+    inverso(Xs,[],Ys).
+
+inverso([],Xs,Ys).
+inverso([X|Xs],Ys,Zs):-
+    inverso(Xs,[X|Ys],Zs).
+
+
+seleciona(E,[E|Xs],Xs).
+seleciona(E,[X|Xs],[X|Ys]):-seleciona(E,Xs,Ys).
+
+
+
+adjacente2([Nodo|Caminho]/Custo/,[ProxNodo,Nodo|Caminho]/NovoCusto/Est):-
+    arco(Nodo,ProxNodo,PassoCusto),
+    + member(ProxNodo,Caminho),
+    NovoCusto is Custo + PassoCusto,
+    estima(ProxNodo,Est).
+
 
 %------Pesquisa A*-----
+%Tirado das fichas
 a_estrela(_,_,_,_) :- write("Procura não implementada").
+resolve_aestrela(Nodo,CaminhoDistancia/CustoDist, CaminhoTempo/CustoTempo) :-
+	estima(Nodo, EstimaD, EstimaT),
+	aestrela_distancia([[Nodo]/0/EstimaD], InvCaminho/CustoDist/_),
+	aestrela_tempo([[Nodo]/0/EstimaT], InvCaminhoTempo/CustoTempo/_),
+	inverso(InvCaminho, CaminhoDistancia),
+	inverso(InvCaminhoTempo, CaminhoTempo).
+
+aestrela_distancia(Caminhos, Caminho) :-
+	obtem_melhor_distancia(Caminhos, Caminho),
+	Caminho = [Nodo|_]/_/_,goal(Nodo).
+
+aestrela_distancia(Caminhos, SolucaoCaminho) :-
+	obtem_melhor_distancia(Caminhos, MelhorCaminho),
+	seleciona(MelhorCaminho, Caminhos, OutrosCaminhos),
+	expande_aestrela_distancia(MelhorCaminho, ExpCaminhos),
+	append(OutrosCaminhos, ExpCaminhos, NovoCaminhos),
+        aestrela_distancia(NovoCaminhos, SolucaoCaminho).	
+
+obtem_melhor_distancia([Caminho], Caminho) :- !.
+obtem_melhor_distancia([Caminho1/Custo1/Est1,_/Custo2/Est2|Caminhos], MelhorCaminho) :-
+	Custo1 + Est1 =< Custo2 + Est2, !,
+	obtem_melhor_distancia([Caminho1/Custo1/Est1|Caminhos], MelhorCaminho). 
+obtem_melhor_distancia([_|Caminhos], MelhorCaminho) :- 
+	obtem_melhor_distancia(Caminhos, MelhorCaminho).
+	
+
+expande_aestrela_distancia(Caminho, ExpCaminhos) :-
+	findall(NovoCaminho, adjacente_distancia(Caminho,NovoCaminho), ExpCaminhos).
