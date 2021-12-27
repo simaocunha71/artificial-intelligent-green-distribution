@@ -22,6 +22,24 @@ remove_dups([H|T], R) :-
 remove_dups([H|T], [H|R]) :-
     remove_dups(T, R).
 
+%Inverte a lista Xs
+inverso(Xs, Ys) :-
+    inverso(Xs, [], Ys).
+inverso([], Xs, Xs).
+inverso([X|Xs], Ys, Zs) :-
+    inverso(Xs, [X|Ys], Zs).
+
+
+%Valor da estima de um vertice
+estima(vertice(_,_,X/Y),Est) :- 
+    Aux is X^2,
+    Aux2 is Y^2,
+    Aux3 is Aux+Aux2,
+    Est is sqrt(Aux3).
+
+seleciona(E, [E|Xs], Xs).
+seleciona(E, [X|Xs], [X|Ys]) :- seleciona(E, Xs, Ys).
+
 %-----------------------------------------
 % Percorre todos os pontos de entrega do estafeta segundo o algoritmo de pesquisa em profundidade
 
@@ -90,70 +108,62 @@ bilp(_,_,_,_):- write("Procura não implementada").
 
 % https://edisciplinas.usp.br/pluginfile.php/4121068/mod_resource/content/1/ia_6_busca_nao_informada_parte1.pdf
 
+%Não funcional
+
 %------Pesquisa gulosa-----
 %Tirado das fichas. A Pesquisa gulosa (greedy algorithm) escolhe sempre o próximo nodo que oferece o melhor benificio no imediato
-resolvegulosa(Nodo,Caminho/Custo):-
-    estima(Nodo,Estima),
-    agulosa([[Nodo]/0/Estima],InvCaminho/Custo/),
-    inverso(InvCaminho,Caminho).
+resolve_gulosa(Zona, NodoInicial, NodoFinal, Caminho/Custo) :-
+    V = vertice(Zona,NodoInicial,_), % encontrar o vertice com a zona e o nodo inicial que quero
+    estima(V, Estima),
+    agulosa(Zona, NodoInicial, NodoFinal, [[NodoInicial]/0/Estima], InvCaminho/Custo/_),
+    inverso(InvCaminho, Caminho).
 
-agulosa(Caminhos,Caminho):-
-    obtem_melhorg(Caminhos,Caminho),
-    Caminho = [Nodo|]//,goal(Nodo).
+agulosa(Zona, NodoInicial, NodoFinal,Caminhos, Caminho) :-
+    obtem_melhor_g(Zona, Caminhos, Caminho),
+    Caminho=[NodoInicial|_]/_/_,
+    aresta(Zona,_,NodoFinal,_).
 
-agulosa(Caminhos,SolucaoCaminho):-
-    obtem_melhor_g(Caminhos,MelhorCaminho),
-    seleciona(MelhorCaminho,Caminhos,OutrosCaminhos),
-    expande_gulosa(MelhorCaminho,ExpCaminhos),
-    append(OutrosCaminhos,ExpCaminhos,NovoCaminhos),
-    agulosa(NovoCaminhos,SolucaoCaminho).
+agulosa(Zona, Caminhos, SolucaoCaminho) :-
+    obtem_melhor_g(Caminhos, MelhorCaminho),
+    seleciona(MelhorCaminho, Caminhos, OutrosCaminhos),
+    expande_gulosa(Zona, MelhorCaminho, ExpCaminhos),
+    append(OutrosCaminhos, ExpCaminhos, NovoCaminhos),
+    agulosa(Zona, NovoCaminhos, SolucaoCaminho).		
 
-obtem_melhor_g([Caminho],Caminho):-!.
+obtem_melhor_g([Caminho], Caminho) :- !.
 
-obtem_melhorg([Caminho1/Custo1/Est1,/Custo2/Est2|Caminhos],MelhorCaminho):-
-    Est1=<Est2,
-    !,
-    obtem_melhor_g([Caminho1/Custo1/Est1|Caminhos],MelhorCaminho).
+obtem_melhor_g([Caminho1/Custo1/Est1,_/_/Est2|Caminhos], MelhorCaminho) :-
+	Est1 =< Est2, !,
+	obtem_melhor_g([Caminho1/Custo1/Est1|Caminhos], MelhorCaminho).
+	
+obtem_melhor_g(Zona, [_|Caminhos], MelhorCaminho) :- 
+	obtem_melhor_g(Zona, Caminhos, MelhorCaminho).
 
-obtem_melhorg([|Caminhos],MelhorCaminho):-
-    obtem_melhor_g(Caminhos,MelhorCaminho).
+expande_gulosa(Zona, Caminho, ExpCaminhos) :-
+	findall(NovoCaminho, adjacente2(Zona,Caminho,NovoCaminho), ExpCaminhos).	
 
-expandegulosa(Caminho,ExpCaminhos):-
-    findall(NovoCaminho,adjacente2(Caminho,NovoCaminho),ExpCaminhos).
-
-inverso(XS,Ys):-
-    inverso(Xs,[],Ys).
-
-inverso([],Xs,Ys).
-inverso([X|Xs],Ys,Zs):-
-    inverso(Xs,[X|Ys],Zs).
-
-
-seleciona(E,[E|Xs],Xs).
-seleciona(E,[X|Xs],[X|Ys]):-seleciona(E,Xs,Ys).
-
-
-
-adjacente2([Nodo|Caminho]/Custo/,[ProxNodo,Nodo|Caminho]/NovoCusto/Est):-
-    arco(Nodo,ProxNodo,PassoCusto),
-    + member(ProxNodo,Caminho),
-    NovoCusto is Custo + PassoCusto,
-    estima(ProxNodo,Est).
+adjacente2(Zona, [NodoInicial|Caminho]/Custo/_, [ProxNodoInicial,NodoInicial|Caminho]/NovoCusto/Est) :-
+	aresta(Zona,NodoInicial, ProxNodoInicial, PassoCusto),
+	\+member(ProxNodoInicial, Caminho),
+	NovoCusto is Custo + PassoCusto,
+	estima(ProxNodoInicial, Est).
 
 
 %------Pesquisa A*-----
+
+%Não adaptada ao nosso problema
+
 %Tirado das fichas
-a_estrela(_,_,_,_) :- write("Procura não implementada").
-resolve_aestrela(Nodo,CaminhoDistancia/CustoDist, CaminhoTempo/CustoTempo) :-
-	estima(Nodo, EstimaD, EstimaT),
-	aestrela_distancia([[Nodo]/0/EstimaD], InvCaminho/CustoDist/_),
-	aestrela_tempo([[Nodo]/0/EstimaT], InvCaminhoTempo/CustoTempo/_),
+a_estrela(NodoInicial,CaminhoDistancia/CustoDist, CaminhoTempo/CustoTempo) :-
+	estima(NodoInicial, EstimaD, EstimaT),
+	aestrela_distancia([[NodoInicial]/0/EstimaD], InvCaminho/CustoDist/_),
+	aestrela_tempo([[NodoInicial]/0/EstimaT], InvCaminhoTempo/CustoTempo/_),
 	inverso(InvCaminho, CaminhoDistancia),
 	inverso(InvCaminhoTempo, CaminhoTempo).
 
 aestrela_distancia(Caminhos, Caminho) :-
 	obtem_melhor_distancia(Caminhos, Caminho),
-	Caminho = [Nodo|_]/_/_,goal(Nodo).
+	Caminho = [NodoInicial|_]/_/_,goal(NodoInicial).
 
 aestrela_distancia(Caminhos, SolucaoCaminho) :-
 	obtem_melhor_distancia(Caminhos, MelhorCaminho),
