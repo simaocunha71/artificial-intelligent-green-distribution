@@ -486,10 +486,9 @@ zonaPesq_view(Zona,TipoPesq) :-
     estafeta_zona(Zona,R), write_lista_estafeta(R,1),
     pickEstafeta(R,Ef),
     getTodosPontosEntrega(Ef,Aux1),
-    append(["Centro de distribuições"], Aux1, Aux2),
-    append(Aux2, ["Centro de distribuições"], Pts),
-    (TipoPesq=:=1, emProfundidade(Zona,Pts,[],_);
-     TipoPesq=:=2, emLargura(Zona,Pts,[],_);
+    append(["Centro de distribuições"], Aux1, Pts),
+    (TipoPesq=:=1, emProfundidade(Zona,Pts,"Centro de distribuições",[],_);
+     TipoPesq=:=2, emLargura(Zona,Pts,"Centro de distribuições",[],_);
      TipoPesq=:=3, embilp(Zona,Pts,[],_);
      TipoPesq=:=4, emgulosa(Zona,Pts,[],_);
      TipoPesq=:=5, em_a_estrela(Zona,Pts,[],_)
@@ -498,7 +497,6 @@ zonaPesq_view(Zona,TipoPesq) :-
 
 
 pickEstafeta([],_).
-pickEstafeta([H],H).
 pickEstafeta(List,Ef) :-
     writeln("Escreve o indice (a começar no 0) do estafeta que quer utilizar para as travessias"),
     read(X),

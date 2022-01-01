@@ -22,6 +22,18 @@ remove_dups([H|T], R) :-
 remove_dups([H|T], [H|R]) :-
     remove_dups(T, R).
 
+
+remove_instancias_iguais([],R,R).
+
+remove_instancias_iguais([H|L],XS,NewDest):-
+    write("Pontos a retirar : "),writeln([H|L]),
+    write("Lista original : "),writeln(XS),
+    delete(XS,H,New),
+    write("Lista Modificada : "),
+    writeln(New),
+    remove_instancias_iguais(L,New,NewDest).
+
+
 %Inverte a lista Xs
 inverso(Xs, Ys) :-
     inverso(Xs, [], Ys).
@@ -52,20 +64,33 @@ seleciona(E, [X|Xs], [X|Ys]) :- seleciona(E, Xs, Ys).
 % dfs(Zona,B,C,Cam).
 % dfs(Zona,C,"Centro de distribuiçoes",Cam).
 
-emProfundidade(_, [_], R,R).
+emProfundidade(Zona,[H],DestinoFinal, Acc,R):-
+    dfs(Zona, H, DestinoFinal, L),
+    append(Acc, L, R),
+    printOnePath(L).
 
-emProfundidade(Zona, [H, X|T], Acc, Cam) :-
+
+emProfundidade(Zona, [H, X|T],DestinoFinal, Acc, Cam) :-
     dfs(Zona, H, X, L),
+    subtract(T,L,Result),
+    append([X],Result,NewDest),
     append(Acc, L, NewL),
     printOnePath(L), 
-    emProfundidade(Zona, [X|T], NewL, Cam).
+    emProfundidade(Zona, NewDest,DestinoFinal, NewL, Cam).
     
-emLargura(_, [_], R, R).
-emLargura(Zona, [H, X|T], Acc, Cam) :-
+emLargura(Zona,[H],DestinoFinal, Acc,R):-
+    bfs(Zona, H, DestinoFinal, L),
+    append(Acc, L, R),
+    printOnePath(L).
+
+
+emLargura(Zona, [H, X|T],DestinoFinal, Acc, Cam) :-
     bfs(Zona, H, X, L),
+    subtract(T,L,Result),
+    append([X],Result,NewDest),
     append(Acc, L, NewL),
     printOnePath(L),
-    emLargura(Zona, [X|T], NewL, Cam).
+    emLargura(Zona, NewDest,DestinoFinal, NewL, Cam).
 
 embilp(_,_,_,_) :- writeln("Nao implementado").
 emgulosa(_,_,_,_) :- writeln("Nao implementado").
