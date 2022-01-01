@@ -137,41 +137,75 @@ bilp(_,_,_,_):- write("Procura não implementada").
 
 %------Pesquisa gulosa-----
 %Tirado das fichas. A Pesquisa gulosa (greedy algorithm) escolhe sempre o próximo nodo que oferece o melhor benificio no imediato
-resolve_gulosa(Zona, NodoInicial, NodoFinal, Caminho/Custo) :-
-    V = vertice(Zona,NodoInicial,_), % encontrar o vertice com a zona e o nodo inicial que quero
-    estima(V, Estima),
-    agulosa(Zona, NodoInicial, NodoFinal, [[NodoInicial]/0/Estima], InvCaminho/Custo/_),
-    inverso(InvCaminho, Caminho).
 
-agulosa(Zona, NodoInicial, NodoFinal,Caminhos, Caminho) :-
-    obtem_melhor_g(Zona, Caminhos, Caminho),
-    Caminho=[NodoInicial|_]/_/_,
-    aresta(Zona,_,NodoFinal,_).
+resolve_gulosa(Nodo,CaminhoDistancia/CustoDist, CaminhoTempo/CustoTempo) :-
+    estima(Nodo, EstimaD, EstimaT),
+    agulosa_distancia_g([[Nodo]/0/EstimaD], InvCaminho/CustoDist/_),
+    agulosa_tempo_g([[Nodo]/0/EstimaT], InvCaminhoTempo/CustoTempo/_),
+    inverso(InvCaminho, CaminhoDistancia),
+    inverso(InvCaminhoTempo, CaminhoTempo).
 
-agulosa(Zona, Caminhos, SolucaoCaminho) :-
-    obtem_melhor_g(Caminhos, MelhorCaminho),
+agulosa_distancia_g(Caminhos, Caminho) :-
+    obtem_melhor_distancia_g(Caminhos, Caminho),
+    Caminho = [Nodo|_]/_/_,
+    goal(Nodo).
+
+agulosa_distancia_g(Caminhos, SolucaoCaminho) :-
+    obtem_melhor_distancia_g(Caminhos, MelhorCaminho),
     seleciona(MelhorCaminho, Caminhos, OutrosCaminhos),
-    expande_gulosa(Zona, MelhorCaminho, ExpCaminhos),
+    expande_agulosa_distancia_g(MelhorCaminho, ExpCaminhos),
     append(OutrosCaminhos, ExpCaminhos, NovoCaminhos),
-    agulosa(Zona, NovoCaminhos, SolucaoCaminho).		
+        agulosa_distancia_g(NovoCaminhos, SolucaoCaminho).  
 
-obtem_melhor_g([Caminho], Caminho) :- !.
+obtem_melhor_distancia_g([Caminho], Caminho) :- !.
+obtem_melhor_distancia_g([Caminho1/Custo1/Est1,_/Custo2/Est2|Caminhos], MelhorCaminho) :-
+    Est1 =< Est2, !,
+    obtem_melhor_distancia_g([Caminho1/Custo1/Est1|Caminhos], MelhorCaminho). 
+obtem_melhor_distancia_g([_|Caminhos], MelhorCaminho) :- 
+    obtem_melhor_distancia_g(Caminhos, MelhorCaminho).
+    
 
-obtem_melhor_g([Caminho1/Custo1/Est1,_/_/Est2|Caminhos], MelhorCaminho) :-
-	Est1 =< Est2, !,
-	obtem_melhor_g([Caminho1/Custo1/Est1|Caminhos], MelhorCaminho).
-	
-obtem_melhor_g(Zona, [_|Caminhos], MelhorCaminho) :- 
-	obtem_melhor_g(Zona, Caminhos, MelhorCaminho).
+expande_agulosa_distancia_g(Caminho, ExpCaminhos) :-
+    findall(NovoCaminho, adjacente_distancia(Caminho,NovoCaminho), ExpCaminhos).
+    
+% --- tempo 
 
-expande_gulosa(Zona, Caminho, ExpCaminhos) :-
-	findall(NovoCaminho, adjacente2(Zona,Caminho,NovoCaminho), ExpCaminhos).	
+agulosa_tempo_g(Caminhos, Caminho) :-
+    obtem_melhor_tempo_g(Caminhos, Caminho),
+    Caminho = [Nodo|_]/_/_,
+    goal(Nodo).
 
-adjacente2(Zona, [NodoInicial|Caminho]/Custo/_, [ProxNodoInicial,NodoInicial|Caminho]/NovoCusto/Est) :-
-	aresta(Zona,NodoInicial, ProxNodoInicial, PassoCusto),
-	\+member(ProxNodoInicial, Caminho),
-	NovoCusto is Custo + PassoCusto,
-	estima(ProxNodoInicial, Est).
+agulosa_tempo_g(Caminhos, SolucaoCaminho) :-
+    obtem_melhor_tempo_g(Caminhos, MelhorCaminho),
+    seleciona(MelhorCaminho, Caminhos, OutrosCaminhos),
+    expande_agulosa_tempo_g(MelhorCaminho, ExpCaminhos),
+    append(OutrosCaminhos, ExpCaminhos, NovoCaminhos),
+        agulosa_tempo_g(NovoCaminhos, SolucaoCaminho).
+    
+obtem_melhor_tempo_g([Caminho], Caminho) :- !.
+obtem_melhor_tempo_g([Caminho1/Custo1/Est1,_/Custo2/Est2|Caminhos], MelhorCaminho) :-
+    Est1 =< Est2, !,
+    obtem_melhor_tempo_g([Caminho1/Custo1/Est1|Caminhos], MelhorCaminho). 
+obtem_melhor_tempo_g([_|Caminhos], MelhorCaminho) :- 
+    obtem_melhor_tempo_g(Caminhos, MelhorCaminho).
+    
+
+expande_agulosa_tempo_g(Caminho, ExpCaminhos) :-
+    findall(NovoCaminho, adjacente_tempo(Caminho,NovoCaminho), ExpCaminhos).
+
+
+adjacente_distancia([Nodo|Caminho]/Custo/_, [ProxNodo,Nodo|Caminho]/NovoCusto/EstDist) :-
+    move(Nodo, ProxNodo, PassoCustoDist, _),
+    \+ member(ProxNodo, Caminho),
+    NovoCusto is Custo + PassoCustoDist,
+    estima(ProxNodo, EstDist, _).
+
+
+adjacente_tempo([Nodo|Caminho]/Custo/_, [ProxNodo,Nodo|Caminho]/NovoCusto/EstimaTempo) :-
+    move(Nodo, ProxNodo, _, PassoTempo),
+    \+ member(ProxNodo, Caminho),
+    NovoCusto is Custo + PassoTempo,
+    estima(ProxNodo, _ , EstimaTempo).
 
 
 %------Pesquisa A*-----
