@@ -463,3 +463,51 @@ getElementByIndex(0, [H|_], H).
 getElementByIndex(N, [_|T], Ef) :-
     NewN is N-1,
     getElementByIndex(NewN, T, Ef).
+
+% Peso total de um estafeta (identificado pelo seu id)
+getPesoTotal(ID,Total) :-
+    estafeta(_,ID,_,_,_,LPed,_),
+    getPesoAux(LPed,0,Total).
+
+getPesoAux([],R,R).
+getPesoAux([pedido(_,_, _, _, _, Pes, _, _)|T],Acc,R) :-
+    NewAcc is Pes + Acc,
+    getPesoAux(T,NewAcc,R).
+
+% Prazo para entregar a encomenda (em dias)
+getPrazo(pedido(_,_, DataE, _, _, _, DataP, _),R) :-
+    data_valor(DataP,Prazo),
+    data_valor(DataE,Entrega),
+    R is Prazo - Entrega.
+
+% Diminui a velocidade do estafeta
+
+% bicicleta
+diminuiVel(estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,bicicleta,Vel,Peso), SomatClassf/NumClassf, LPed, Penaliz), NewEstafeta) :-
+    getPesoTotal(ID,PTotal),
+    NewVelAux is Vel-(0.7*PTotal),
+    (NewVelAux =< 0 -> 
+        NewVel = 0;
+        NewVel = NewVelAux
+    ),
+    NewEstafeta = estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,bicicleta,NewVel,Peso), SomatClassf/NumClassf, LPed, Penaliz).
+    
+% moto
+diminuiVel(estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,moto,Vel,Peso), SomatClassf/NumClassf, LPed, Penaliz), NewEstafeta) :-
+    getPesoTotal(ID,PTotal),
+    NewVelAux is Vel-(0.5*PTotal),
+    (NewVelAux =< 0 -> 
+        NewVel = 0;
+        NewVel = NewVelAux
+    ),
+    NewEstafeta = estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,bicicleta,NewVel,Peso), SomatClassf/NumClassf, LPed, Penaliz).
+
+% carro
+diminuiVel(estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,carro,Vel,Peso), SomatClassf/NumClassf, LPed, Penaliz), NewEstafeta) :-
+    getPesoTotal(ID,PTotal),
+    NewVelAux is Vel-(0.1*PTotal),
+    (NewVelAux =< 0 -> 
+        NewVel = 0;
+        NewVel = NewVelAux
+    ),
+    NewEstafeta = estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,bicicleta,NewVel,Peso), SomatClassf/NumClassf, LPed, Penaliz).
