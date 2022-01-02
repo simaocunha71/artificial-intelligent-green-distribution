@@ -52,14 +52,15 @@ embilp(Zona, [H, X|T],DestinoFinal, Acc, Cam) :-
 
 %-----------------------------------------
 emgulosa(Zona,[H],DestinoFinal,Acc/CustoAcc,R/CR):-
-    resolve_aestrela(Zona,H,DestinoFinal,Caminho/Custo),
+
+    resolve_gulosa(Zona,H,DestinoFinal,Caminho/Custo),
     printOnePath(Caminho),
     append(Acc,Caminho,R),
     CR is CustoAcc + Custo,
     write("\033\[32m > Custo: "),write(CR), writeln("\033\[0m").
 
 emgulosa(Zona,[H,X|T],DestinoFinal,Acc/CustoAcc,R/CR):-
-    resolve_aestrela(Zona,H,X,Caminho/Custo),
+    resolve_gulosa(Zona,H,X,Caminho/Custo),
     subtract(T,Caminho,NovoDestinos),
     printOnePath(Caminho),
     append(Acc,Caminho,NovoAcc),
@@ -169,7 +170,7 @@ expande_agulosa_distancia_g(Zona,Caminho, ExpCaminhos,CoordenadasDestino) :-
 
 %------Pesquisa A*-----
  
-%resolve_aestrela("Ferreiros","Centro de distribuições","Rua 11",R/CR). 
+%resolve_aestrela("Semelhe","Centro de distribuições","Rua 13",R/CR). 
 
 resolve_aestrela(Zona,Origem,Destino,CaminhoDistancia/CustoDist) :-
     vertice(Zona,Origem,X),
@@ -247,12 +248,7 @@ estima(X1/Y1,X2/Y2,Est) :-
     Aux is (X2 - X1)^2,
     Aux2 is (Y2 - Y1)^2,
     Aux3 is Aux+Aux2,
-    Y is sqrt(Aux3),
-    (Y < 5 -> 
-       Est is 100;
-       Est is Y
-    ),
-    writeln(Est).
+    Est is sqrt(Aux3).
 
 adjacente_distancia(Zona,[Nodo|Caminho]/Custo/_, [ProxNodo,Nodo|Caminho]/NovoCusto/EstDist,CoordenadasDestino) :-
     connect(Zona,Nodo,ProxNodo,PassoCustoDist),
