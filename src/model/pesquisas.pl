@@ -1,8 +1,8 @@
 :- consult(circuitos).
 :- consult('../view/view_menu').
 
-connect(Zona,X,Y):- aresta(Zona,X,Y,_).
-connect(Zona,X,Y):- aresta(Zona,Y,X,_).
+connect(Zona,X,Y,C):- aresta(Zona,X,Y,C).
+connect(Zona,X,Y,C):- aresta(Zona,Y,X,C).
 
 %------ Predicados auxiliares ---------
 % Devolve todos os pontos de entrega de um estafeta
@@ -42,13 +42,16 @@ inverso([X|Xs], Ys, Zs) :-
     inverso(Xs, [X|Ys], Zs).
 
 
-%Valor da estima de um vertice
-estima(Zona,Nodo,Est) :-
-    vertice(Zona,Nodo,X/Y), 
-    Est is sqrt(X^2 + Y^2).
-
 seleciona(E, [E|Xs], Xs).
 seleciona(E, [X|Xs], [X|Ys]) :- seleciona(E, Xs, Ys).
+
+adjacente_distancia(Zona,[Nodo|Caminho]/Custo/_, [ProxNodo,Nodo|Caminho]/NovoCusto/EstDist,CoordenadasDestino) :-
+    connect(Zona,Nodo,ProxNodo,PassoCustoDist),
+    \+ member(ProxNodo,Caminho),
+    NovoCusto is Custo + PassoCustoDist,
+    vertice(Zona,ProxNodo,X),
+    estima(X,CoordenadasDestino,EstDist).
+
 
 %-----------------------------------------
 % Percorre todos os pontos de entrega do estafeta segundo o algoritmo de pesquisa em profundidade
@@ -97,9 +100,6 @@ em_a_estrela(_,_,_,_) :- writeln("Nao implementado").
 
 
 
-
-
-
 %------ Pesquisa em profundidade ---------
 
 dfs(Zona, Orig, Dest, Cam) :-
@@ -141,31 +141,27 @@ bilpAux(Zona, Orig, Dest, SizeInicial, Cam) :-
 
 
 
-
-% https://edisciplinas.usp.br/pluginfile.php/4121068/mod_resource/content/1/ia_6_busca_nao_informada_parte1.pdf
-
-%Não funcional
-
 %------Pesquisa gulosa-----
 %Tirado das fichas. A Pesquisa gulosa (greedy algorithm) escolhe sempre o próximo nodo que oferece o melhor benificio no imediato
 
-resolve_gulosa(Zona,Nodo,CaminhoDistancia/CustoDist) :-
-    estima(Zona,Nodo, EstimaD),
-    agulosa_distancia_g(Zona,[[Nodo]/0/EstimaD], InvCaminho/CustoDist/_),
+resolve_gulosa(Zona,Origem,Destino,CaminhoDistancia/CustoDist) :-
+    vertice(Zona,Origem,X),
+    vertice(Zona,Destino,Y),
+    estima(X, Y,Est),
+    agulosa_distancia_g(Zona,[[Origem]/0/Est], Destino, InvCaminho/CustoDist/_,Y),
     inverso(InvCaminho, CaminhoDistancia).
 
-agulosa_distancia_g(Zona,Caminhos, Caminho) :-
+agulosa_distancia_g(_,Caminhos, Destino,Caminho,_) :-
     obtem_melhor_distancia_g(Caminhos, Caminho),
-    Caminho = [Nodo|_]/_/_,
-    aresta(Zona,_,Nodo,_).
+    Caminho = [Destino|_]/_/_.
     
 
-agulosa_distancia_g(Zona,Caminhos, SolucaoCaminho) :-
+agulosa_distancia_g(Zona,Caminhos, Destino,SolucaoCaminho,CoordenadasDestino) :-
     obtem_melhor_distancia_g(Caminhos, MelhorCaminho),
     seleciona(MelhorCaminho, Caminhos, OutrosCaminhos),
-    expande_agulosa_distancia_g(Zona,MelhorCaminho, ExpCaminhos),
+    expande_agulosa_distancia_g(Zona,MelhorCaminho, ExpCaminhos,CoordenadasDestino),
     append(OutrosCaminhos, ExpCaminhos, NovoCaminhos),
-        agulosa_distancia_g(Zona,NovoCaminhos, SolucaoCaminho).  
+    agulosa_distancia_g(Zona,NovoCaminhos, Destino,SolucaoCaminho,CoordenadasDestino).  
 
 obtem_melhor_distancia_g([Caminho], Caminho) :- !.
 obtem_melhor_distancia_g([Caminho1/Custo1/Est1,_/_/Est2|Caminhos], MelhorCaminho) :-
@@ -175,27 +171,17 @@ obtem_melhor_distancia_g([_|Caminhos], MelhorCaminho) :-
     obtem_melhor_distancia_g(Caminhos, MelhorCaminho).
     
 
-expande_agulosa_distancia_g(Zona,Caminho, ExpCaminhos) :-
-    findall(NovoCaminho, adjacente_distancia(Zona,Caminho,NovoCaminho), ExpCaminhos).
+expande_agulosa_distancia_g(Zona,Caminho, ExpCaminhos,CoordenadasDestino) :-
+    findall(NovoCaminho, adjacente_distancia(Zona,Caminho,NovoCaminho,CoordenadasDestino), ExpCaminhos).
     
 
 
-adjacente_distancia(Zona,[Nodo|Caminho]/Custo/_, [ProxNodo,Nodo|Caminho]/NovoCusto/EstDist) :-
-    aresta(Zona,Nodo, ProxNodo, PassoCustoDist),
-    NovoCusto is Custo + PassoCustoDist,
-    estima(Zona,ProxNodo, EstDist).
 
 
 
 %------Pesquisa A*-----
 
-%Não adaptada ao nosso problema
-
-%Tirado das fichas
-
-%Valor da estima de um vertice
-
-estimaEstrela(X1/Y1,X2/Y2,Est) :- 
+estima(X1/Y1,X2/Y2,Est) :- 
     Aux is (X2 - X1)^2,
     Aux2 is (Y2 - Y1)^2,
     Aux3 is Aux+Aux2,
@@ -223,21 +209,21 @@ em_a_estrela(Zona,[H,X|T],DestinoFinal,Acc/CustoAcc,R/CR):-
 resolve_aestrela(Zona,Origem,Destino,CaminhoDistancia/CustoDist) :-
     vertice(Zona,Origem,X),
     vertice(Zona,Destino,Y),
-    estimaEstrela(X, Y,Est),
-    aestrela_distancia([[Origem]/0/Est],Destino, InvCaminho/CustoDist/_,Y),
+    estima(X, Y,Est),
+    aestrela_distancia(Zona,[[Origem]/0/Est],Destino, InvCaminho/CustoDist/_,Y),
     inverso(InvCaminho, CaminhoDistancia).
 
 
-aestrela_distancia(Caminhos,Destino, Caminho,CoordenadasDestino) :-
+aestrela_distancia(_,Caminhos,Destino, Caminho,_) :-
     obtem_melhor_distancia(Caminhos, Caminho),
     Caminho = [Destino|_]/_/_.
 
-aestrela_distancia(Caminhos,Destino, SolucaoCaminho,CoordenadasDestino) :-
+aestrela_distancia(Zona,Caminhos,Destino, SolucaoCaminho,CoordenadasDestino) :-
     obtem_melhor_distancia(Caminhos, MelhorCaminho),
     seleciona(MelhorCaminho, Caminhos, OutrosCaminhos),
     expande_aestrela_distancia(Zona,MelhorCaminho, ExpCaminhos,CoordenadasDestino),
     append(OutrosCaminhos, ExpCaminhos, NovoCaminhos),
-        aestrela_distancia(NovoCaminhos,Destino, SolucaoCaminho,CoordenadasDestino).   
+    aestrela_distancia(NovoCaminhos,Destino, SolucaoCaminho,CoordenadasDestino).   
 
 obtem_melhor_distancia([Caminho], Caminho) :- !.
 obtem_melhor_distancia([Caminho1/Custo1/Est1,_/Custo2/Est2|Caminhos], MelhorCaminho) :-
@@ -248,16 +234,8 @@ obtem_melhor_distancia([_|Caminhos], MelhorCaminho) :-
     
 
 expande_aestrela_distancia(Zona,Caminho, ExpCaminhos,CoordenadasDestino) :-
-    findall(NovoCaminho, adjacente_distancia_estrela(Zona,Caminho,NovoCaminho,CoordenadasDestino), ExpCaminhos).
+    findall(NovoCaminho, adjacente_distancia(Zona,Caminho,NovoCaminho,CoordenadasDestino), ExpCaminhos).
     
 
-adjacente_distancia_estrela(Zona,[Nodo|Caminho]/Custo/_, [ProxNodo,Nodo|Caminho]/NovoCusto/EstDist,CoordenadasDestino) :-
-    connect(Zona,Nodo,ProxNodo,PassoCustoDist),
-    \+ member(ProxNodo,Caminho),
-    NovoCusto is Custo + PassoCustoDist,
-    vertice(Zona,ProxNodo,X),
-    estimaEstrela(X,CoordenadasDestino,EstDist).
 
 
-connect(Zona,X,Y,C):- aresta(Zona,X,Y,C).
-connect(Zona,X,Y,C):- aresta(Zona,Y,X,C).
