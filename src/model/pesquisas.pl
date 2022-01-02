@@ -127,17 +127,17 @@ bfs2(Zona, Dest, [LA|Outros], Cam) :-
     bfs2(Zona, Dest, Todos, Cam).
 
 %------Busca Iterativa Limitada em Profundidade -----
-%nao funciona
-bilp(Zona, Orig, Dest,Cam) :- 
-    bilpAux(Zona, Orig, Dest, 0, Cam).
+bilp(Zona, Orig, Dest, Size, Cam) :- 
+    (bilpAux(Zona, Orig, Dest, Size, Cam) ->
+        !;
+        NewSize is Size + 1,
+        bilp(Zona, Orig, Dest, NewSize, Cam)
+    ).
 
 bilpAux(Zona, Orig, Dest, SizeInicial, Cam) :-
     dfs(Zona, Orig, Dest, Cam),
     length(Cam, S),
-    (   S==0
-    ->  NewSize is SizeInicial+1,
-        bilpAux(Zona, Orig, Dest, NewSize, Cam)
-    ).
+    S =:= SizeInicial.
 
 
 
