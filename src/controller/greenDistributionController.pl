@@ -489,8 +489,8 @@ zonaPesq_view(Zona,TipoPesq) :-
     append(["Centro de distribuições"], Aux1, Pts),
     (TipoPesq=:=1, emProfundidade(Zona,Pts,"Centro de distribuições",[],_);
      TipoPesq=:=2, emLargura(Zona,Pts,"Centro de distribuições",[],_);
-     TipoPesq=:=3, embilp(Zona,Pts,[],_);
-     TipoPesq=:=4, emgulosa(Zona,Pts,[],_);
+     TipoPesq=:=3, embilp(Zona,Pts,"Centro de distribuições",[],_);
+     TipoPesq=:=4, emgulosa(Zona,Pts,"Centro de distribuições",[]/0,_);
      TipoPesq=:=5, em_a_estrela(Zona,Pts,"Centro de distribuições",[]/0,_)
     ).
  
