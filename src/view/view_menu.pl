@@ -103,6 +103,15 @@ menuGrafos_view :-
     write(' 5. Ferreiros\n\n'),
     write(' 0. Sair \n').
 
+menuEuristicas :-
+    write('\n'),
+    write('\033\[32m-----------Heuristica-----------\033\[0m\n'),
+    write(' Selecione a heuristica a usar na pesquisa: \n'),
+    write(' 1. Distância\n'),
+    write(' 2. Tempo\n\n'),
+    write(' 0. Sair \n').
+
+
 %-------------------------------------------------------------------------------------%
 %                           Pretty print dos termos 
 %-------------------------------------------------------------------------------------%

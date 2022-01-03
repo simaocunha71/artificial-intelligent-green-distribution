@@ -480,6 +480,9 @@ getPrazo(pedido(_,_, DataE, _, _, _, DataP, _),R) :-
     data_valor(DataE,Entrega),
     R is Prazo - Entrega.
 
+% Velocidade do estafeta 
+getVelocidade(estafeta(_, _, _, meio_transporte(_,_,Vel,_), _/_, _, _), Vel).
+
 % Diminui a velocidade do estafeta
 
 % bicicleta
