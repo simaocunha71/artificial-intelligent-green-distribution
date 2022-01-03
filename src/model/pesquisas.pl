@@ -1,4 +1,6 @@
 :- consult(circuitos).
+:- consult(queries).
+
 :- consult('../view/view_menu').
 
 connect(Zona,X,Y,C):- aresta(Zona,X,Y,C).
@@ -393,3 +395,42 @@ calculaCustoDistancia2(Zona,[Nodo,Nodo2|T], Acc, Cust) :-
     connect(Zona,Nodo,Nodo2,CD),
     NewAcc is CD + Acc,
     calculaCustoDistancia2(Zona,[Nodo2|T], NewAcc, Cust).
+
+
+%----------------------------------
+fazDfs([],_,R,R) :- writeln(R),!.
+fazDfs([H|T], Destino, Acc,R) :-
+    getListPed(H,ListP),
+    getZona(H,Zona),
+    doDFS(Zona,ListP,Destino,[],Aux),
+    append(Acc,Aux,NewAcc),
+    fazDfs(T,Destino,NewAcc,R).
+
+doDFS(Zona,[pedido(Cl,ID_Ped, DataE, RuaH, Z, Peso, DataP, Est)],Destino, AccPaths, R) :-
+    %getRua(H,RuaH),
+    %getPesoPedido(H,Peso),
+    resolve_aestrela_distancia(Zona,RuaH,Destino,_),
+    writeln("FIM").
+    %updateCircuitosVolume(Cam/1/Peso, AccPaths, [],R).
+
+doDFS(Zona,[pedido(_,_, _, RuaH_H, Zona, PesoH, _, _),pedido(_,_, _, RuaHX, Zona, Peso, _, _)|T],Destino, AccPaths, R) :-  
+    %getRua(H,RuaH),
+    %getRua(X,RuaX),
+    %getPesoPedido(H,Peso),
+    resolve_aestrela_distancia(Zona,RuaH_H,RuaHX,_),
+    writeln(PesoH),
+    %updateCircuitosVolume(Cam/1/Peso, AccPaths, [],NewAcc),
+    doDFS(Zona,[pedido(_,_, _, RuaHX, Zona, Peso, _, _)|T],Destino, NewAcc, R).
+
+updateCircuitosVolume(Circuito,[],T,R) :-
+    append([Circuito],T,R).
+
+updateCircuitosVolume(Cam/Vol/Peso,[X/VolX/PesoX|XS],T,R) :-
+    %writeln(Cam/Vol/Peso),
+    %writeln([X/VolX/PesoX|XS]),
+    (compare(=,Cam,X) -> 
+        NewVol is Vol + VolX,
+        NewPeso is Peso + PesoX,
+        append([Cam/NewVol/NewPeso],T,NewT);
+        append([X/VolX/PesoX],T,NewT)
+    ), updateCircuitosVolume(Cam/Vol/Peso,XS,NewT,R).

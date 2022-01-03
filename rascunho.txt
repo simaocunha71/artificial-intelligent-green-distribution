@@ -1,4 +1,5 @@
 -> Ter tempo de entrega máximo numa travessia
+
 -> Comparar circuitos de entrega (menu para cada algoritmo). Cada algoritmo vai calcular o caminho para todos os pedidos, guardando/atualizando para cada volume e peso numa lista de caminhos
 -> Escolher o circuito mais rápido (menu para cada algoritmo). Cada algoritmo vai calcular o caminho para todos os pedidos, guardando o circuito "melhor"
 -> Escolher o circuito mais ecologico (menu para cada algoritmo). Cada algoritmo vai calcular o caminho para todos os pedidos, guardando o circuito "melhor"

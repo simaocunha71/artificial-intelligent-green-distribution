@@ -464,6 +464,12 @@ getElementByIndex(N, [_|T], Ef) :-
     NewN is N-1,
     getElementByIndex(NewN, T, Ef).
 
+getZona(estafeta(_, _, Zona, _, _/_, _, _),Zona).
+
+getPesoPedido(pedido(_,_, _, _, _, Pes, _, _), Pes).
+
+getRua(pedido(_,_, _, Rua, _, _, _, _), Rua).
+
 % Peso total de um estafeta (identificado pelo seu id)
 getPesoTotal(ID,Total) :-
     estafeta(_,ID,_,_,_,LPed,_),
