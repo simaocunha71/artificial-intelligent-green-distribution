@@ -65,22 +65,46 @@ embilp(Zona, [H, X|T],DestinoFinal, Acc, Cam) :-
 
 
 %-----------------------------------------
-emgulosa(Zona,[H],DestinoFinal,Acc/CustoAcc,R/CR):-
 
-    resolve_gulosa(Zona,H,DestinoFinal,Caminho/Custo),
+greedy(Zona,Pts,Destino,Velocidade, Modo, Cam/Cust) :-
+    (Modo == 1 -> 
+        emgulosa_distancia(Zona,Pts,Destino, []/0, Cam/Cust)
+    );
+    (Modo == 2 -> 
+        emgulosa_tempo(Zona,Velocidade, Pts,Destino,[]/0,Cam/Cust)
+    ).
+
+emgulosa_distancia(Zona,[H],DestinoFinal,Acc/CustoAcc,R/CR):-
+    resolve_gulosa_distancia(Zona,H,DestinoFinal,Caminho/Custo),
     printOnePath(Caminho),
     append(Acc,Caminho,R),
     CR is CustoAcc + Custo,
     write("\033\[32m > Custo: "),write(CR), writeln("\033\[0m").
 
-emgulosa(Zona,[H,X|T],DestinoFinal,Acc/CustoAcc,R/CR):-
-    resolve_gulosa(Zona,H,X,Caminho/Custo),
+emgulosa_distancia(Zona,[H,X|T],DestinoFinal,Acc/CustoAcc,R/CR):-
+    resolve_gulosa_distancia(Zona,H,X,Caminho/Custo),
     subtract(T,Caminho,NovoDestinos),
     printOnePath(Caminho),
     append(Acc,Caminho,NovoAcc),
     write("\033\[32m > Custo: "),write(Custo), writeln("\033\[0m"),
     NovoCusto is CustoAcc + Custo,
-    emgulosa(Zona,[X|NovoDestinos],DestinoFinal,NovoAcc/NovoCusto,R/CR).
+    emgulosa_distancia(Zona,[X|NovoDestinos],DestinoFinal,NovoAcc/NovoCusto,R/CR).
+
+emgulosa_tempo(Zona,Velocidade,[H],DestinoFinal,Acc/CustoAcc,R/CR):-
+    resolve_gulosa_tempo(Velocidade,Zona,H,DestinoFinal,Caminho/Custo),
+    printOnePath(Caminho),
+    append(Acc,Caminho,R),
+    CR is CustoAcc + Custo,
+    write("\033\[32m > Custo: "),write(CR), writeln("\033\[0m").
+
+emgulosa_tempo(Zona,Velocidade,[H,X|T],DestinoFinal,Acc/CustoAcc,R/CR):-
+    resolve_gulosa_tempo(Velocidade,Zona,H,X,Caminho/Custo),
+    subtract(T,Caminho,NovoDestinos),
+    printOnePath(Caminho),
+    append(Acc,Caminho,NovoAcc),
+    write("\033\[32m > Custo: "),write(Custo), writeln("\033\[0m"),
+    NovoCusto is CustoAcc + Custo,
+    emgulosa_tempo(Zona,Velocidade,[X|NovoDestinos],DestinoFinal,NovoAcc/NovoCusto,R/CR).
 
 %-----------------------------------------
 %em_a_estrela("Ferreiros",["Centro de distribuições","Rua 11","Rua 10","Rua 18"],"Centro de distribuições",[]/0,R/CR).
@@ -148,10 +172,10 @@ bilpAux(Zona, Orig, Dest, SizeInicial, Cam) :-
 
 %------Pesquisa gulosa-----
 
-resolve_gulosa(Zona,Origem,Destino,CaminhoDistancia/CustoDist) :-
+resolve_gulosa_distancia(Zona,Origem,Destino,CaminhoDistancia/CustoDist) :-
     vertice(Zona,Origem,X),
     vertice(Zona,Destino,Y),
-    estima(X, Y,Est),
+    estima_distancia(X, Y,Est),
     agulosa_distancia_g(Zona,[[Origem]/0/Est], Destino, InvCaminho/CustoDist/_,Y),
     inverso(InvCaminho, CaminhoDistancia).
 
@@ -173,13 +197,42 @@ obtem_melhor_distancia_g([Caminho1/Custo1/Est1,_/_/Est2|Caminhos], MelhorCaminho
     obtem_melhor_distancia_g([Caminho1/Custo1/Est1|Caminhos], MelhorCaminho). 
 obtem_melhor_distancia_g([_|Caminhos], MelhorCaminho) :- 
     obtem_melhor_distancia_g(Caminhos, MelhorCaminho).
-    
+
 
 expande_agulosa_distancia_g(Zona,Caminho, ExpCaminhos,CoordenadasDestino) :-
     findall(NovoCaminho, adjacente_distancia(Zona,Caminho,NovoCaminho,CoordenadasDestino), ExpCaminhos).
+
+
+%-------------------------------------    
+resolve_gulosa_tempo(Velocidade, Zona,Origem,Destino,CaminhoDistancia/CustoDist) :-
+    vertice(Zona,Origem,X),
+    vertice(Zona,Destino,Y),
+    estima_tempo(Velocidade, X, Y,Est),
+    agulosa_tempo_g(Zona,Velocidade,[[Origem]/0/Est], Destino, InvCaminho/CustoDist/_,Y),
+    inverso(InvCaminho, CaminhoDistancia).
+
+agulosa_tempo_g(_,_,Caminhos, Destino,Caminho,_) :-
+    obtem_melhor_tempo_g(Caminhos, Caminho),
+    Caminho = [Destino|_]/_/_.
     
 
+agulosa_tempo_g(Zona,Velocidade, Caminhos, Destino,SolucaoCaminho,CoordenadasDestino) :-
+    obtem_melhor_tempo_g(Caminhos, MelhorCaminho),
+    seleciona(MelhorCaminho, Caminhos, OutrosCaminhos),
+    expande_agulosa_tempo_g(Zona,Velocidade, MelhorCaminho, ExpCaminhos,CoordenadasDestino),
+    append(OutrosCaminhos, ExpCaminhos, NovoCaminhos),
+    agulosa_tempo_g(Zona,Velocidade, NovoCaminhos, Destino,SolucaoCaminho,CoordenadasDestino).  
 
+obtem_melhor_tempo_g([Caminho], Caminho) :- !.
+obtem_melhor_tempo_g([Caminho1/Custo1/Est1,_/_/Est2|Caminhos], MelhorCaminho) :-
+    Est1 =< Est2, !,
+    obtem_melhor_tempo_g([Caminho1/Custo1/Est1|Caminhos], MelhorCaminho). 
+obtem_melhor_tempo_g([_|Caminhos], MelhorCaminho) :- 
+    obtem_melhor_tempo_g(Caminhos, MelhorCaminho).
+    
+
+expande_agulosa_tempo_g(Zona,Velocidade,Caminho, ExpCaminhos,CoordenadasDestino) :-
+    findall(NovoCaminho, adjacente_tempo(Zona,Velocidade,Caminho,NovoCaminho,CoordenadasDestino), ExpCaminhos).
 
 
 
@@ -190,7 +243,7 @@ expande_agulosa_distancia_g(Zona,Caminho, ExpCaminhos,CoordenadasDestino) :-
 resolve_aestrela(Zona,Origem,Destino,CaminhoDistancia/CustoDist) :-
     vertice(Zona,Origem,X),
     vertice(Zona,Destino,Y),
-    estima(X, Y,Est),
+    estima_distancia(X, Y,Est),
     aestrela_distancia(Zona,[[Origem]/0/Est],Destino, InvCaminho/CustoDist/_,Y),
     inverso(InvCaminho, CaminhoDistancia).
 
@@ -259,18 +312,31 @@ inverso([X|Xs], Ys, Zs) :-
 seleciona(E, [E|Xs], Xs).
 seleciona(E, [X|Xs], [X|Ys]) :- seleciona(E, Xs, Ys).
 
-estima(X1/Y1,X2/Y2,Est) :- 
+estima_distancia(X1/Y1,X2/Y2,Est) :- 
     Aux is (X2 - X1)^2,
     Aux2 is (Y2 - Y1)^2,
     Aux3 is Aux+Aux2,
     Est is sqrt(Aux3).
+
+estima_tempo(Vel, X1/Y1, X2/Y2, Est) :- 
+    Aux is (X2 - X1)^2,
+    Aux2 is (Y2 - Y1)^2,
+    Aux3 is Aux+Aux2,
+    Est is sqrt(Aux3)/Vel.
 
 adjacente_distancia(Zona,[Nodo|Caminho]/Custo/_, [ProxNodo,Nodo|Caminho]/NovoCusto/EstDist,CoordenadasDestino) :-
     connect(Zona,Nodo,ProxNodo,PassoCustoDist),
     \+ member(ProxNodo,Caminho),
     NovoCusto is Custo + PassoCustoDist,
     vertice(Zona,ProxNodo,X),
-    estima(X,CoordenadasDestino,EstDist).
+    estima_distancia(X,CoordenadasDestino,EstDist).
+
+adjacente_tempo(Zona,Velocidade, [Nodo|Caminho]/Custo/_, [ProxNodo,Nodo|Caminho]/NovoCusto/EstDist,CoordenadasDestino) :-
+    connect(Zona,Nodo,ProxNodo,PassoCustoDist),
+    \+ member(ProxNodo,Caminho),
+    NovoCusto is Custo + PassoCustoDist/Velocidade,
+    vertice(Zona,ProxNodo,X),
+    estima_tempo(Velocidade,X,CoordenadasDestino,EstDist).
 
 calculaCustoDistancia(_,[],_).
 calculaCustoDistancia(Zona, [Nodo|T], Cust) :-
