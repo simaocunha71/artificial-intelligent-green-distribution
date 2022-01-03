@@ -1,0 +1,9 @@
+-> Ter tempo de entrega máximo numa travessia
+-> Adaptar algoritmos para ter cálculo do tempo (Estilo ficha7)
+-> Meter estima a calcular o tempo
+-> Adjacente_tempo a calcular o tempo
+-> Ajustar os algoritmos para utilizar Adjacente_tempo
+-> Utilizar maior_volume_entregas_zona() para calcular circuitos com maiores 
+-> Comparar circuitos de entrega (menu para cada algoritmo). Cada algoritmo vai calcular o caminho para todos os pedidos, guardando/atualizando para cada volume e peso numa lista de caminhos
+-> Escolher o circuito mais rápido (menu para cada algoritmo). Cada algoritmo vai calcular o caminho para todos os pedidos, guardando o circuito "melhor"
+-> Escolher o circuito mais ecologico (menu para cada algoritmo). Cada algoritmo vai calcular o caminho para todos os pedidos, guardando o circuito "melhor"
