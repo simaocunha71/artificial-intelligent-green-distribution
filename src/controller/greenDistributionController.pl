@@ -28,7 +28,7 @@ run_opt(3) :-
 
 run_opt(4) :-
     limpaT,
-    menuTravessias.
+    menuT.
 
 run_opt(0) :-
     write('\033\[31m----------Adeus!------------\033\[0m\n'),
@@ -463,6 +463,19 @@ calcula_peso_total_view :-
 /*-------------------------------------------------------------------------- */
 /*------------------------------ Travessias -------------------------------- */
 /*-------------------------------------------------------------------------- */
+menuT :-
+    menuT_view,
+    read(Opt),
+    executeTrav(Opt).
+
+executeTrav(Opt) :- (Opt=:=1, limpaT, menuTravessias;
+                     Opt=:=2, limpaT, menuComparaCircuitos;
+                     Opt=:=3, limpaT, menuCircuitoRapido;
+                     Opt=:=4, limpaT, menuCircuitoEco;
+
+                     Opt=:=0, runApp, limpaT
+                     ), menuT.
+
 
 menuTravessias :-
     menuTravessias_view,
@@ -495,12 +508,16 @@ zonaPesq_view(Zona,TipoPesq) :-
      menuEuristicas,
      (read(Mode),
         (Mode =:= 1, writeln("Aplicando algoritmo greedy com heuristica DISTÂNCIA...");
-         Mode =:= 2, writeln("Aplicando algoritmo greedy com heuristica TEMPO...");
+         Mode =:= 2, Vel > 0, writeln("Aplicando algoritmo greedy com heuristica TEMPO...");
+         Mode =:= 2, Vel =< 0, writeln("\u001B[31mVelocidade do estafeta é zero, pelo que não é possivel aplicar o algoritmo!\u001B[0m");
          Mode =\= 1 , Mode =\= 2 -> read(Mode)
         ),
-        (TipoPesq =:= 4 ->
-        greedy(Zona,Pts,"Centro de distribuições",Vel, Mode, _);
-        star(Zona,Pts,"Centro de distribuições",Vel, Mode, _)
+        ((Mode =:= 1);(Mode =:= 2 , Vel > 0) ->
+            (TipoPesq =:= 4 ->
+            greedy(Zona,Pts,"Centro de distribuições",Vel, Mode, _);
+            star(Zona,Pts,"Centro de distribuições",Vel, Mode, _)
+            );
+            !
         )
      )
     ).
@@ -516,5 +533,13 @@ pickEstafeta(List,Ef) :-
         writeln("Indice a aceder inválido"),pickEstafeta(List,Ef)
     ).
 
+menuComparaCircuitos :-
+    writeln("Nao implementado").
+
+menuCircuitoRapido :-
+    writeln("Nao implementado").
+
+menuCircuitoEco :-
+    writeln("Nao implementado").
 
 

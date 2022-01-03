@@ -79,6 +79,17 @@ menuQuery_view :-
     write(' 0. Sair \n').
 
 %-------------------------------------------------------------------------------------%
+menuT_view :-
+    write('\n'),
+    write('\033\[32m-----------Querys de pesquisa-----------\033\[0m\n'),
+    write(' Selecione a query de pesquisa que pretende efetuar: \n'),
+    write(' 1. Executar algoritmo de pesquisa\n'),
+    write(' 2. Comparar circuitos de entrega\n'),
+    write(' 3. Calcular circuito mais rápido\n'),
+    write(' 4. Calcular circuito mais ecológico\n\n'),
+    write(' 0. Sair \n').
+
+
 menuTravessias_view :-
     write('\n'),
     write('\033\[32m-----------Pesquisa-----------\033\[0m\n'),
@@ -110,6 +121,8 @@ menuEuristicas :-
     write(' 1. Distância\n'),
     write(' 2. Tempo\n\n'),
     write(' 0. Sair \n').
+
+
 
 
 %-------------------------------------------------------------------------------------%
