@@ -107,23 +107,50 @@ emgulosa_tempo(Zona,Velocidade,[H,X|T],DestinoFinal,Acc/CustoAcc,R/CR):-
     emgulosa_tempo(Zona,Velocidade,[X|NovoDestinos],DestinoFinal,NovoAcc/NovoCusto,R/CR).
 
 %-----------------------------------------
-%em_a_estrela("Ferreiros",["Centro de distribuições","Rua 11","Rua 10","Rua 18"],"Centro de distribuições",[]/0,R/CR).
+%em_a_estrela_distancia("Ferreiros",["Centro de distribuições","Rua 11","Rua 10","Rua 18"],"Centro de distribuições",[]/0,R/CR).
 
-em_a_estrela(Zona,[H],DestinoFinal,Acc/CustoAcc,R/CR):-
-    resolve_aestrela(Zona,H,DestinoFinal,Caminho/Custo),
+star(Zona,Pts,Destino,Velocidade, Modo, Cam/Cust) :-
+    (Modo == 1 -> 
+        em_a_estrela_distancia(Zona,Pts,Destino, []/0, Cam/Cust)
+    );
+    (Modo == 2 -> 
+        em_a_estrela_tempo(Zona,Velocidade, Pts,Destino,[]/0,Cam/Cust)
+    ).
+
+
+em_a_estrela_distancia(Zona,[H],DestinoFinal,Acc/CustoAcc,R/CR):-
+    resolve_aestrela_distancia(Zona,H,DestinoFinal,Caminho/Custo),
     printOnePath(Caminho),
     append(Acc,Caminho,R),
     CR is CustoAcc + Custo,
     write("\033\[32m > Custo: "),write(CR), writeln("\033\[0m").
 
-em_a_estrela(Zona,[H,X|T],DestinoFinal,Acc/CustoAcc,R/CR):-
-    resolve_aestrela(Zona,H,X,Caminho/Custo),
+em_a_estrela_distancia(Zona,[H,X|T],DestinoFinal,Acc/CustoAcc,R/CR):-
+    resolve_aestrela_distancia(Zona,H,X,Caminho/Custo),
     subtract(T,Caminho,NovoDestinos),
     printOnePath(Caminho),
     append(Acc,Caminho,NovoAcc),
     write("\033\[32m > Custo: "),write(Custo), writeln("\033\[0m"),
     NovoCusto is CustoAcc + Custo,
-    em_a_estrela(Zona,[X|NovoDestinos],DestinoFinal,NovoAcc/NovoCusto,R/CR).
+    em_a_estrela_distancia(Zona,[X|NovoDestinos],DestinoFinal,NovoAcc/NovoCusto,R/CR).
+
+
+em_a_estrela_tempo(Zona,Velocidade,[H],DestinoFinal,Acc/CustoAcc,R/CR):-
+    resolve_aestrela_tempo(Velocidade,Zona,H,DestinoFinal,Caminho/Custo),
+    printOnePath(Caminho),
+    append(Acc,Caminho,R),
+    CR is CustoAcc + Custo,
+    write("\033\[32m > Custo: "),write(CR), writeln("\033\[0m").
+
+em_a_estrela_tempo(Zona,Velocidade,[H,X|T],DestinoFinal,Acc/CustoAcc,R/CR):-
+    resolve_aestrela_tempo(Velocidade,Zona,H,X,Caminho/Custo),
+    subtract(T,Caminho,NovoDestinos),
+    printOnePath(Caminho),
+    append(Acc,Caminho,NovoAcc),
+    write("\033\[32m > Custo: "),write(Custo), writeln("\033\[0m"),
+    NovoCusto is CustoAcc + Custo,
+    em_a_estrela_tempo(Zona,Velocidade,[X|NovoDestinos],DestinoFinal,NovoAcc/NovoCusto,R/CR).
+
 
 
 
@@ -180,23 +207,23 @@ resolve_gulosa_distancia(Zona,Origem,Destino,CaminhoDistancia/CustoDist) :-
     inverso(InvCaminho, CaminhoDistancia).
 
 agulosa_distancia_g(_,Caminhos, Destino,Caminho,_) :-
-    obtem_melhor_distancia_g(Caminhos, Caminho),
+    obtem_melhor_g(Caminhos, Caminho),
     Caminho = [Destino|_]/_/_.
     
 
 agulosa_distancia_g(Zona,Caminhos, Destino,SolucaoCaminho,CoordenadasDestino) :-
-    obtem_melhor_distancia_g(Caminhos, MelhorCaminho),
+    obtem_melhor_g(Caminhos, MelhorCaminho),
     seleciona(MelhorCaminho, Caminhos, OutrosCaminhos),
     expande_agulosa_distancia_g(Zona,MelhorCaminho, ExpCaminhos,CoordenadasDestino),
     append(OutrosCaminhos, ExpCaminhos, NovoCaminhos),
     agulosa_distancia_g(Zona,NovoCaminhos, Destino,SolucaoCaminho,CoordenadasDestino).  
 
-obtem_melhor_distancia_g([Caminho], Caminho) :- !.
-obtem_melhor_distancia_g([Caminho1/Custo1/Est1,_/_/Est2|Caminhos], MelhorCaminho) :-
+obtem_melhor_g([Caminho], Caminho) :- !.
+obtem_melhor_g([Caminho1/Custo1/Est1,_/_/Est2|Caminhos], MelhorCaminho) :-
     Est1 =< Est2, !,
-    obtem_melhor_distancia_g([Caminho1/Custo1/Est1|Caminhos], MelhorCaminho). 
-obtem_melhor_distancia_g([_|Caminhos], MelhorCaminho) :- 
-    obtem_melhor_distancia_g(Caminhos, MelhorCaminho).
+    obtem_melhor_g([Caminho1/Custo1/Est1|Caminhos], MelhorCaminho). 
+obtem_melhor_g([_|Caminhos], MelhorCaminho) :- 
+    obtem_melhor_g(Caminhos, MelhorCaminho).
 
 
 expande_agulosa_distancia_g(Zona,Caminho, ExpCaminhos,CoordenadasDestino) :-
@@ -212,23 +239,17 @@ resolve_gulosa_tempo(Velocidade, Zona,Origem,Destino,CaminhoDistancia/CustoDist)
     inverso(InvCaminho, CaminhoDistancia).
 
 agulosa_tempo_g(_,_,Caminhos, Destino,Caminho,_) :-
-    obtem_melhor_tempo_g(Caminhos, Caminho),
+    obtem_melhor_g(Caminhos, Caminho),
     Caminho = [Destino|_]/_/_.
     
 
 agulosa_tempo_g(Zona,Velocidade, Caminhos, Destino,SolucaoCaminho,CoordenadasDestino) :-
-    obtem_melhor_tempo_g(Caminhos, MelhorCaminho),
+    obtem_melhor_g(Caminhos, MelhorCaminho),
     seleciona(MelhorCaminho, Caminhos, OutrosCaminhos),
     expande_agulosa_tempo_g(Zona,Velocidade, MelhorCaminho, ExpCaminhos,CoordenadasDestino),
     append(OutrosCaminhos, ExpCaminhos, NovoCaminhos),
     agulosa_tempo_g(Zona,Velocidade, NovoCaminhos, Destino,SolucaoCaminho,CoordenadasDestino).  
 
-obtem_melhor_tempo_g([Caminho], Caminho) :- !.
-obtem_melhor_tempo_g([Caminho1/Custo1/Est1,_/_/Est2|Caminhos], MelhorCaminho) :-
-    Est1 =< Est2, !,
-    obtem_melhor_tempo_g([Caminho1/Custo1/Est1|Caminhos], MelhorCaminho). 
-obtem_melhor_tempo_g([_|Caminhos], MelhorCaminho) :- 
-    obtem_melhor_tempo_g(Caminhos, MelhorCaminho).
     
 
 expande_agulosa_tempo_g(Zona,Velocidade,Caminho, ExpCaminhos,CoordenadasDestino) :-
@@ -238,9 +259,34 @@ expande_agulosa_tempo_g(Zona,Velocidade,Caminho, ExpCaminhos,CoordenadasDestino)
 
 %------Pesquisa A*-----
  
-%resolve_aestrela("Semelhe","Centro de distribuições","Rua 13",R/CR). 
+%resolve_aestrela_distancia("Semelhe","Centro de distribuições","Rua 13",R/CR). 
 
-resolve_aestrela(Zona,Origem,Destino,CaminhoDistancia/CustoDist) :-
+resolve_aestrela_tempo(Velocidade,Zona,Origem,Destino,CaminhoDistancia/CustoDist) :-
+    vertice(Zona,Origem,X),
+    vertice(Zona,Destino,Y),
+    estima_tempo(Velocidade,X, Y,Est),
+    aestrela_tempo(Velocidade,Zona,[[Origem]/0/Est],Destino, InvCaminho/CustoDist/_,Y),
+    inverso(InvCaminho, CaminhoDistancia).
+
+
+aestrela_tempo(_,_,Caminhos,Destino, Caminho,_) :-
+    obtem_melhor(Caminhos, Caminho),
+    Caminho = [Destino|_]/_/_.
+
+aestrela_tempo(Velocidade,Zona,Caminhos,Destino, SolucaoCaminho,CoordenadasDestino) :-
+    obtem_melhor(Caminhos, MelhorCaminho),
+    seleciona(MelhorCaminho, Caminhos, OutrosCaminhos),
+    expande_aestrela_tempo(Velocidade,Zona,MelhorCaminho, ExpCaminhos,CoordenadasDestino),
+    append(OutrosCaminhos, ExpCaminhos, NovoCaminhos),
+    aestrela_tempo(Velocidade,Zona,NovoCaminhos,Destino, SolucaoCaminho,CoordenadasDestino).   
+
+
+expande_aestrela_tempo(Velocidade,Zona,Caminho, ExpCaminhos,CoordenadasDestino) :-
+    findall(NovoCaminho, adjacente_tempo(Zona,Velocidade,Caminho,NovoCaminho,CoordenadasDestino), ExpCaminhos).
+
+%------------------------------------------------------------------------------
+
+resolve_aestrela_distancia(Zona,Origem,Destino,CaminhoDistancia/CustoDist) :-
     vertice(Zona,Origem,X),
     vertice(Zona,Destino,Y),
     estima_distancia(X, Y,Est),
@@ -249,22 +295,22 @@ resolve_aestrela(Zona,Origem,Destino,CaminhoDistancia/CustoDist) :-
 
 
 aestrela_distancia(_,Caminhos,Destino, Caminho,_) :-
-    obtem_melhor_distancia(Caminhos, Caminho),
+    obtem_melhor(Caminhos, Caminho),
     Caminho = [Destino|_]/_/_.
 
 aestrela_distancia(Zona,Caminhos,Destino, SolucaoCaminho,CoordenadasDestino) :-
-    obtem_melhor_distancia(Caminhos, MelhorCaminho),
+    obtem_melhor(Caminhos, MelhorCaminho),
     seleciona(MelhorCaminho, Caminhos, OutrosCaminhos),
     expande_aestrela_distancia(Zona,MelhorCaminho, ExpCaminhos,CoordenadasDestino),
     append(OutrosCaminhos, ExpCaminhos, NovoCaminhos),
     aestrela_distancia(Zona,NovoCaminhos,Destino, SolucaoCaminho,CoordenadasDestino).   
 
-obtem_melhor_distancia([Caminho], Caminho) :- !.
-obtem_melhor_distancia([Caminho1/Custo1/Est1,_/Custo2/Est2|Caminhos], MelhorCaminho) :-
+obtem_melhor([Caminho], Caminho) :- !.
+obtem_melhor([Caminho1/Custo1/Est1,_/Custo2/Est2|Caminhos], MelhorCaminho) :-
     Custo1 + Est1 =< Custo2 + Est2, !,
-    obtem_melhor_distancia([Caminho1/Custo1/Est1|Caminhos], MelhorCaminho). 
-obtem_melhor_distancia([_|Caminhos], MelhorCaminho) :- 
-    obtem_melhor_distancia(Caminhos, MelhorCaminho).
+    obtem_melhor([Caminho1/Custo1/Est1|Caminhos], MelhorCaminho). 
+obtem_melhor([_|Caminhos], MelhorCaminho) :- 
+    obtem_melhor(Caminhos, MelhorCaminho).
     
 
 expande_aestrela_distancia(Zona,Caminho, ExpCaminhos,CoordenadasDestino) :-
