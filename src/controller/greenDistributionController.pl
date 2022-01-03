@@ -491,7 +491,7 @@ zonaPesq_view(Zona,TipoPesq) :-
      TipoPesq=:=2, emLargura(Zona,Pts,"Centro de distribuições",[],0,_,_);
      TipoPesq=:=3, embilp(Zona,Pts,"Centro de distribuições",[],_);
      TipoPesq=:=4, greedy(Zona,Pts,"Centro de distribuições",10, 2, _);
-     TipoPesq=:=5, em_a_estrela(Zona,Pts,"Centro de distribuições",[]/0,_)
+     TipoPesq=:=5, star(Zona,Pts,"Centro de distribuições",10, 2, _)
     ).
  
 
