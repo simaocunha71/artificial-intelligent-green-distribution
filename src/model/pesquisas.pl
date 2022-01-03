@@ -6,40 +6,52 @@ connect(Zona,X,Y,C):- aresta(Zona,Y,X,C).
 
 %-----------------------------------------
 
-emProfundidade(Zona,[H],DestinoFinal, Acc,R):-
-    dfs(Zona, H, DestinoFinal, L),
+emProfundidade(Zona,[H],DestinoFinal, Acc, AccCost, NewCost,R):-
+    dfs(Zona, H, DestinoFinal, CDist,L),
+    NewCost is CDist + AccCost,
     append(Acc, L, R),
-    printOnePath(L).
+    printOnePath(L),
+    write("Custo da travessia -> "),writeln(CDist).
 
 
-emProfundidade(Zona, [H, X|T],DestinoFinal, Acc, Cam) :-
-    dfs(Zona, H, X, L),
+emProfundidade(Zona, [H, X|T],DestinoFinal, Acc, AccCost,Cost, Cam) :-
+    dfs(Zona, H, X, CD, L),
+    NewAccCost is CD + AccCost,
     subtract(T,L,Result),
     append([X],Result,NewDest),
     append(Acc, L, NewL),
     printOnePath(L), 
-    emProfundidade(Zona, NewDest,DestinoFinal, NewL, Cam).
+    write("Custo da travessia -> "),writeln(CD),
+    emProfundidade(Zona, NewDest,DestinoFinal, NewL, NewAccCost,Cost, Cam).
 
 %-----------------------------------------
-emLargura(Zona,[H],DestinoFinal, Acc,R):-
-    bfs(Zona, H, DestinoFinal, L),
+emLargura(Zona,[H],DestinoFinal, Acc, AccCost, NewCost,R):-
+    bfs(Zona, H, DestinoFinal,L),
+    calculaCustoDistancia(Zona,L,CDist),
+    NewCost is CDist + AccCost,
     append(Acc, L, R),
-    printOnePath(L).
+    printOnePath(L),
+    write("Custo da travessia -> "),writeln(CDist).
 
 
-emLargura(Zona, [H, X|T],DestinoFinal, Acc, Cam) :-
+emLargura(Zona, [H, X|T],DestinoFinal, Acc, AccCost,Cost, Cam) :-
     bfs(Zona, H, X, L),
+    calculaCustoDistancia(Zona,L,CD),
+    NewAccCost is CD + AccCost,
     subtract(T,L,Result),
     append([X],Result,NewDest),
     append(Acc, L, NewL),
-    printOnePath(L),
-    emLargura(Zona, NewDest,DestinoFinal, NewL, Cam).
+    printOnePath(L), 
+    write("Custo da travessia -> "),writeln(CD),
+    emLargura(Zona, NewDest,DestinoFinal, NewL, NewAccCost,Cost, Cam).
 
 %-----------------------------------------
-embilp(Zona,[H],DestinoFinal, Acc,R):-
+embilp(Zona,[H],DestinoFinal, Acc, R):-
     bilp(Zona, H, DestinoFinal, 0, L),
     append(Acc, L, R),
-    printOnePath(L).
+    printOnePath(L),
+    calculaCustoDistancia(Zona,L,CD),
+    write("Custo da travessia -> "),writeln(CD).
 
 embilp(Zona, [H, X|T],DestinoFinal, Acc, Cam) :-     
     bilp(Zona, H, X, 0, L),
@@ -47,6 +59,8 @@ embilp(Zona, [H, X|T],DestinoFinal, Acc, Cam) :-
     append([X],Result,NewDest),
     append(Acc, L, NewL),
     printOnePath(L),
+    calculaCustoDistancia(Zona,L,CD),
+    write("Custo da travessia -> "),writeln(CD),
     embilp(Zona, NewDest,DestinoFinal, NewL, Cam).
 
 
@@ -92,13 +106,14 @@ em_a_estrela(Zona,[H,X|T],DestinoFinal,Acc/CustoAcc,R/CR):-
 
 %------ Pesquisa em profundidade ---------
 
-dfs(Zona, Orig, Dest, Cam) :-
-    dfs2(Zona, Orig, Dest, [Orig], Cam). %condicao final: nó actual = destino
-dfs2(_,Dest,Dest,LA,Cam):- reverse(LA,Cam). %caminho actual esta invertido
-dfs2(Zona, Act, Dest, LA, Cam) :-
-    connect(Zona, Act, X,_), %testar ligacao entre ponto actual e um qualquer X
+dfs(Zona, Orig, Dest, Distancia,Cam) :-
+    dfs2(Zona, Orig, Dest, [Orig], 0, Distancia, Cam). %condicao final: nó actual = destino
+dfs2(_,Dest,Dest,LA,CD,CD,Cam):- reverse(LA,Cam). %caminho actual esta invertido
+dfs2(Zona, Act, Dest, LA,AccCD,CD, Cam) :-
+    connect(Zona, Act, X,Cost), %testar ligacao entre ponto actual e um qualquer X
+    NewAcc is AccCD + Cost,
     \+ member(X, LA), %testar nao circularidade p/evitar nós ja visitados
-    dfs2(Zona, X, Dest, [X|LA], Cam). %chamada recursiva
+    dfs2(Zona, X, Dest, [X|LA], NewAcc, CD, Cam). %chamada recursiva
 
 %------ Pesquisa em largura ---------
 
@@ -125,7 +140,7 @@ bilp(Zona, Orig, Dest, Size, Cam) :-
     ).
 
 bilpAux(Zona, Orig, Dest, SizeInicial, Cam) :-
-    dfs(Zona, Orig, Dest, Cam),
+    dfs(Zona, Orig, Dest, _, Cam),
     length(Cam, S),
     S =:= SizeInicial.
 
@@ -256,3 +271,13 @@ adjacente_distancia(Zona,[Nodo|Caminho]/Custo/_, [ProxNodo,Nodo|Caminho]/NovoCus
     NovoCusto is Custo + PassoCustoDist,
     vertice(Zona,ProxNodo,X),
     estima(X,CoordenadasDestino,EstDist).
+
+calculaCustoDistancia(_,[],_).
+calculaCustoDistancia(Zona, [Nodo|T], Cust) :-
+    calculaCustoDistancia2(Zona,[Nodo|T], 0, Cust).
+
+calculaCustoDistancia2(_,[_],R,R).
+calculaCustoDistancia2(Zona,[Nodo,Nodo2|T], Acc, Cust) :-
+    connect(Zona,Nodo,Nodo2,CD),
+    NewAcc is CD + Acc,
+    calculaCustoDistancia2(Zona,[Nodo2|T], NewAcc, Cust).
