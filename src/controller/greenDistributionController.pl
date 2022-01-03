@@ -485,22 +485,24 @@ zonaPesq_view(Zona,TipoPesq) :-
     writeln("Estafetas disponíveis:"), 
     estafeta_zona(Zona,R), write_lista_estafeta(R,1),
     pickEstafeta(R,Ef),
-    getVelocidade(Ef,Vel),
+    diminuiVel(Ef,Vel),
     getTodosPontosEntrega(Ef,Aux1),
     append(["Centro de distribuições"], Aux1, Pts),
     (TipoPesq=:=1, emProfundidade(Zona,Pts,"Centro de distribuições",[],0,_,_);
      TipoPesq=:=2, emLargura(Zona,Pts,"Centro de distribuições",[],0,_,_);
      TipoPesq=:=3, embilp(Zona,Pts,"Centro de distribuições",[],_);
-     TipoPesq=:=4, 
+     (TipoPesq=:=4; TipoPesq =:= 5), 
      menuEuristicas,
      (read(Mode),
         (Mode =:= 1, writeln("Aplicando algoritmo greedy com heuristica DISTÂNCIA...");
          Mode =:= 2, writeln("Aplicando algoritmo greedy com heuristica TEMPO...");
          Mode =\= 1 , Mode =\= 2 -> read(Mode)
         ),
-        greedy(Zona,Pts,"Centro de distribuições",Vel, Mode, _)
-     );
-     TipoPesq=:=5, em_a_estrela(Zona,Pts,"Centro de distribuições",[]/0,_)
+        (TipoPesq =:= 4 ->
+        greedy(Zona,Pts,"Centro de distribuições",Vel, Mode, _);
+        star(Zona,Pts,"Centro de distribuições",Vel, Mode, _)
+        )
+     )
     ).
  
 

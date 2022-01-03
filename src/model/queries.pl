@@ -486,31 +486,28 @@ getVelocidade(estafeta(_, _, _, meio_transporte(_,_,Vel,_), _/_, _, _), Vel).
 % Diminui a velocidade do estafeta
 
 % bicicleta
-diminuiVel(estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,bicicleta,Vel,Peso), SomatClassf/NumClassf, LPed, Penaliz), NewEstafeta) :-
+diminuiVel(estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,bicicleta,Vel,Peso), SomatClassf/NumClassf, LPed, Penaliz), NewVel) :-
     getPesoTotal(ID,PTotal),
     NewVelAux is Vel-(0.7*PTotal),
     (NewVelAux =< 0 -> 
         NewVel = 0;
         NewVel = NewVelAux
-    ),
-    NewEstafeta = estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,bicicleta,NewVel,Peso), SomatClassf/NumClassf, LPed, Penaliz).
+    ).
     
 % moto
-diminuiVel(estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,moto,Vel,Peso), SomatClassf/NumClassf, LPed, Penaliz), NewEstafeta) :-
+diminuiVel(estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,moto,Vel,Peso), SomatClassf/NumClassf, LPed, Penaliz), NewVel) :-
     getPesoTotal(ID,PTotal),
     NewVelAux is Vel-(0.5*PTotal),
     (NewVelAux =< 0 -> 
         NewVel = 0;
         NewVel = NewVelAux
-    ),
-    NewEstafeta = estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,bicicleta,NewVel,Peso), SomatClassf/NumClassf, LPed, Penaliz).
+    ).
 
 % carro
-diminuiVel(estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,carro,Vel,Peso), SomatClassf/NumClassf, LPed, Penaliz), NewEstafeta) :-
+diminuiVel(estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,carro,Vel,Peso), SomatClassf/NumClassf, LPed, Penaliz), NewVel) :-
     getPesoTotal(ID,PTotal),
     NewVelAux is Vel-(0.1*PTotal),
     (NewVelAux =< 0 -> 
         NewVel = 0;
         NewVel = NewVelAux
-    ),
-    NewEstafeta = estafeta(Nome, ID, Freg, meio_transporte(ID_Tr,bicicleta,NewVel,Peso), SomatClassf/NumClassf, LPed, Penaliz).
+    ).
