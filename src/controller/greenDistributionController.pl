@@ -627,7 +627,7 @@ menuTravessiasTeste:-
     pickPedido(ListP,Pedido),
     limpaT,
 
-    diminuiVel(Est,Vel),
+    diminuiVelPedido(Est,Pedido,Vel),
     getRua(Pedido,Rua),
     append(["Centro de distribuições"], [Rua], Pts),
     get_time(Inicio),
