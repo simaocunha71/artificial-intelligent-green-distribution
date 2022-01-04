@@ -496,7 +496,7 @@ diminuiVel(estafeta(_, ID, _, meio_transporte(_,bicicleta,Vel,_), _/_, _, _), Ne
     getPesoTotal(ID,PTotal),
     NewVelAux is Vel-(0.7*PTotal),
     (NewVelAux =< 0 -> 
-        NewVel = 0;
+        NewVel = 0.0000001;
         NewVel = NewVelAux
     ).
     
@@ -505,7 +505,7 @@ diminuiVel(estafeta(_, ID, _, meio_transporte(_,moto,Vel,_), _/_, _, _), NewVel)
     getPesoTotal(ID,PTotal),
     NewVelAux is Vel-(0.5*PTotal),
     (NewVelAux =< 0 -> 
-        NewVel = 0;
+        NewVel = 0.0000001;
         NewVel = NewVelAux
     ).
 
@@ -514,7 +514,7 @@ diminuiVel(estafeta(_, ID, _, meio_transporte(_,carro,Vel,_), _/_, _, _), NewVel
     getPesoTotal(ID,PTotal),
     NewVelAux is Vel-(0.1*PTotal),
     (NewVelAux =< 0 -> 
-        NewVel = 0;
+        NewVel = 0.0000001;
         NewVel = NewVelAux
     ).
 
@@ -528,3 +528,7 @@ take(N, [X|Xs], [X|Ys]) :- M is N-1, take(M, Xs, Ys).
 print_list([]).
 
 print_list([H|T]):-writeln(H),print_list(T).
+
+
+getPedidoCentroGenerico(Zona,pedido(cliente("Genrico",41),-1,2021/6/28,"Centro de distribuições",Zona,1,2021/6/20,1)).
+    

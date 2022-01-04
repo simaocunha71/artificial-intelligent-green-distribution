@@ -103,6 +103,15 @@ menuTravessias_view :-
     write('   5. A*\n\n'),
     write(' 0. Sair \n').
 
+menuTravessiasInformada_view :-
+    write('\n'),
+    write('\033\[32m-----------Pesquisa-----------\033\[0m\n'),
+    write(' Selecione o tipo de pesquisa que pretende efetuar: \n'),
+    write(' > Informada:\n'),
+    write('   1. Gulosa\n'),
+    write('   2. A*\n\n'),
+    write(' 0. Sair \n').
+
 menuGrafos_view :-
     write('\n'),
     write('\033\[32m-----------Circuitos-----------\033\[0m\n'),
