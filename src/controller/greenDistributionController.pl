@@ -515,7 +515,7 @@ zonaPesq_view(Zona,TipoPesq) :-
          Mode =:= 2, Vel =< 0, writeln("\u001B[31mVelocidade do estafeta é zero, pelo que não é possivel aplicar o algoritmo!\u001B[0m");
          Mode =\= 1 , Mode =\= 2 -> read(Mode)
         ),
-        ((Mode =:= 1);(Mode =:= 2 , Vel > 0) ->
+        (((Mode =:= 1);(Mode =:= 2 , Vel > 0)) ->
             (TipoPesq =:= 4 ->
             greedy(Zona,Pts,"Centro de distribuições",Vel, Mode, _);
             star(Zona,Pts,"Centro de distribuições",Vel, Mode, _)
@@ -525,8 +525,8 @@ zonaPesq_view(Zona,TipoPesq) :-
      )
     ),
     get_time(Fim),
-    TempoDecorrido is Fim - Inicio,
-    write("Tempo decorrido: "),write(TempoDecorrido),writeln(" segundos").
+    TempoDecorrido is (Fim - Inicio) * 1000,
+    write("Tempo decorrido: "),write(TempoDecorrido),writeln(" ms").
  
 
 
@@ -628,6 +628,17 @@ menuTravessiasTeste:-
     limpaT,
 
     diminuiVelPedido(Est,Pedido,Vel),
+
+    getNome(Est,NomeE),
+    getRua(Pedido,RuaP),
+    (TipoPesq=:=1, writeln("\u001B[36m"),write(NomeE), write(" -> "),write(RuaP), writeln(" | DFS\u001B[0m");
+     TipoPesq=:=2, writeln("\u001B[36m"),write(NomeE), write(" -> "),write(RuaP), writeln(" | BFS\u001B[0m");
+     TipoPesq=:=3, writeln("\u001B[36m"),write(NomeE), write(" -> "),write(RuaP), writeln(" | BILP\u001B[0m");
+     TipoPesq=:=4, writeln("\u001B[36m"),write(NomeE), write(" -> "),write(RuaP), writeln(" | GREEDY\u001B[0m");
+     TipoPesq=:=5, writeln("\u001B[36m"),write(NomeE), write(" -> "),write(RuaP), writeln(" | A*\u001B[0m")
+    ),
+
+   
     getRua(Pedido,Rua),
     append(["Centro de distribuições"], [Rua], Pts),
     get_time(Inicio),
@@ -642,18 +653,22 @@ menuTravessiasTeste:-
          Mode =:= 2, Vel =< 0, writeln("\u001B[31mVelocidade do estafeta é zero, pelo que não é possivel aplicar o algoritmo!\u001B[0m");
          Mode =\= 1 , Mode =\= 2 -> read(Mode)
         ),
-        ((Mode =:= 1);(Mode =:= 2 , Vel > 0) ->
+        (((Mode =:= 1);(Mode =:= 2 , Vel > 0)) ->
+            get_time(NewInicio),
             (TipoPesq =:= 4 ->
             greedy(Zona,Pts,"Centro de distribuições",Vel, Mode, _);
             star(Zona,Pts,"Centro de distribuições",Vel, Mode, _)
-            );
+            ),
             !
         )
-     )
-    ),
+     ),
+    get_time(New_Fim),
+    TempoDecorrido is (New_Fim - NewInicio) * 1000;
     get_time(Fim),
-    TempoDecorrido is Fim - Inicio,
-    write("Tempo decorrido: "),write(TempoDecorrido),writeln(" segundos").
+    TempoDecorrido is (Fim - Inicio) * 1000
+    ),
+
+    write("Tempo decorrido: "),write(TempoDecorrido),writeln(" ms").
 
 
 
