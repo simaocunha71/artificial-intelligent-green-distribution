@@ -557,7 +557,7 @@ menucomparaCircuitos2(PathList,N):-
          Mode =\= 1 , Mode =\= 2-> read(Mode)
         ),
     take(N,Sorted,BestN),
-    print_list(BestN).
+    printCircuitos(BestN).
 
 
 
@@ -608,7 +608,7 @@ menuMelhorCircuito(PathList,N,Tipo):-
      seperateCircuito(3,PathList,[],NewPathList),sort(2,@=<,NewPathList,Sorted)
     ),
     take(N,Sorted,BestN),
-    print_list(BestN).
+    printCircuitos(BestN).
 
 
 

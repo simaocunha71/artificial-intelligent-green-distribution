@@ -557,9 +557,15 @@ take(_, [], []).
 take(N, [X|Xs], [X|Ys]) :- M is N-1, take(M, Xs, Ys).
 
 
-print_list([]).
+printCircuitos([]).
+printCircuitos([H|T]) :- 
+    printCircuito(H),
+    printCircuitos(T).
 
-print_list([H|T]):-writeln(H),print_list(T).
+printCircuito(Zona/Path/Custo) :-
+    write("Zona: "),write(Zona), write("| Valor -> "),writeln(Custo),
+    printOnePath(Path).
+
 
 
 getPedidoCentroGenerico(Zona,pedido(cliente("Genrico",41),-1,2021/6/28,"Centro de distribuições",Zona,1,2021/6/20,1)).
