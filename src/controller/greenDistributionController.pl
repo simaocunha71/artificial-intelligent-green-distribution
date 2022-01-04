@@ -516,16 +516,19 @@ zonaPesq_view(Zona,TipoPesq) :-
          Mode =\= 1 , Mode =\= 2 -> read(Mode)
         ),
         (((Mode =:= 1);(Mode =:= 2 , Vel > 0)) ->
+            get_time(NewInicio),
             (TipoPesq =:= 4 ->
             greedy(Zona,Pts,"Centro de distribuições",Vel, Mode, _);
             star(Zona,Pts,"Centro de distribuições",Vel, Mode, _)
             );
             !
         )
-     )
-    ),
+     ),
+    get_time(New_Fim),
+    TempoDecorrido is (New_Fim - NewInicio) * 1000;
     get_time(Fim),
-    TempoDecorrido is (Fim - Inicio) * 1000,
+    TempoDecorrido is (Fim - Inicio) * 1000
+    ),
     write("Tempo decorrido: "),write(TempoDecorrido),writeln(" ms").
  
 
