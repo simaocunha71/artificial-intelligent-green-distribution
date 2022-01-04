@@ -86,7 +86,8 @@ menuT_view :-
     write(' 1. Executar algoritmo de pesquisa\n'),
     write(' 2. Comparar circuitos de entrega\n'),
     write(' 3. Calcular circuito mais rápido\n'),
-    write(' 4. Calcular circuito mais ecológico\n\n'),
+    write(' 4. Calcular circuito mais ecológico\n'),
+    write(' 5. Executar algoritmo de pesquisa simples (uma entrega de cada vez)\n\n'),
     write(' 0. Sair \n').
 
 
@@ -169,16 +170,18 @@ writeEstafeta(estafeta(Nome, ID, Zona, MeioT, CL, LE, Penaliz)) :-
     write('\n').
 
 
-write_lista_estafeta([],_).
+write_lista_estafeta([],_,_).
 
-write_lista_estafeta([H|T],Option):-
+write_lista_estafeta([H|T],Option,Acc):-
+    write(Acc),
     (Option == 0 ->
         writeEstafeta(H);
         H = estafeta(Nome,ID,_,_,_,_,_),
         write('> Nome do estafeta: '), write(Nome), write('; '), 
         write('ID: '), writeln(ID), nl
         ),
-    write_lista_estafeta(T,Option).
+    NewAcc is Acc + 1,
+    write_lista_estafeta(T,Option,NewAcc).
 
 write_lista_estafPesos([]).
 write_lista_estafPesos([Name/Peso|T]):-
@@ -203,6 +206,12 @@ printPedidos([H|T]) :-
     writePedido(H),
     printPedidos(T).
 
+printPedidosSimples([],_).
+printPedidosSimples([H|T],Acc) :-
+    writePedidoSimples(H,Acc),
+    NewAcc is Acc +1,
+    printPedidosSimples(T,NewAcc).
+
 writePedido(pedido(cliente(NomeC,ID_Cl), ID_Ped, DataEnt, Rua, Freg, Peso, DataPed, Est)) :-
   write('> ID do pedido: '), write(ID_Ped), write('; '),
   write('Nome do cliente: '), write(NomeC), write(';'),
@@ -213,6 +222,12 @@ writePedido(pedido(cliente(NomeC,ID_Cl), ID_Ped, DataEnt, Rua, Freg, Peso, DataP
   write('Peso: '), write(Peso), write('; '),
   write('Data do pedido: '), write(DataPed), write('; '),
   write('Estado: '), write(Est), writeln('.').
+
+writePedidoSimples(pedido(cliente(NomeC,_), ID_Ped, DataEnt, Rua, _, _, __, _),N) :-
+  write(N),write('> ID do pedido: '), write(ID_Ped), write('; '),
+  write('   Nome do cliente: '), write(NomeC), write(';'),
+  write('   Data de entrega: '), write(DataEnt), write('; '),
+  write('   Rua: '), write(Rua), write(';\n').
 
 
 printOnePath([]) :- write('\n').
