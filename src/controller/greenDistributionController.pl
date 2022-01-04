@@ -565,7 +565,7 @@ menuCircuitoRapido :-
     findall(estafeta(N,ID,Zona,MT,Cl,LE,P),
             estafeta(N,ID,Zona,MT,Cl,LE,P), 
             R),
-    circuito_melhor(R,1).
+    circuito_melhor(R,0).
 
 
 menuCircuitoEco :-
@@ -583,11 +583,11 @@ menuCircuitoEco :-
                 estafeta(N,ID,Zona,meio_transporte(X,carro,Y,C),Cl,LE,P),
                 Rcarro),
             length(Rcarro,L3),
-            (L3 > 0-> circuito_melhor(Rcarro) ; !
+            (L3 > 0-> circuito_melhor(Rcarro,1) ; !
             )
-            ;circuito_melhor(Rmoto)
+            ;circuito_melhor(Rmoto,1)
         )
-        ;circuito_melhor(Rbicileta)   
+        ;circuito_melhor(Rbicileta,1)   
     ).
 
 
