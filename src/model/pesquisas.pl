@@ -398,39 +398,179 @@ calculaCustoDistancia2(Zona,[Nodo,Nodo2|T], Acc, Cust) :-
 
 
 %----------------------------------
-fazDfs([],_,R,R) :- writeln(R),!.
-fazDfs([H|T], Destino, Acc,R) :-
+
+
+compara_circuitos_dfs([],_,R,R):-!.
+compara_circuitos_dfs([H|T], Destino, Acc,R) :-
     getListPed(H,ListP),
     getZona(H,Zona),
     doDFS(Zona,ListP,Destino,[],Aux),
-    append(Acc,Aux,NewAcc),
-    fazDfs(T,Destino,NewAcc,R).
+    updateCircuitosVolumeList(Aux,Acc,NewAcc),
+    compara_circuitos_dfs(T,Destino,NewAcc,R).
 
-doDFS(Zona,[pedido(Cl,ID_Ped, DataE, RuaH, Z, Peso, DataP, Est)],Destino, AccPaths, R) :-
-    %getRua(H,RuaH),
-    %getPesoPedido(H,Peso),
-    resolve_aestrela_distancia(Zona,RuaH,Destino,_),
-    writeln("FIM").
-    %updateCircuitosVolume(Cam/1/Peso, AccPaths, [],R).
 
-doDFS(Zona,[pedido(_,_, _, RuaH_H, Zona, PesoH, _, _),pedido(_,_, _, RuaHX, Zona, Peso, _, _)|T],Destino, AccPaths, R) :-  
-    %getRua(H,RuaH),
-    %getRua(X,RuaX),
-    %getPesoPedido(H,Peso),
-    resolve_aestrela_distancia(Zona,RuaH_H,RuaHX,_),
-    writeln(PesoH),
-    %updateCircuitosVolume(Cam/1/Peso, AccPaths, [],NewAcc),
-    doDFS(Zona,[pedido(_,_, _, RuaHX, Zona, Peso, _, _)|T],Destino, NewAcc, R).
+
+
+doDFS(Zona,[H],Destino, AccPaths, R) :-
+    getRua(H,RuaH),
+    getPesoPedido(H,Peso),
+    dfs(Zona,RuaH,Destino,_,Cam),
+    updateCircuitosVolume(Zona/Cam/1/Peso, AccPaths, [],R).
+
+doDFS(Zona,[H,X|T],Destino, AccPaths, R) :-  
+    getRua(H,RuaH),
+    getRua(X,RuaX),
+    getPesoPedido(H,Peso),
+    dfs(Zona,RuaH,RuaX,_,Cam),
+    updateCircuitosVolume(Zona/Cam/1/Peso, AccPaths, [],NewAcc),
+    doDFS(Zona,[X|T],Destino, NewAcc, R).
+
+
+%------
+
+compara_circuitos_bfs([],_,R,R):-!.
+compara_circuitos_bfs([H|T], Destino, Acc,R) :-
+    getListPed(H,ListP),
+    getZona(H,Zona),
+    doBFS(Zona,ListP,Destino,[],Aux),
+    updateCircuitosVolumeList(Aux,Acc,NewAcc),
+    compara_circuitos_bfs(T,Destino,NewAcc,R).
+
+
+
+
+doBFS(Zona,[H],Destino, AccPaths, R) :-
+    getRua(H,RuaH),
+    getPesoPedido(H,Peso),
+    bfs(Zona,RuaH,Destino,Cam),
+    updateCircuitosVolume(Zona/Cam/1/Peso, AccPaths, [],R).
+
+doBFS(Zona,[H,X|T],Destino, AccPaths, R) :-  
+    getRua(H,RuaH),
+    getRua(X,RuaX),
+    getPesoPedido(H,Peso),
+    bfs(Zona,RuaH,RuaX,Cam),
+    updateCircuitosVolume(Zona/Cam/1/Peso, AccPaths, [],NewAcc),
+    doBFS(Zona,[X|T],Destino, NewAcc, R).
+
+
+
+%-------
+
+
+compara_circuitos_bilp([],_,R,R):-!.
+compara_circuitos_bilp([H|T], Destino, Acc,R) :-
+    getListPed(H,ListP),
+    getZona(H,Zona),
+    doBILP(Zona,ListP,Destino,[],Aux),
+    updateCircuitosVolumeList(Aux,Acc,NewAcc),
+    compara_circuitos_bilp(T,Destino,NewAcc,R).
+
+
+
+
+doBILP(Zona,[H],Destino, AccPaths, R) :-
+    getRua(H,RuaH),
+    getPesoPedido(H,Peso),
+    bilp(Zona,RuaH,Destino,0,Cam),
+    updateCircuitosVolume(Zona/Cam/1/Peso, AccPaths, [],R).
+
+doBILP(Zona,[H,X|T],Destino, AccPaths, R) :-  
+    getRua(H,RuaH),
+    getRua(X,RuaX),
+    getPesoPedido(H,Peso),
+    bilp(Zona,RuaH,RuaX,0,Cam),
+    updateCircuitosVolume(Zona/Cam/1/Peso, AccPaths, [],NewAcc),
+    doBILP(Zona,[X|T],Destino, NewAcc, R).
+
+
+
+
+%-------
+
+compara_circuitos_gulosa([],_,R,R):-!.
+compara_circuitos_gulosa([H|T], Destino, Acc,R) :-
+    getListPed(H,ListP),
+    getZona(H,Zona),
+    doGULOSA(Zona,ListP,Destino,[],Aux),
+    updateCircuitosVolumeList(Aux,Acc,NewAcc),
+    compara_circuitos_gulosa(T,Destino,NewAcc,R).
+
+
+
+
+doGULOSA(Zona,[H],Destino, AccPaths, R) :-
+    getRua(H,RuaH),
+    getPesoPedido(H,Peso),
+    resolve_gulosa_distancia(Zona,RuaH,Destino,Cam/_),
+    updateCircuitosVolume(Zona/Cam/1/Peso, AccPaths, [],R).
+
+doGULOSA(Zona,[H,X|T],Destino, AccPaths, R) :-  
+    getRua(H,RuaH),
+    getRua(X,RuaX),
+    getPesoPedido(H,Peso),
+    resolve_gulosa_distancia(Zona,RuaH,RuaX,Cam/_),
+    updateCircuitosVolume(Zona/Cam/1/Peso, AccPaths, [],NewAcc),
+    doGULOSA(Zona,[X|T],Destino, NewAcc, R).
+
+
+%-------
+
+compara_circuitos_estrela([],_,R,R):-!.
+compara_circuitos_estrela([H|T], Destino, Acc,R) :-
+    getListPed(H,ListP),
+    getZona(H,Zona),
+    doESTRELA(Zona,ListP,Destino,[],Aux),
+    updateCircuitosVolumeList(Aux,Acc,NewAcc),
+    compara_circuitos_estrela(T,Destino,NewAcc,R).
+
+
+
+
+doESTRELA(Zona,[H],Destino, AccPaths, R) :-
+    getRua(H,RuaH),
+    getPesoPedido(H,Peso),
+    resolve_aestrela_distancia(Zona,RuaH,Destino,Cam/_),
+    updateCircuitosVolume(Zona/Cam/1/Peso, AccPaths, [],R).
+
+doESTRELA(Zona,[H,X|T],Destino, AccPaths, R) :-  
+    getRua(H,RuaH),
+    getRua(X,RuaX),
+    getPesoPedido(H,Peso),
+    resolve_aestrela_distancia(Zona,RuaH,RuaX,Cam/_),
+    updateCircuitosVolume(Zona/Cam/1/Peso, AccPaths, [],NewAcc),
+    doESTRELA(Zona,[X|T],Destino, NewAcc, R).
+
+
+%------------------
+
+
+updateCircuitosVolumeList(L,X,R):-
+    updateCircuitosVolumeListAux(L,X,R).
+
+
+updateCircuitosVolumeListAux([],R,R).
+
+updateCircuitosVolumeListAux([H|T],L,R):-
+    updateCircuitosVolume(H,L,[],NewL),
+    updateCircuitosVolumeListAux(T,NewL,R).
 
 updateCircuitosVolume(Circuito,[],T,R) :-
     append([Circuito],T,R).
 
-updateCircuitosVolume(Cam/Vol/Peso,[X/VolX/PesoX|XS],T,R) :-
-    %writeln(Cam/Vol/Peso),
-    %writeln([X/VolX/PesoX|XS]),
-    (compare(=,Cam,X) -> 
+updateCircuitosVolume(Zona/Cam/Vol/Peso,[Z/X/VolX/PesoX|XS],T,R) :-
+    (compare(=,Zona/Cam,Z/X) -> 
         NewVol is Vol + VolX,
         NewPeso is Peso + PesoX,
-        append([Cam/NewVol/NewPeso],T,NewT);
-        append([X/VolX/PesoX],T,NewT)
-    ), updateCircuitosVolume(Cam/Vol/Peso,XS,NewT,R).
+        append([Zona/Cam/NewVol/NewPeso],T,NewT);
+        append([Z/X/VolX/PesoX],T,NewT)
+    ), updateCircuitosVolume(Zona/Cam/Vol/Peso,XS,NewT,R).
+
+
+seperateCircuito(_,[],R,R).
+
+seperateCircuito(Tipo,[Zona/Cam/Vol/Peso|T],Acc,R):-
+    (Tipo =:= 1 ->
+       seperateCircuito(Tipo,T,[Zona/Cam/Vol|Acc],R);
+       seperateCircuito(Tipo,T,[Zona/Cam/Peso|Acc],R)
+        ).

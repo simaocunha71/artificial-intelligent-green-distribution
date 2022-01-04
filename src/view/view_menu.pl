@@ -122,6 +122,14 @@ menuEuristicas :-
     write(' 2. Tempo\n\n'),
     write(' 0. Sair \n').
 
+menuComparaCircuitos2 :-
+    write('\n'),
+    write('\033\[32m-----------Tipo de Comparacao-----------\033\[0m\n'),
+    write(' Selecione o tipo de comparacao: \n'),
+    write(' 1. Volume\n'),
+    write(' 2. Peso\n\n'),
+    write(' 0. Sair \n').
+
 
 
 

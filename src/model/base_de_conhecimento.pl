@@ -38,7 +38,13 @@ pedido(
 )
 */
 estafeta("Amilcar",1,"Ferreiros",meio_transporte(1,bicicleta,10,5),317/141,[pedido(cliente("Joaquim",41),1,2021/6/28,"Rua 18","Ferreiros",1,2021/6/20,0),
-                                                                                      pedido(cliente("Jo",50),2,2021/3/14,"Rua 10","Ferreiros",1,2021/3/4,1),
+                                                                                     pedido(cliente("Jo",50),2,2021/3/14,"Rua 10","Ferreiros",1,2021/3/4,1),
+                                                                                      pedido(cliente("Tobias",26),3,2021/7/9,"Rua 11","Ferreiros",5,2021/7/5,0)],
+                                                                                      0).
+
+
+estafeta("Jose",1,"Ferreiros",meio_transporte(1,bicicleta,10,5),317/141,[pedido(cliente("Joaquim",41),1,2021/6/28,"Rua 18","Ferreiros",1,2021/6/20,0),
+                                                                                     pedido(cliente("Jo",50),2,2021/3/14,"Rua 10","Ferreiros",1,2021/3/4,1),
                                                                                       pedido(cliente("Tobias",26),3,2021/7/9,"Rua 11","Ferreiros",5,2021/7/5,0)],
                                                                                       0).
 

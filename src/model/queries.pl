@@ -517,3 +517,14 @@ diminuiVel(estafeta(_, ID, _, meio_transporte(_,carro,Vel,_), _/_, _, _), NewVel
         NewVel = 0;
         NewVel = NewVelAux
     ).
+
+
+
+take(N, _, Xs) :- N =< 0, !, N =:= 0, Xs = [].
+take(_, [], []).
+take(N, [X|Xs], [X|Ys]) :- M is N-1, take(M, Xs, Ys).
+
+
+print_list([]).
+
+print_list([H|T]):-writeln(H),print_list(T).
