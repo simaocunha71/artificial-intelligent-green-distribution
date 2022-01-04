@@ -178,7 +178,7 @@ write_lista_estafeta([H|T],Option,Acc):-
         writeEstafeta(H);
         H = estafeta(Nome,ID,_,_,_,_,_),
         write('> Nome do estafeta: '), write(Nome), write('; '), 
-        write('ID: '), writeln(ID), nl
+        write('ID: '), writeln(ID)
         ),
     NewAcc is Acc + 1,
     write_lista_estafeta(T,Option,NewAcc).

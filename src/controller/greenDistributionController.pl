@@ -515,7 +515,7 @@ zonaPesq_view(Zona,TipoPesq) :-
          Mode =:= 2, Vel =< 0, writeln("\u001B[31mVelocidade do estafeta é zero, pelo que não é possivel aplicar o algoritmo!\u001B[0m");
          Mode =\= 1 , Mode =\= 2 -> read(Mode)
         ),
-        ((Mode =:= 1);(Mode =:= 2 , Vel > 0) ->
+        (((Mode =:= 1);(Mode =:= 2 , Vel > 0)) ->
             (TipoPesq =:= 4 ->
             greedy(Zona,Pts,"Centro de distribuições",Vel, Mode, _);
             star(Zona,Pts,"Centro de distribuições",Vel, Mode, _)
@@ -525,8 +525,8 @@ zonaPesq_view(Zona,TipoPesq) :-
      )
     ),
     get_time(Fim),
-    TempoDecorrido is Fim - Inicio,
-    write("Tempo decorrido: "),write(TempoDecorrido),writeln(" segundos").
+    TempoDecorrido is (Fim - Inicio) * 1000,
+    write("Tempo decorrido: "),write(TempoDecorrido),writeln(" ms").
  
 
 
@@ -642,7 +642,7 @@ menuTravessiasTeste:-
          Mode =:= 2, Vel =< 0, writeln("\u001B[31mVelocidade do estafeta é zero, pelo que não é possivel aplicar o algoritmo!\u001B[0m");
          Mode =\= 1 , Mode =\= 2 -> read(Mode)
         ),
-        ((Mode =:= 1);(Mode =:= 2 , Vel > 0) ->
+        (((Mode =:= 1);(Mode =:= 2 , Vel > 0)) ->
             (TipoPesq =:= 4 ->
             greedy(Zona,Pts,"Centro de distribuições",Vel, Mode, _);
             star(Zona,Pts,"Centro de distribuições",Vel, Mode, _)
@@ -652,8 +652,8 @@ menuTravessiasTeste:-
      )
     ),
     get_time(Fim),
-    TempoDecorrido is Fim - Inicio,
-    write("Tempo decorrido: "),write(TempoDecorrido),writeln(" segundos").
+    TempoDecorrido is (Fim - Inicio) * 1000,
+    write("Tempo decorrido: "),write(TempoDecorrido),writeln(" ms").
 
 
 
