@@ -464,6 +464,8 @@ getElementByIndex(N, [_|T], Ef) :-
     NewN is N-1,
     getElementByIndex(NewN, T, Ef).
 
+getNome(estafeta(Nome, _ , _, _, _/_, _, _),Nome).
+
 getZona(estafeta(_, _, Zona, _, _/_, _, _),Zona).
 
 getPesoPedido(pedido(_,_, _, _, _, Pes, _, _), Pes).
