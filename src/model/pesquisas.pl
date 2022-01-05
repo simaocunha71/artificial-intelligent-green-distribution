@@ -68,12 +68,12 @@ embilp(Zona, [H, X|T],DestinoFinal, Acc, Cam) :-
 
 %-----------------------------------------
 
-greedy(Zona,Pts,Destino,Velocidade, Modo, Cam/Cust) :-
+greedy(Zona,Pts,Destino, Modo, PtsPeso,PesoTotal,MeioTransporte,Cam/Cust) :-
     (Modo == 1 -> 
         emgulosa_distancia(Zona,Pts,Destino, []/0, Cam/Cust)
     );
     (Modo == 2 -> 
-        emgulosa_tempo(Zona,Velocidade, Pts,Destino,[]/0,Cam/Cust)
+        emgulosa_tempo(Zona, Pts,Destino,[]/0,Cam/Cust,PtsPeso,PesoTotal,MeioTransporte)
     ).
 
 emgulosa_distancia(Zona,[H],DestinoFinal,Acc/CustoAcc,R/CR):-
@@ -81,7 +81,7 @@ emgulosa_distancia(Zona,[H],DestinoFinal,Acc/CustoAcc,R/CR):-
     printOnePath(Caminho),
     append(Acc,Caminho,R),
     CR is CustoAcc + Custo,
-    write("\033\[32m > Custo: "),write(CR), writeln("\033\[0m").
+    write("\033\[32m > Custo Total: "),write(CR), writeln("\033\[0m").
 
 emgulosa_distancia(Zona,[H,X|T],DestinoFinal,Acc/CustoAcc,R/CR):-
     resolve_gulosa_distancia(Zona,H,X,Caminho/Custo),
@@ -92,31 +92,35 @@ emgulosa_distancia(Zona,[H,X|T],DestinoFinal,Acc/CustoAcc,R/CR):-
     NovoCusto is CustoAcc + Custo,
     emgulosa_distancia(Zona,[X|NovoDestinos],DestinoFinal,NovoAcc/NovoCusto,R/CR).
 
-emgulosa_tempo(Zona,Velocidade,[H],DestinoFinal,Acc/CustoAcc,R/CR):-
-    resolve_gulosa_tempo(Velocidade,Zona,H,DestinoFinal,Caminho/Custo),
+emgulosa_tempo(Zona,[H],DestinoFinal,Acc/CustoAcc,R/CR,_,_,MeioTransporte):-
+    NovoPesoTotal is 0,
+    calculaVelocidade(NovoPesoTotal,MeioTransporte,NovaVelocidade),
+    resolve_gulosa_tempo(NovaVelocidade,Zona,H,DestinoFinal,Caminho/Custo),
     printOnePath(Caminho),
     append(Acc,Caminho,R),
     CR is CustoAcc + Custo,
-    write("\033\[32m > Custo: "),write(CR), writeln("\033\[0m").
+    write("\033\[32m > Custo Total: "),write(CR),write(" h"), writeln("\033\[0m").
 
-emgulosa_tempo(Zona,Velocidade,[H,X|T],DestinoFinal,Acc/CustoAcc,R/CR):-
-    resolve_gulosa_tempo(Velocidade,Zona,H,X,Caminho/Custo),
+emgulosa_tempo(Zona,[H,X|T],DestinoFinal,Acc/CustoAcc,R/CR,ListaPesos,PesoTotal,MeioTransporte):-
+    getPesoLocal([X|T],ListaPesos,NovoPesoTotal),
+    calculaVelocidade(NovoPesoTotal,MeioTransporte,NovaVelocidade),
+    resolve_gulosa_tempo(NovaVelocidade,Zona,H,X,Caminho/Custo),
     subtract(T,Caminho,NovoDestinos),
     printOnePath(Caminho),
     append(Acc,Caminho,NovoAcc),
-    write("\033\[32m > Custo: "),write(Custo), writeln("\033\[0m"),
+    write("\033\[32m > Custo: "),write(Custo),write(" h"), writeln("\033\[0m"),
     NovoCusto is CustoAcc + Custo,
-    emgulosa_tempo(Zona,Velocidade,[X|NovoDestinos],DestinoFinal,NovoAcc/NovoCusto,R/CR).
+    emgulosa_tempo(Zona,[X|NovoDestinos],DestinoFinal,NovoAcc/NovoCusto,R/CR,ListaPesos,PesoTotal,MeioTransporte).
 
 %-----------------------------------------
 %em_a_estrela_distancia("Ferreiros",["Centro de distribuições","Rua 11","Rua 10","Rua 18"],"Centro de distribuições",[]/0,R/CR).
 
-star(Zona,Pts,Destino,Velocidade, Modo, Cam/Cust) :-
+star(Zona,Pts,Destino, Modo, PtsPeso,PesoTotal,MeioTransporte,Cam/Cust) :-
     (Modo == 1 -> 
         em_a_estrela_distancia(Zona,Pts,Destino, []/0, Cam/Cust)
     );
     (Modo == 2 -> 
-        em_a_estrela_tempo(Zona,Velocidade, Pts,Destino,[]/0,Cam/Cust)
+        em_a_estrela_tempo(Zona, Pts,Destino,[]/0,Cam/Cust,PtsPeso,PesoTotal,MeioTransporte)
     ).
 
 
@@ -125,7 +129,7 @@ em_a_estrela_distancia(Zona,[H],DestinoFinal,Acc/CustoAcc,R/CR):-
     printOnePath(Caminho),
     append(Acc,Caminho,R),
     CR is CustoAcc + Custo,
-    write("\033\[32m > Custo: "),write(CR), writeln("\033\[0m").
+    write("\033\[32m > Custo Total: "),write(CR), writeln("\033\[0m").
 
 em_a_estrela_distancia(Zona,[H,X|T],DestinoFinal,Acc/CustoAcc,R/CR):-
     resolve_aestrela_distancia(Zona,H,X,Caminho/Custo),
@@ -137,21 +141,25 @@ em_a_estrela_distancia(Zona,[H,X|T],DestinoFinal,Acc/CustoAcc,R/CR):-
     em_a_estrela_distancia(Zona,[X|NovoDestinos],DestinoFinal,NovoAcc/NovoCusto,R/CR).
 
 
-em_a_estrela_tempo(Zona,Velocidade,[H],DestinoFinal,Acc/CustoAcc,R/CR):-
-    resolve_aestrela_tempo(Velocidade,Zona,H,DestinoFinal,Caminho/Custo),
+em_a_estrela_tempo(Zona,[H],DestinoFinal,Acc/CustoAcc,R/CR,_,_,MeioTransporte):-
+    NovoPesoTotal is 0,
+    calculaVelocidade(NovoPesoTotal,MeioTransporte,NovaVelocidade),
+    resolve_aestrela_tempo(NovaVelocidade,Zona,H,DestinoFinal,Caminho/Custo),
     printOnePath(Caminho),
     append(Acc,Caminho,R),
     CR is CustoAcc + Custo,
-    write("\033\[32m > Custo: "),write(CR), writeln("\033\[0m").
+    write("\033\[32m > Custo Total: "),write(CR) ,write(" h"),writeln("\033\[0m").
 
-em_a_estrela_tempo(Zona,Velocidade,[H,X|T],DestinoFinal,Acc/CustoAcc,R/CR):-
-    resolve_aestrela_tempo(Velocidade,Zona,H,X,Caminho/Custo),
+em_a_estrela_tempo(Zona,[H,X|T],DestinoFinal,Acc/CustoAcc,R/CR,ListaPesos,PesoTotal,MeioTransporte):-
+    getPesoLocal([X|T],ListaPesos,NovoPesoTotal),
+    calculaVelocidade(NovoPesoTotal,MeioTransporte,NovaVelocidade),
+    resolve_aestrela_tempo(NovaVelocidade,Zona,H,X,Caminho/Custo),
     subtract(T,Caminho,NovoDestinos),
     printOnePath(Caminho),
     append(Acc,Caminho,NovoAcc),
-    write("\033\[32m > Custo: "),write(Custo), writeln("\033\[0m"),
+    write("\033\[32m > Custo: "),write(Custo),write(" h"), writeln("\033\[0m"),
     NovoCusto is CustoAcc + Custo,
-    em_a_estrela_tempo(Zona,Velocidade,[X|NovoDestinos],DestinoFinal,NovoAcc/NovoCusto,R/CR).
+    em_a_estrela_tempo(Zona,[X|NovoDestinos],DestinoFinal,NovoAcc/NovoCusto,R/CR,ListaPesos,PesoTotal,MeioTransporte).
 
 
 
@@ -321,13 +329,38 @@ expande_aestrela_distancia(Zona,Caminho, ExpCaminhos,CoordenadasDestino) :-
 
 %------ Predicados auxiliares ---------
 % Devolve todos os pontos de entrega de um estafeta
-getTodosPontosEntrega(estafeta(_, _, _, _, _, LE, _), R) :-
-    extract(LE, [], Aux),
-    remove_dups(Aux, R).
+getTodosPontosEntrega(estafeta(_, _, _, _, _, LE, _), R,RComPesos) :-
+    extract(LE, [],[], Aux,Aux2),
+    remove_dups(Aux, R),
+    juntaPesoDups(Aux2,[],RComPesos).
 
-extract([], R, R).
-extract([pedido(_, _, _, Rua, _, _, _, _)|T], Acc, R) :-
-    extract(T, [Rua|Acc], R).
+
+juntaPesoDups([],RComPesos,RComPesos).
+
+juntaPesoDups([H|T],Acc,RComPesos):-
+    updateLocalPesoLista(H,Acc,[],0,R),
+    juntaPesoDups(T,R,RComPesos).
+
+
+updateLocalPesoLista(_,[],R,1,R).
+    
+updateLocalPesoLista(H/Peso,[],Acc,0,R):-
+    append([H/Peso],Acc,R).
+
+
+updateLocalPesoLista(H/Peso,[X/XPeso|T],Acc,Updated,R):-
+    (compare(=,H,X)->
+        NovoPeso is Peso + XPeso,
+        append([H/NovoPeso],Acc,NovoAcc),
+        NovoUpdated is 1;
+        append([X/XPeso],Acc,NovoAcc),
+        NovoUpdated is Updated
+    ),updateLocalPesoLista(H/Peso,T,NovoAcc,NovoUpdated,R).
+
+
+extract([], R,RComPesos,R,RComPesos).
+extract([pedido(_, _, _, Rua, _, Peso, _, _)|T], Acc,AccPeso, R,RPeso) :-
+    extract(T, [Rua|Acc],[Rua/Peso|AccPeso], R,RPeso).
 
 % Remove os elementos duplicados de uma lista
 remove_dups([], []).

@@ -472,10 +472,15 @@ getPesoPedido(pedido(_,_, _, _, _, Pes, _, _), Pes).
 
 getRua(pedido(_,_, _, Rua, _, _, _, _), Rua).
 
+getIDEstafeta(estafeta(_,ID,_,_,_,_,_),ID).
+
 % Peso total de um estafeta (identificado pelo seu id)
 getPesoTotal(ID,Total) :-
     estafeta(_,ID,_,_,_,LPed,_),
     getPesoAux(LPed,0,Total).
+
+getMeioTransporteEstafeta(ID,Meio) :-
+    estafeta(_,ID,_,meio_transporte(_,Meio,_,_),_,_,_).
 
 getPesoAux([],R,R).
 getPesoAux([pedido(_,_, _, _, _, Pes, _, _)|T],Acc,R) :-
@@ -525,6 +530,29 @@ diminuiVel(estafeta(_, ID, _, meio_transporte(_,carro,Vel,_), _/_, _, _), NewVel
     ).
 
 
+calculaVelocidade(PesoTotal,bicicleta,NewVel):-
+    meio_transporte(_,bicicleta,Vel,_),
+    NewVelAux is Vel-(0.7*PesoTotal),
+    (NewVelAux =< 0 -> 
+        NewVel = 0.0000001;
+        NewVel = NewVelAux
+    ).
+
+calculaVelocidade(PesoTotal,moto,NewVel):-
+    meio_transporte(_,moto,Vel,_),
+    NewVelAux is Vel-(0.5*PesoTotal),
+    (NewVelAux =< 0 -> 
+        NewVel = 0.0000001;
+        NewVel = NewVelAux
+    ).
+
+calculaVelocidade(PesoTotal,carro,NewVel):-
+    meio_transporte(_,carro,Vel,_),
+    NewVelAux is Vel-(0.1*PesoTotal),
+    (NewVelAux =< 0 -> 
+        NewVel = 0.0000001;
+        NewVel = NewVelAux
+    ).
 
 diminuiVelPedido(estafeta(_, _, _, meio_transporte(_,bicicleta,Vel,_), _/_, _, _),Pedido, NewVel) :-
     getPesoPedido(Pedido,PTotal),
@@ -550,6 +578,21 @@ diminuiVelPedido(estafeta(_, _, _, meio_transporte(_,carro,Vel,_), _/_, _, _),Pe
         NewVel = NewVelAux
     ).
 
+
+
+getPesoLocal(Pts,Lista,PesoLocal):-
+    getPesoLocalAux(Pts,Lista,0,PesoLocal).
+
+
+getPesoLocalAux(_,[],PesoLocal,PesoLocal).
+
+getPesoLocalAux(Lista,[HPeso/HP|TPeso],AccPeso,PesoLocal):-
+    (member(HPeso,Lista) ->
+        NovoPesoTotal is AccPeso + HP;
+        NovoPesoTotal is AccPeso
+        ),
+    getPesoLocalAux(Lista,TPeso,NovoPesoTotal,PesoLocal).
+    
 
 
 take(N, _, Xs) :- N =< 0, !, N =:= 0, Xs = [].

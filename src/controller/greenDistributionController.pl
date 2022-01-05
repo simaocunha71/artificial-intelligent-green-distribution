@@ -500,8 +500,11 @@ zonaPesq_view(Zona,TipoPesq) :-
     writeln("Estafetas disponíveis:"), 
     estafeta_zona(Zona,R), write_lista_estafeta(R,1,0),
     pickEstafeta(R,Ef),
+    getIDEstafeta(Ef,ID),
+    getPesoTotal(ID,PesoTotal),
+    getMeioTransporteEstafeta(ID,Meio),
     diminuiVel(Ef,Vel),
-    getTodosPontosEntrega(Ef,Aux1),
+    getTodosPontosEntrega(Ef,Aux1,Aux2),
     append(["Centro de distribuições"], Aux1, Pts),
     get_time(Inicio),
     (TipoPesq=:=1, emProfundidade(Zona,Pts,"Centro de distribuições",[],0,_,_);
@@ -518,8 +521,8 @@ zonaPesq_view(Zona,TipoPesq) :-
         (((Mode =:= 1);(Mode =:= 2 , Vel > 0)) ->
             get_time(NewInicio),
             (TipoPesq =:= 4 ->
-            greedy(Zona,Pts,"Centro de distribuições",Vel, Mode, _);
-            star(Zona,Pts,"Centro de distribuições",Vel, Mode, _)
+            greedy(Zona,Pts,"Centro de distribuições", Mode,Aux2,PesoTotal,Meio,_);
+            star(Zona,Pts,"Centro de distribuições", Mode,Aux2,PesoTotal,Meio,_)
             );
             !
         )
@@ -623,15 +626,17 @@ menuTravessiasTeste:-
     writeln("Estafetas disponíveis:"), 
     write_lista_estafeta(R,1,0),
     pickEstafeta(R,Est),
+    getIDEstafeta(Est,Id),
+    getMeioTransporteEstafeta(Id,Meio),
+
     limpaT,
     writeln("Pedidos disponíveis:"),
     getListPed(Est,ListP),
     printPedidosSimples(ListP,0),
     pickPedido(ListP,Pedido),
     limpaT,
-
+    getPesoPedido(Pedido,Peso),
     diminuiVelPedido(Est,Pedido,Vel),
-
     getNome(Est,NomeE),
     getRua(Pedido,RuaP),
     (TipoPesq=:=1, writeln("\u001B[36m"),write(NomeE), write(" -> "),write(RuaP), writeln(" | DFS\u001B[0m");
@@ -641,8 +646,8 @@ menuTravessiasTeste:-
      TipoPesq=:=5, writeln("\u001B[36m"),write(NomeE), write(" -> "),write(RuaP), writeln(" | A*\u001B[0m")
     ),
 
-   
     getRua(Pedido,Rua),
+    append([Rua/Peso], [], PesoRuas),
     append(["Centro de distribuições"], [Rua], Pts),
     get_time(Inicio),
     (TipoPesq=:=1, emProfundidade(Zona,Pts,"Centro de distribuições",[],0,_,_);
@@ -659,8 +664,8 @@ menuTravessiasTeste:-
         (((Mode =:= 1);(Mode =:= 2 , Vel > 0)) ->
             get_time(NewInicio),
             (TipoPesq =:= 4 ->
-            greedy(Zona,Pts,"Centro de distribuições",Vel, Mode, _);
-            star(Zona,Pts,"Centro de distribuições",Vel, Mode, _)
+            greedy(Zona,Pts,"Centro de distribuições", Mode,PesoRuas,Peso,Meio, _);
+            star(Zona,Pts,"Centro de distribuições", Mode,PesoRuas,Peso,Meio, _)
             ),
             !
         )
@@ -671,7 +676,6 @@ menuTravessiasTeste:-
       TempoDecorrido is (Fim - NewInicio) * 1000
       ),
     write("Tempo decorrido: "),write(TempoDecorrido),writeln(" ms").
-
 
 
 
