@@ -6,7 +6,7 @@
 connect(Zona,X,Y,C):- aresta(Zona,X,Y,C).
 connect(Zona,X,Y,C):- aresta(Zona,Y,X,C).
 
-%-----------------------------------------
+%---------- Algoritmos que permitem distribuir todas as encomendas numa so travessia -------------------
 
 emProfundidade(Zona,[H],DestinoFinal, Acc, AccCost, NewCost,R):-
     dfs(Zona, H, DestinoFinal, CDist,L),
@@ -113,7 +113,6 @@ emgulosa_tempo(Zona,[H,X|T],DestinoFinal,Acc/CustoAcc,R/CR,ListaPesos,PesoTotal,
     emgulosa_tempo(Zona,[X|NovoDestinos],DestinoFinal,NovoAcc/NovoCusto,R/CR,ListaPesos,PesoTotal,MeioTransporte).
 
 %-----------------------------------------
-%em_a_estrela_distancia("Ferreiros",["Centro de distribuições","Rua 11","Rua 10","Rua 18"],"Centro de distribuições",[]/0,R/CR).
 
 star(Zona,Pts,Destino, Modo, PtsPeso,PesoTotal,MeioTransporte,Cam/Cust) :-
     (Modo == 1 -> 
@@ -163,24 +162,24 @@ em_a_estrela_tempo(Zona,[H,X|T],DestinoFinal,Acc/CustoAcc,R/CR,ListaPesos,PesoTo
 
 
 
-
+%---------- Algoritmos que permitem distribuir apenas uma encomenda numa so travessia -------------------
 
 %------ Pesquisa em profundidade ---------
 
 dfs(Zona, Orig, Dest, Distancia,Cam) :-
-    dfs2(Zona, Orig, Dest, [Orig], 0, Distancia, Cam). %condicao final: nó actual = destino
-dfs2(_,Dest,Dest,LA,CD,CD,Cam):- reverse(LA,Cam). %caminho actual esta invertido
+    dfs2(Zona, Orig, Dest, [Orig], 0, Distancia, Cam). 
+dfs2(_,Dest,Dest,LA,CD,CD,Cam):- reverse(LA,Cam). 
 dfs2(Zona, Act, Dest, LA,AccCD,CD, Cam) :-
-    connect(Zona, Act, X,Cost), %testar ligacao entre ponto actual e um qualquer X
+    connect(Zona, Act, X,Cost), 
     NewAcc is AccCD + Cost,
-    \+ member(X, LA), %testar nao circularidade p/evitar nós ja visitados
-    dfs2(Zona, X, Dest, [X|LA], NewAcc, CD, Cam). %chamada recursiva
+    \+ member(X, LA), 
+    dfs2(Zona, X, Dest, [X|LA], NewAcc, CD, Cam). 
 
 %------ Pesquisa em largura ---------
 
 bfs(Zona, Orig, Dest, Cam) :-
     bfs2(Zona, Dest, [[Orig]], Cam).
-bfs2(_,Dest,[[Dest|T]|_],Cam):- reverse([Dest|T],Cam). %o caminho aparece pela ordem inversa
+bfs2(_,Dest,[[Dest|T]|_],Cam):- reverse([Dest|T],Cam). 
 bfs2(Zona, Dest, [LA|Outros], Cam) :-
     LA=[Act|_],
     findall([X|LA],
@@ -268,8 +267,6 @@ expande_agulosa_tempo_g(Zona,Velocidade,Caminho, ExpCaminhos,CoordenadasDestino)
 
 
 %------Pesquisa A*-----
- 
-%resolve_aestrela_distancia("Semelhe","Centro de distribuições","Rua 13",R/CR). 
 
 resolve_aestrela_tempo(Velocidade,Zona,Origem,Destino,CaminhoTempo/CustoTempo) :-
     vertice(Zona,Origem,X),
@@ -327,6 +324,156 @@ expande_aestrela_distancia(Zona,Caminho, ExpCaminhos,CoordenadasDestino) :-
     findall(NovoCaminho, adjacente_distancia(Zona,Caminho,NovoCaminho,CoordenadasDestino), ExpCaminhos).
     
 
+%-------Algoritmos que permitem comparar os diversos circuitos nos grafos------------
+
+% ---- DFS ----
+
+compara_circuitos_dfs([],_,R,R):-!.
+compara_circuitos_dfs([H|T], Destino, Acc,R) :-
+    getListPed(H,ListP),
+    getZona(H,Zona),
+    getPedidoCentroGenerico(Zona,Pedido),
+    doDFS(Zona,[Pedido|ListP],Destino,[],Aux),
+    updateCircuitosVolumeList(Aux,Acc,NewAcc),
+    compara_circuitos_dfs(T,Destino,NewAcc,R).
+
+
+doDFS(Zona,[H],Destino, AccPaths, R) :-
+    getRua(H,RuaH),
+    getPesoPedido(H,Peso),
+    dfs(Zona,RuaH,Destino,_,Cam),
+    updateCircuitosVolume(Zona/Cam/1/Peso/1/1/1, AccPaths, [],R,0).
+
+doDFS(Zona,[H,X|T],Destino, AccPaths, R) :-  
+    getRua(H,RuaH),
+    getRua(X,RuaX),
+    getPesoPedido(H,Peso),
+    dfs(Zona,RuaH,RuaX,_,Cam),
+    updateCircuitosVolume(Zona/Cam/1/Peso/1/1/1, AccPaths, [],NewAcc,0),
+    doDFS(Zona,[X|T],Destino, NewAcc, R).
+
+
+% ---- BFS ----
+
+compara_circuitos_bfs([],_,R,R):-!.
+compara_circuitos_bfs([H|T], Destino, Acc,R) :-
+    getListPed(H,ListP),
+    getZona(H,Zona),
+    getPedidoCentroGenerico(Zona,Pedido),
+    doBFS(Zona,[Pedido|ListP],Destino,[],Aux),
+    updateCircuitosVolumeList(Aux,Acc,NewAcc),
+    compara_circuitos_bfs(T,Destino,NewAcc,R).
+
+
+doBFS(Zona,[H],Destino, AccPaths, R) :-
+    getRua(H,RuaH),
+    getPesoPedido(H,Peso),
+    bfs(Zona,RuaH,Destino,Cam),
+    updateCircuitosVolume(Zona/Cam/1/Peso/1/1/1, AccPaths, [],R,0).
+
+doBFS(Zona,[H,X|T],Destino, AccPaths, R) :-  
+    getRua(H,RuaH),
+    getRua(X,RuaX),
+    getPesoPedido(H,Peso),
+    bfs(Zona,RuaH,RuaX,Cam),
+    updateCircuitosVolume(Zona/Cam/1/Peso/1/1/1, AccPaths, [],NewAcc,0),
+    doBFS(Zona,[X|T],Destino, NewAcc, R).
+
+
+
+% ---- BILP ----
+
+
+compara_circuitos_bilp([],_,R,R):-!.
+compara_circuitos_bilp([H|T], Destino, Acc,R) :-
+    getListPed(H,ListP),
+    getZona(H,Zona),
+    getPedidoCentroGenerico(Zona,Pedido),
+    doBILP(Zona,[Pedido|ListP],Destino,[],Aux),
+    updateCircuitosVolumeList(Aux,Acc,NewAcc),
+    compara_circuitos_bilp(T,Destino,NewAcc,R).
+
+
+doBILP(Zona,[H],Destino, AccPaths, R) :-
+    getRua(H,RuaH),
+    getPesoPedido(H,Peso),
+    bilp(Zona,RuaH,Destino,0,Cam),
+    updateCircuitosVolume(Zona/Cam/1/Peso/1/1/1, AccPaths, [],R,0).
+
+doBILP(Zona,[H,X|T],Destino, AccPaths, R) :-  
+    getRua(H,RuaH),
+    getRua(X,RuaX),
+    getPesoPedido(H,Peso),
+    bilp(Zona,RuaH,RuaX,0,Cam),
+    updateCircuitosVolume(Zona/Cam/1/Peso/1/1/1, AccPaths, [],NewAcc,0),
+    doBILP(Zona,[X|T],Destino, NewAcc, R).
+
+
+
+
+% ---- Gulosa ----
+
+compara_circuitos_gulosa([],_,R,R):-!.
+compara_circuitos_gulosa([H|T], Destino, Acc,R) :-
+    getListPed(H,ListP),
+    getZona(H,Zona),
+    diminuiVel(H,Vel),
+    getPedidoCentroGenerico(Zona,Pedido),
+    doGULOSA(Vel,Zona,[Pedido|ListP],Destino,[],Aux),
+    updateCircuitosVolumeList(Aux,Acc,NewAcc),
+    compara_circuitos_gulosa(T,Destino,NewAcc,R).
+
+
+doGULOSA(Vel,Zona,[H],Destino, AccPaths, R) :-
+    getRua(H,RuaH),
+    getPesoPedido(H,Peso),
+    resolve_gulosa_distancia(Zona,RuaH,Destino,Cam/CustoDist),
+    Tempo is CustoDist/Vel,
+    updateCircuitosVolume(Zona/Cam/1/Peso/Tempo/CustoDist/Vel, AccPaths, [],R,0).
+
+doGULOSA(Vel,Zona,[H,X|T],Destino, AccPaths, R) :-  
+    getRua(H,RuaH),
+    getRua(X,RuaX),
+    getPesoPedido(H,Peso),
+    resolve_gulosa_distancia(Zona,RuaH,RuaX,Cam/CustoDist),
+    Tempo is CustoDist/Vel,
+    updateCircuitosVolume(Zona/Cam/1/Peso/Tempo/CustoDist/Vel, AccPaths, [],NewAcc,0),
+    doGULOSA(Vel,Zona,[X|T],Destino, NewAcc, R).
+
+
+% ---- A* -----
+
+compara_circuitos_estrela([],_,R,R):-!.
+compara_circuitos_estrela([H|T], Destino, Acc,R) :-
+    getListPed(H,ListP),
+    getZona(H,Zona),
+    diminuiVel(H,Vel),
+    getPedidoCentroGenerico(Zona,Pedido),
+    doESTRELA(Vel,Zona,[Pedido|ListP],Destino,[],Aux),
+    updateCircuitosVolumeList(Aux,Acc,NewAcc),
+    compara_circuitos_estrela(T,Destino,NewAcc,R).
+
+
+
+
+doESTRELA(Vel,Zona,[H],Destino, AccPaths, R) :-
+    getRua(H,RuaH),
+    getPesoPedido(H,Peso),
+    resolve_aestrela_distancia(Zona,RuaH,Destino,Cam/CustoDist),
+    Tempo is CustoDist/Vel,
+    updateCircuitosVolume(Zona/Cam/1/Peso/Tempo/CustoDist/Vel, AccPaths, [],R,0).
+
+doESTRELA(Vel,Zona,[H,X|T],Destino, AccPaths, R) :-  
+    getRua(H,RuaH),
+    getRua(X,RuaX),
+    getPesoPedido(H,Peso),
+    resolve_aestrela_distancia(Zona,RuaH,RuaX,Cam/CustoDist),
+    Tempo is CustoDist/Vel,
+    updateCircuitosVolume(Zona/Cam/1/Peso/Tempo/CustoDist/Vel, AccPaths, [],NewAcc,0),
+    doESTRELA(Vel,Zona,[X|T],Destino, NewAcc, R).
+
+
+
 %------ Predicados auxiliares ---------
 % Devolve todos os pontos de entrega de um estafeta
 getTodosPontosEntrega(estafeta(_, _, _, _, _, LE, _), R,RComPesos) :-
@@ -372,7 +519,6 @@ remove_dups([H|T], [H|R]) :-
 
 
 remove_instancias_iguais([],R,R).
-
 remove_instancias_iguais([H|L],XS,NewDest):-
     write("Pontos a retirar : "),writeln([H|L]),
     write("Lista original : "),writeln(XS),
@@ -382,7 +528,6 @@ remove_instancias_iguais([H|L],XS,NewDest):-
     remove_instancias_iguais(L,New,NewDest).
 
 
-%Inverte a lista Xs
 inverso(Xs, Ys) :-
     inverso(Xs, [], Ys).
 inverso([], Xs, Xs).
@@ -393,12 +538,15 @@ inverso([X|Xs], Ys, Zs) :-
 seleciona(E, [E|Xs], Xs).
 seleciona(E, [X|Xs], [X|Ys]) :- seleciona(E, Xs, Ys).
 
+
+% Valor da estima para heuristica de distancia
 estima_distancia(X1/Y1,X2/Y2,Est) :- 
     Aux is (X2 - X1)^2,
     Aux2 is (Y2 - Y1)^2,
     Aux3 is Aux+Aux2,
     Est is sqrt(Aux3).
 
+% Valor da estima para heuristica de tempo
 estima_tempo(Vel, X1/Y1, X2/Y2, Est) :- 
     Aux is (X2 - X1)^2,
     Aux2 is (Y2 - Y1)^2,
@@ -428,166 +576,6 @@ calculaCustoDistancia2(Zona,[Nodo,Nodo2|T], Acc, Cust) :-
     connect(Zona,Nodo,Nodo2,CD),
     NewAcc is CD + Acc,
     calculaCustoDistancia2(Zona,[Nodo2|T], NewAcc, Cust).
-
-
-%----------------------------------
-
-
-compara_circuitos_dfs([],_,R,R):-!.
-compara_circuitos_dfs([H|T], Destino, Acc,R) :-
-    getListPed(H,ListP),
-    getZona(H,Zona),
-    getPedidoCentroGenerico(Zona,Pedido),
-    doDFS(Zona,[Pedido|ListP],Destino,[],Aux),
-    updateCircuitosVolumeList(Aux,Acc,NewAcc),
-    compara_circuitos_dfs(T,Destino,NewAcc,R).
-
-
-
-
-doDFS(Zona,[H],Destino, AccPaths, R) :-
-    getRua(H,RuaH),
-    getPesoPedido(H,Peso),
-    dfs(Zona,RuaH,Destino,_,Cam),
-    updateCircuitosVolume(Zona/Cam/1/Peso/1/1/1, AccPaths, [],R,0).
-
-doDFS(Zona,[H,X|T],Destino, AccPaths, R) :-  
-    getRua(H,RuaH),
-    getRua(X,RuaX),
-    getPesoPedido(H,Peso),
-    dfs(Zona,RuaH,RuaX,_,Cam),
-    updateCircuitosVolume(Zona/Cam/1/Peso/1/1/1, AccPaths, [],NewAcc,0),
-    doDFS(Zona,[X|T],Destino, NewAcc, R).
-
-
-%------
-
-compara_circuitos_bfs([],_,R,R):-!.
-compara_circuitos_bfs([H|T], Destino, Acc,R) :-
-    getListPed(H,ListP),
-    getZona(H,Zona),
-    getPedidoCentroGenerico(Zona,Pedido),
-    doBFS(Zona,[Pedido|ListP],Destino,[],Aux),
-    updateCircuitosVolumeList(Aux,Acc,NewAcc),
-    compara_circuitos_bfs(T,Destino,NewAcc,R).
-
-
-
-
-doBFS(Zona,[H],Destino, AccPaths, R) :-
-    getRua(H,RuaH),
-    getPesoPedido(H,Peso),
-    bfs(Zona,RuaH,Destino,Cam),
-    updateCircuitosVolume(Zona/Cam/1/Peso/1/1/1, AccPaths, [],R,0).
-
-doBFS(Zona,[H,X|T],Destino, AccPaths, R) :-  
-    getRua(H,RuaH),
-    getRua(X,RuaX),
-    getPesoPedido(H,Peso),
-    bfs(Zona,RuaH,RuaX,Cam),
-    updateCircuitosVolume(Zona/Cam/1/Peso/1/1/1, AccPaths, [],NewAcc,0),
-    doBFS(Zona,[X|T],Destino, NewAcc, R).
-
-
-
-%-------
-
-
-compara_circuitos_bilp([],_,R,R):-!.
-compara_circuitos_bilp([H|T], Destino, Acc,R) :-
-    getListPed(H,ListP),
-    getZona(H,Zona),
-    getPedidoCentroGenerico(Zona,Pedido),
-    doBILP(Zona,[Pedido|ListP],Destino,[],Aux),
-    updateCircuitosVolumeList(Aux,Acc,NewAcc),
-    compara_circuitos_bilp(T,Destino,NewAcc,R).
-
-
-
-
-doBILP(Zona,[H],Destino, AccPaths, R) :-
-    getRua(H,RuaH),
-    getPesoPedido(H,Peso),
-    bilp(Zona,RuaH,Destino,0,Cam),
-    updateCircuitosVolume(Zona/Cam/1/Peso/1/1/1, AccPaths, [],R,0).
-
-doBILP(Zona,[H,X|T],Destino, AccPaths, R) :-  
-    getRua(H,RuaH),
-    getRua(X,RuaX),
-    getPesoPedido(H,Peso),
-    bilp(Zona,RuaH,RuaX,0,Cam),
-    updateCircuitosVolume(Zona/Cam/1/Peso/1/1/1, AccPaths, [],NewAcc,0),
-    doBILP(Zona,[X|T],Destino, NewAcc, R).
-
-
-
-
-%-------
-
-compara_circuitos_gulosa([],_,R,R):-!.
-compara_circuitos_gulosa([H|T], Destino, Acc,R) :-
-    getListPed(H,ListP),
-    getZona(H,Zona),
-    diminuiVel(H,Vel),
-    getPedidoCentroGenerico(Zona,Pedido),
-    doGULOSA(Vel,Zona,[Pedido|ListP],Destino,[],Aux),
-    updateCircuitosVolumeList(Aux,Acc,NewAcc),
-    compara_circuitos_gulosa(T,Destino,NewAcc,R).
-
-
-
-
-doGULOSA(Vel,Zona,[H],Destino, AccPaths, R) :-
-    getRua(H,RuaH),
-    getPesoPedido(H,Peso),
-    resolve_gulosa_distancia(Zona,RuaH,Destino,Cam/CustoDist),
-    Tempo is CustoDist/Vel,
-    updateCircuitosVolume(Zona/Cam/1/Peso/Tempo/CustoDist/Vel, AccPaths, [],R,0).
-
-doGULOSA(Vel,Zona,[H,X|T],Destino, AccPaths, R) :-  
-    getRua(H,RuaH),
-    getRua(X,RuaX),
-    getPesoPedido(H,Peso),
-    resolve_gulosa_distancia(Zona,RuaH,RuaX,Cam/CustoDist),
-    Tempo is CustoDist/Vel,
-    updateCircuitosVolume(Zona/Cam/1/Peso/Tempo/CustoDist/Vel, AccPaths, [],NewAcc,0),
-    doGULOSA(Vel,Zona,[X|T],Destino, NewAcc, R).
-
-
-%-------
-
-compara_circuitos_estrela([],_,R,R):-!.
-compara_circuitos_estrela([H|T], Destino, Acc,R) :-
-    getListPed(H,ListP),
-    getZona(H,Zona),
-    diminuiVel(H,Vel),
-    getPedidoCentroGenerico(Zona,Pedido),
-    doESTRELA(Vel,Zona,[Pedido|ListP],Destino,[],Aux),
-    updateCircuitosVolumeList(Aux,Acc,NewAcc),
-    compara_circuitos_estrela(T,Destino,NewAcc,R).
-
-
-
-
-doESTRELA(Vel,Zona,[H],Destino, AccPaths, R) :-
-    getRua(H,RuaH),
-    getPesoPedido(H,Peso),
-    resolve_aestrela_distancia(Zona,RuaH,Destino,Cam/CustoDist),
-    Tempo is CustoDist/Vel,
-    updateCircuitosVolume(Zona/Cam/1/Peso/Tempo/CustoDist/Vel, AccPaths, [],R,0).
-
-doESTRELA(Vel,Zona,[H,X|T],Destino, AccPaths, R) :-  
-    getRua(H,RuaH),
-    getRua(X,RuaX),
-    getPesoPedido(H,Peso),
-    resolve_aestrela_distancia(Zona,RuaH,RuaX,Cam/CustoDist),
-    Tempo is CustoDist/Vel,
-    updateCircuitosVolume(Zona/Cam/1/Peso/Tempo/CustoDist/Vel, AccPaths, [],NewAcc,0),
-    doESTRELA(Vel,Zona,[X|T],Destino, NewAcc, R).
-
-
-%------------------
-
 
 updateCircuitosVolumeList(L,X,R):-
     updateCircuitosVolumeListAux(L,X,R).
@@ -625,3 +613,6 @@ seperateCircuito(Tipo,[Zona/Cam/Vol/Peso/Tempo/Custo/_|T],Acc,R):-
      Tipo =:= 3 -> seperateCircuito(Tipo,T,[Zona/Cam/Tempo|Acc],R);
      Tipo =:= 4 -> seperateCircuito(Tipo,T,[Zona/Cam/Custo|Acc],R)
     ).
+
+
+

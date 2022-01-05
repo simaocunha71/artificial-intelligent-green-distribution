@@ -242,6 +242,14 @@ printPontos([]) :- write('\n').
 printPontos([H|T]) :-
     write(H), write(", "), printPontos(T).   
     
+printCircuitos([]).
+printCircuitos([H|T]) :- 
+    printCircuito(H),
+    printCircuitos(T).
+
+printCircuito(Zona/Path/Custo) :-
+    write("Zona: "),write("\033\[32m"),write(Zona),write("\033\[0m"), write(" | Valor -> "),write("\033\[32m"),write(Custo),write("\033\[0m"),write(" | Caminho: "),printOnePath(Path).
+        
 % limpar tela
 limpaT :-
     write('\033[H\033[2J').

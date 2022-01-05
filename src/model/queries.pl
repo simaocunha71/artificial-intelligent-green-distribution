@@ -600,15 +600,5 @@ take(_, [], []).
 take(N, [X|Xs], [X|Ys]) :- M is N-1, take(M, Xs, Ys).
 
 
-printCircuitos([]).
-printCircuitos([H|T]) :- 
-    printCircuito(H),
-    printCircuitos(T).
-
-printCircuito(Zona/Path/Custo) :-
-    write("Zona: "),write("\033\[32m"),write(Zona),write("\033\[0m"), write(" | Valor -> "),write("\033\[32m"),write(Custo),write("\033\[0m"),write(" | Caminho: "),printOnePath(Path).
-
-
-
 getPedidoCentroGenerico(Zona,pedido(cliente("Genrico",41),-1,2021/6/28,"Centro de distribuições",Zona,1,2021/6/20,1)).
     
