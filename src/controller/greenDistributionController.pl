@@ -523,12 +523,12 @@ zonaPesq_view(Zona,TipoPesq) :-
             );
             !
         )
-     ),
-    get_time(New_Fim),
-    TempoDecorrido is (New_Fim - NewInicio) * 1000;
-    get_time(Fim),
-    TempoDecorrido is (Fim - Inicio) * 1000
+     )
     ),
+    get_time(Fim),
+    ((TipoPesq=:=1;TipoPesq=:=2; TipoPesq=:=3)-> TempoDecorrido is (Fim - Inicio) * 1000;
+      TempoDecorrido is (Fim - NewInicio) * 1000
+      ),
     write("Tempo decorrido: "),write(TempoDecorrido),writeln(" ms").
  
 
@@ -664,13 +664,12 @@ menuTravessiasTeste:-
             ),
             !
         )
-     ),
-    get_time(New_Fim),
-    TempoDecorrido is (New_Fim - NewInicio) * 1000;
-    get_time(Fim),
-    TempoDecorrido is (Fim - Inicio) * 1000
+     )
     ),
-
+    get_time(Fim),
+    ((TipoPesq=:=1;TipoPesq=:=2; TipoPesq=:=3)-> TempoDecorrido is (Fim - Inicio) * 1000;
+      TempoDecorrido is (Fim - NewInicio) * 1000
+      ),
     write("Tempo decorrido: "),write(TempoDecorrido),writeln(" ms").
 
 
