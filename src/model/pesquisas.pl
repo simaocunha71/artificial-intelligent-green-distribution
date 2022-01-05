@@ -506,8 +506,11 @@ updateLocalPesoLista(H/Peso,[X/XPeso|T],Acc,Updated,R):-
 
 
 extract([], R,RComPesos,R,RComPesos).
-extract([pedido(_, _, _, Rua, _, Peso, _, _)|T], Acc,AccPeso, R,RPeso) :-
-    extract(T, [Rua|Acc],[Rua/Peso|AccPeso], R,RPeso).
+extract([pedido(_, _, _, Rua, _, Peso, _, Estado)|T], Acc,AccPeso, R,RPeso) :-
+    (Estado =:= 0 -> 
+        extract(T, [Rua|Acc],[Rua/Peso|AccPeso], R,RPeso);
+        extract(T, Acc,AccPeso, R,RPeso)
+    ).
 
 % Remove os elementos duplicados de uma lista
 remove_dups([], []).

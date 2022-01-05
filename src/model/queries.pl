@@ -32,8 +32,19 @@ estafeta_mais_ecologico(EstafetaSol) :-
     )
     .
 
-% Devolve a lista de entregas do estafeta
+% Devolve a lista de todas as entregas do estafeta
 getListPed(estafeta(_, _, _, _, _, LPed, _),LPed).
+
+% Devolve a lista de entregas do estafeta não entregues
+getListPedNaoEntregues(estafeta(_, _, _, _, _, LPed, _),R) :-
+    extractPedido(LPed,[],R).
+
+extractPedido([], R,R).
+extractPedido([pedido(A, B, C, Rua, D, Peso, E, Estado)|T], Acc, R) :-
+    (Estado =:= 0 -> 
+        extractPedido(T, [pedido(A, B, C, Rua, D, Peso, E, Estado)|Acc], R);
+        extractPedido(T, Acc, R)
+    ).
 
 
 %devolve o estafeta com mais entregas

@@ -513,8 +513,8 @@ zonaPesq_view(Zona,TipoPesq) :-
      (TipoPesq=:=4; TipoPesq =:= 5), 
      menuEuristicas,
      (read(Mode),
-        (Mode =:= 1, writeln("Aplicando algoritmo greedy com heuristica DISTÂNCIA...");
-         Mode =:= 2, Vel > 0, writeln("Aplicando algoritmo greedy com heuristica TEMPO...");
+        (Mode =:= 1, writeln("Aplicando algoritmo com heuristica DISTÂNCIA...");
+         Mode =:= 2, Vel > 0, writeln("Aplicando algoritmo com heuristica TEMPO...");
          Mode =:= 2, Vel =< 0, writeln("\u001B[31mVelocidade do estafeta é zero, pelo que não é possivel aplicar o algoritmo!\u001B[0m");
          Mode =\= 1 , Mode =\= 2 -> read(Mode)
         ),
@@ -631,7 +631,7 @@ menuTravessiasTeste:-
 
     limpaT,
     writeln("Pedidos disponíveis:"),
-    getListPed(Est,ListP),
+    getListPedNaoEntregues(Est,ListP),
     printPedidosSimples(ListP,0),
     pickPedido(ListP,Pedido),
     limpaT,
@@ -656,8 +656,8 @@ menuTravessiasTeste:-
      (TipoPesq=:=4; TipoPesq =:= 5), 
      menuEuristicas,
      (read(Mode),
-        (Mode =:= 1, writeln("Aplicando algoritmo greedy com heuristica DISTÂNCIA...");
-         Mode =:= 2, Vel > 0, writeln("Aplicando algoritmo greedy com heuristica TEMPO...");
+        (Mode =:= 1, writeln("Aplicando algoritmo com heuristica DISTÂNCIA...");
+         Mode =:= 2, Vel > 0, writeln("Aplicando algoritmo com heuristica TEMPO...");
          Mode =:= 2, Vel =< 0, writeln("\u001B[31mVelocidade do estafeta é zero, pelo que não é possivel aplicar o algoritmo!\u001B[0m");
          Mode =\= 1 , Mode =\= 2 -> read(Mode)
         ),
