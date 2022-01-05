@@ -563,8 +563,7 @@ printCircuitos([H|T]) :-
     printCircuitos(T).
 
 printCircuito(Zona/Path/Custo) :-
-    write("Zona: "),write(Zona), write("| Valor -> "),writeln(Custo),
-    printOnePath(Path).
+    write("Zona: "),write("\033\[32m"),write(Zona),write("\033\[0m"), write(" | Valor -> "),write("\033\[32m"),write(Custo),write("\033\[0m"),write(" | Caminho: "),printOnePath(Path).
 
 
 

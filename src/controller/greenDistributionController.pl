@@ -552,8 +552,8 @@ menuComparaCircuitos :-
 menucomparaCircuitos2(PathList,N):-
     menuComparaCircuitos2,
     read(Mode),
-        (Mode =:= 1, seperateCircuito(1,PathList,[],NewPathList),sort(2,@>=,NewPathList,Sorted);
-         Mode =:= 2, seperateCircuito(2,PathList,[],NewPathList),sort(2,@>=,NewPathList,Sorted);
+        (Mode =:= 1, seperateCircuito(1,PathList,[],NewPathList),sort(2,@>=,NewPathList,Sorted),write("\u001B[33m"),write("--- Top 10 circuitos por volume ---"),writeln("\033\[0m");
+         Mode =:= 2, seperateCircuito(2,PathList,[],NewPathList),sort(2,@>=,NewPathList,Sorted),write("\u001B[33m"),write("--- Top 10 circuitos por peso ---"),writeln("\033\[0m");
          Mode =\= 1 , Mode =\= 2-> read(Mode)
         ),
     take(N,Sorted,BestN),
