@@ -258,11 +258,11 @@ total_entregas_intervalo(DataLo,DataHi,Total) :-
     total_entregas_intervalo_aux(DataLo,DataHi,Lista,0,Total).
 
 total_entregas_intervalo_aux(_,_,[],R,R).
-total_entregas_intervalo_aux(DataLo,DataHi,[H|T],R):-
+total_entregas_intervalo_aux(DataLo,DataHi,[H|T],Acc,R):-
     getListPed(H,Pedidos),
     numero_entregas_intervalo_transporte_aux2(DataLo,DataHi,__,Pedidos,0,0,0,B,M,C),
-    CalcEstafeta is R +B + M + C,
-    total_entregas_intervalo_aux(DataLo,DataHi,T,CalcEstafeta).
+    CalcEstafeta is Acc +B + M + C,
+    total_entregas_intervalo_aux(DataLo,DataHi,T,CalcEstafeta,R).
 
 %total_entregas_intervalo(2021/1/1,2021/12/31).
 

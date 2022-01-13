@@ -432,7 +432,7 @@ numero_entregas_intervalo_transporte_view :-
 total_entregas_intervalo_view :-
     writeln('Data limite inferior: '),
     read(DataInf),
-    write('Data limite superior: '),
+    writeln('Data limite superior: '),
     read(DataSup),
     total_entregas_intervalo(DataInf, DataSup, N),
     write('Entregas efetuadas: '),
